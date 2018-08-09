@@ -26,7 +26,7 @@ export default class FeedPage extends Component {
 
           return (
             <Fragment>
-              <h1>Feed</h1>
+              <h1>Digital Bookshelf.</h1>
               {data.feed &&
                 data.feed.map(post => (
                   <Post
