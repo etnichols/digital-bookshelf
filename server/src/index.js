@@ -12,6 +12,12 @@ const resolvers = {
     post(parent, { id }, ctx, info) {
       return ctx.db.query.post({ where: { id } }, info)
     },
+    user(parent, { id }, ctx, info) {
+      return ctx.db.query.user({ where: { id } }, info)
+    },
+    users(parent, args, ctx, info) {
+      return ctx.db.query.users()
+    }
   },
   Mutation: {
     createDraft(parent, { title, text }, ctx, info) {
@@ -36,6 +42,18 @@ const resolvers = {
         },
         info,
       )
+    },
+    createUser(parent, { firstName, lastName, email }, ctx, info) {
+      return ctx.db.mutation.createUser({
+        data: {
+          firstName: firstName,
+          lastName: lastName,
+          email:email
+        }
+      })
+    },
+    deleteUser(parent, { id }, ctx, info) {
+      return ctx.db.mutation.deleteUser({ where: { id: id } }, info)
     },
   },
 }

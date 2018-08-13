@@ -4,10 +4,14 @@ type Query {
   feed: [Post!]!
   drafts: [Post!]!
   post(id: ID!): Post
+  user(id: ID!): User
+  users: [User!]!
 }
 
 type Mutation {
   createDraft(title: String!, text: String): Post
   deletePost(id: ID!): Post
   publish(id: ID!): Post
+  createUser(firstName: String!, lastName: String!, email: String!): User
+  deleteUser(id: ID!): User
 }
