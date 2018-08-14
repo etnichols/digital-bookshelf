@@ -12,6 +12,7 @@ type Mutation {
   createDraft(title: String!, text: String): Post
   deletePost(id: ID!): Post
   publish(id: ID!): Post
-  createUser(firstName: String!, lastName: String!, email: String!): User
+  createUser(firstName: String!, lastName: String!, email: String!, password: String!): User
   deleteUser(id: ID!): User
+  login()
 }

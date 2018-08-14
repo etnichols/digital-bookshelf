@@ -14,6 +14,7 @@ import FeedPage from './components/FeedPage'
 import DraftsPage from './components/DraftsPage'
 import CreatePage from './components/CreatePage'
 import DetailPage from './components/DetailPage'
+import CreateAccountPage from './components/CreateAccountPage'
 
 import 'tachyons'
 import './index.css'
@@ -51,15 +52,16 @@ ReactDOM.render(
             Drafts
           </NavLink>
           <Link
-            to="/create"
+            to="/signup"
             className="f6 link dim br1 ba ph3 pv2 fr mb2 dib black"
           >
-            + Create Draft
+          Create Account
           </Link>
         </nav>
         <div className="fl w-100 pl4 pr4">
           <Switch>
             <Route exact path="/" component={FeedPage} />
+            <Route path="/signup" component={CreateAccountPage} />
             <Route path="/drafts" component={DraftsPage} />
             <Route path="/create" component={CreatePage} />
             <Route path="/post/:id" component={DetailPage} />
