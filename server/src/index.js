@@ -1,5 +1,6 @@
 const { GraphQLServer } = require('graphql-yoga')
 const { Prisma } = require('prisma-binding')
+const bcrypt = require('bcryptjs')
 
 const resolvers = {
   Query: {
@@ -43,12 +44,14 @@ const resolvers = {
         info,
       )
     },
-    createUser(parent, { firstName, lastName, email }, ctx, info) {
+    async createUser(parent, { firstName, lastName, email, password }, ctx, info) {
+      const hashedPassword = await bcrypt.hash(password, 10)
       return ctx.db.mutation.createUser({
         data: {
           firstName: firstName,
           lastName: lastName,
-          email:email
+          email: email,
+          password: hashedPassword
         }
       })
     },
