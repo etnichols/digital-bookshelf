@@ -10,11 +10,14 @@ import {
 import { ApolloProvider } from 'react-apollo'
 import ApolloClient from 'apollo-boost'
 
+import BookshelfPage from './components/BookshelfPage'
 import FeedPage from './components/FeedPage'
 import DraftsPage from './components/DraftsPage'
 import CreatePage from './components/CreatePage'
 import DetailPage from './components/DetailPage'
 import CreateAccountPage from './components/CreateAccountPage'
+import LoginPage from './components/LoginPage'
+
 
 import 'tachyons'
 import './index.css'
@@ -25,48 +28,14 @@ ReactDOM.render(
   <ApolloProvider client={client}>
     <Router>
       <Fragment>
-        <nav className="pa3 pa4-ns">
-          <Link
-            className="link dim black b f6 f5-ns dib mr3"
-            to="/"
-            title="Feed"
-          >
-            Blog
-          </Link>
-          <NavLink
-            className="link dim f6 f5-ns dib mr3 black"
-            activeClassName="gray"
-            exact={true}
-            to="/"
-            title="Feed"
-          >
-            Feed
-          </NavLink>
-          <NavLink
-            className="link dim f6 f5-ns dib mr3 black"
-            activeClassName="gray"
-            exact={true}
-            to="/drafts"
-            title="Drafts"
-          >
-            Drafts
-          </NavLink>
-          <Link
-            to="/signup"
-            className="f6 link dim br1 ba ph3 pv2 fr mb2 dib black"
-          >
-          Create Account
-          </Link>
-        </nav>
-        <div className="fl w-100 pl4 pr4">
-          <Switch>
-            <Route exact path="/" component={FeedPage} />
-            <Route path="/signup" component={CreateAccountPage} />
-            <Route path="/drafts" component={DraftsPage} />
-            <Route path="/create" component={CreatePage} />
-            <Route path="/post/:id" component={DetailPage} />
-          </Switch>
-        </div>
+        <Switch>
+          <Route exact path="/" component={LoginPage} />
+          <Route path="/bookshelf" component={BookshelfPage} />
+          <Route path="/signup" component={CreateAccountPage} />
+          <Route path="/drafts" component={DraftsPage} />
+          <Route path="/create" component={CreatePage} />
+          <Route path="/post/:id" component={DetailPage} />
+        </Switch>
       </Fragment>
     </Router>
   </ApolloProvider>,

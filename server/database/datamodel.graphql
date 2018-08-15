@@ -1,6 +1,6 @@
 type Post {
   id: ID! @unique
-  isPublished: Boolean! @default(value: false)
+  isPublished: Boolean! @default(value: true)
   title: String!
   text: String!
 }
@@ -9,6 +9,6 @@ type User {
   id: ID! @unique
   firstName: String!
   lastName: String!
-  email: String!
+  email: String! @unique
   password: String!
 }

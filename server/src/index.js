@@ -1,6 +1,7 @@
 const { GraphQLServer } = require('graphql-yoga')
 const { Prisma } = require('prisma-binding')
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
 const resolvers = {
   Query: {
@@ -57,6 +58,22 @@ const resolvers = {
     },
     deleteUser(parent, { id }, ctx, info) {
       return ctx.db.mutation.deleteUser({ where: { id: id } }, info)
+    },
+    async login(parent, { email, password }, ctx, info) {
+      const user = await ctx.db.query.user({ where: { email: email } } );
+      if(!user){
+        throw new Error(`No user found for email: ${email}`)
+      }
+
+      const valid = await bcrypt.compare(password, user.password)
+      if(!valid){
+        throw new Error('Invalid password')
+      }
+
+      return {
+        token: jwt.sign({ userId: user.id }, 'asecret'),
+        user
+      }
     },
   },
 }

@@ -2,14 +2,12 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { Mutation } from 'react-apollo'
 import  { gql } from 'apollo-boost'
-import { DRAFTS_QUERY } from './DraftsPage'
 
-class CreateAccountPage extends Component {
+class LoginPage extends Component {
   state = {
-    firstName: '',
-    lastName: '',
     email: '',
-    password: ''
+    password: '',
+    failed: false
   }
 
   // TODO(etnichols): real form and password validation
@@ -25,7 +23,7 @@ class CreateAccountPage extends Component {
   render() {
     return (
       <Mutation
-        mutation={CREATE_ACCOUNT_MUTATION}
+        mutation={LOGIN_MUTATION}
         // update={(cache, { data }) => {
         //   const { drafts } = cache.readQuery({ query: DRAFTS_QUERY })
         //   cache.writeQuery({
@@ -34,51 +32,45 @@ class CreateAccountPage extends Component {
         //   })
         // }}
       >
-        {(createUser, { data, loading, error }) => {
+        {(login, { data, loading, error }) => {
           return (
+            <div>
+            <h1>Digital Bookshelf.</h1>
             <div className="pa4 flex justify-center bg-white">
               <form
                 onSubmit={async e => {
                   e.preventDefault()
-                  const { firstName, lastName, email, password } = this.state
-                  await createUser({
+                  const { email, password } = this.state
+                  await login({
                     variables: {
-                      firstName: firstName,
-                      lastName: lastName,
                       email: email,
                       password: password
                     },
-                  })
-                  this.props.history.replace('/')
+                  }).then(res => {
+                    console.log('success logging in: ' + JSON.stringify(res))
+                    console.log('ze token is: ' + res.data.login.token)
+                    sessionStorage.setItem('token', res.data.login.token)
+                    this.props.history.replace('/bookshelf')
+                  }).catch(e => {
+                    this.setState({
+                      failed: true
+                    })
+                    console.log('error logging in: ' + e)
+                  });
                 }}
               >
-                <h1>Create Account</h1>
-                <input
-                  autoFocus
-                  className="w-100 pa2 mv2 br2 b--black-20 bw1"
-                  onChange={e => this.setState({ firstName: e.target.value })}
-                  placeholder="First name"
-                  type="text"
-                  value={this.state.firstName}
-                />
+                <h3>Login</h3>
                 <input
                   className="w-100 pa2 mv2 br2 b--black-20 bw1"
-                  onChange={e => this.setState({ lastName: e.target.value })}
-                  placeholder="Last name"
-                  type="text"
-                  value={this.state.lastName}
-                />
-                <input
-                  className="w-100 pa2 mv2 br2 b--black-20 bw1"
-                  onChange={e => this.setState({ email: e.target.value })}
+                  onChange={e => this.setState({ email: e.target.value, failed: false })}
                   placeholder="Email address"
                   type="text"
                   value={this.state.email}
                 />
                 <input
                   className="w-100 pa2 mv2 br2 b--black-20 bw1"
-                  onChange={e => this.setState({ password: e.target.value })}
-                  placeholder="Password (at least 7 characters)"
+                  onChange={e => this.setState({ password: e.target.value, failed: false })}
+                  placeholder="Password"
                   type="password"
                   value={this.state.password}
                 />
@@ -87,13 +79,12 @@ class CreateAccountPage extends Component {
                     'dim pointer'}`}
                   disabled={!this.isFormValid()}
                   type="submit"
-                  value="Create"
+                  value="Login"
                 />
-                <a className="f6 pointer" onClick={this.props.history.goBack}>
-                  or cancel
-                </a>
               </form>
+              {this.state.failed && <p>Failed to login.</p>}
             </div>
+          </div>
           )
         }}
       </Mutation>
@@ -101,20 +92,19 @@ class CreateAccountPage extends Component {
   }
 }
 
-const CREATE_ACCOUNT_MUTATION = gql`
-  mutation CreateAccountMutation(
-    $firstName: String!,
-    $lastName: String!,
+const LOGIN_MUTATION = gql`
+  mutation LoginMutation(
     $email: String!,
     $password: String!) {
-      createUser(
-        firstName: $firstName,
-        lastName: $lastName,
+      login(
         email: $email,
         password: $password ) {
-          id
+          token
+          user {
+            email
+          }
     }
   }
 `
 
-export default withRouter(CreateAccountPage)
+export default withRouter(LoginPage)

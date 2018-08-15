@@ -6,7 +6,7 @@ mutation {
   }) {
     id
   }
-  
+
   second: createPost(data: {
     title: "Join us at GraphQL Europe 🇪🇺 "
     text: "Get a 10%-discount with this promo code on graphql-europe.org: gql-boilerplates"
@@ -14,10 +14,18 @@ mutation {
   }) {
     id
   }
-  
+
   third: createPost(data: {
     title: "Solving world hunger"
     text: "This is a draft..."
+    isPublished: false
+  }) {
+    id
+  }
+
+  fourth: createPost(data: {
+    title: "Yummy stuff"
+    text: "This is a draftssssss..."
     isPublished: false
   }) {
     id

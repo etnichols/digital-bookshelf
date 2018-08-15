@@ -1,5 +1,5 @@
 # source: https://eu1.prisma.sh/public-junglepig-932/digital-bookshelf/dev
-# timestamp: Mon Aug 13 2018 21:37:36 GMT-0400 (EDT)
+# timestamp: Mon Aug 13 2018 23:33:51 GMT-0400 (EDT)
 
 type AggregatePost {
   count: Int!
@@ -638,4 +638,5 @@ input UserWhereInput {
 
 input UserWhereUniqueInput {
   id: ID
+  email: String
 }
