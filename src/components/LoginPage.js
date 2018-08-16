@@ -49,7 +49,7 @@ class LoginPage extends Component {
                   }).then(res => {
                     console.log('success logging in: ' + JSON.stringify(res))
                     console.log('ze token is: ' + res.data.login.token)
-                    sessionStorage.setItem('token', res.data.login.token)
+                    localStorage.setItem('token', res.data.login.token)
                     this.props.history.replace('/bookshelf')
                   }).catch(e => {
                     this.setState({

@@ -12,3 +12,14 @@ type User {
   email: String! @unique
   password: String!
 }
+
+type Book {
+  isbn: Int! @unique
+  title: String!
+}
+
+type Bookshelf {
+  id: ID! @unique
+  owner: User!
+  books: [Book!]!
+}

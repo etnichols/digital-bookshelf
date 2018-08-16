@@ -41,7 +41,7 @@ class CreateAccountPage extends Component {
                 onSubmit={async e => {
                   e.preventDefault()
                   const { firstName, lastName, email, password } = this.state
-                  await createUser({
+                  const user = await createUser({
                     variables: {
                       firstName: firstName,
                       lastName: lastName,
@@ -49,7 +49,9 @@ class CreateAccountPage extends Component {
                       password: password
                     },
                   })
-                  this.props.history.replace('/')
+                  console.log('created user: ' + JSON.stringify(user))
+                  this.props.history.replace(`/`)
+                  // this.props.history.replace(`/bookshelf/${12345}`)
                 }}
               >
                 <h1>Create Account</h1>
@@ -112,7 +114,13 @@ const CREATE_ACCOUNT_MUTATION = gql`
         lastName: $lastName,
         email: $email,
         password: $password ) {
-          id
+          token
+          user {
+            id
+          }
+          bookshelf {
+            id
+          }
     }
   }
 `

@@ -3,19 +3,26 @@
 type Query {
   feed: [Post!]!
   drafts: [Post!]!
+  me: User
   post(id: ID!): Post
   users: [User!]!
   user: User
-  me: User
+  bookshelf: Bookshelf
 }
 
 type Mutation {
   createDraft(title: String!, text: String): Post
+  createUser(firstName: String!, lastName: String!, email: String!, password: String!): UserCreatedPayload
   deletePost(id: ID!): Post
-  publish(id: ID!): Post
-  createUser(firstName: String!, lastName: String!, email: String!, password: String!): User
   deleteUser(id: ID!): User
   login(email: String!, password: String!): AuthPayload!
+  publish(id: ID!): Post
+}
+
+type UserCreatedPayload {
+  token: String!
+  user: User!
+  bookshelf: Bookshelf!
 }
 
 type AuthPayload {
@@ -28,5 +35,4 @@ type AuthPayload {
 type User {
   id: ID!
   email: String!
-  name: String
 }

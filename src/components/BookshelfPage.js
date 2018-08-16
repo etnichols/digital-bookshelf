@@ -19,7 +19,10 @@ class BookshelfPage extends Component {
 
   render() {
     return (
-      <Query query={ANOTHER_FEED_QUERY}>
+      <Query
+        query={BOOKSHELF_QUERY}
+        variables={{ id: this.props.match.params.id }}
+      >
         {({ data, loading, error, refetch }) => {
           if (loading) {
             return (
@@ -59,13 +62,10 @@ class BookshelfPage extends Component {
   }
 }
 
-export const ANOTHER_FEED_QUERY = gql`
-  query AnotherFeedQuery {
-    feed {
-      id
-      text
-      title
-      isPublished
+export const BOOKSHELF_QUERY = gql`
+  query BookshelfQuery($id: ID!) {
+    bookshelf(id: $id) {
+      books
     }
   }
 `

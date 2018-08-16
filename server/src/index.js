@@ -3,6 +3,8 @@ const { Prisma } = require('prisma-binding')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
+const SECRET = 'asecret'
+
 const resolvers = {
   Query: {
     feed(parent, args, ctx, info) {
@@ -19,6 +21,9 @@ const resolvers = {
     },
     users(parent, args, ctx, info) {
       return ctx.db.query.users()
+    },
+    bookshelf(parent, { id }, ctx, info) {
+      return ctx.db.query.bookshelfs({ where: { id } }, info)
     }
   },
   Mutation: {
@@ -47,7 +52,8 @@ const resolvers = {
     },
     async createUser(parent, { firstName, lastName, email, password }, ctx, info) {
       const hashedPassword = await bcrypt.hash(password, 10)
-      return ctx.db.mutation.createUser({
+
+      const user = await ctx.db.mutation.createUser({
         data: {
           firstName: firstName,
           lastName: lastName,
@@ -55,6 +61,23 @@ const resolvers = {
           password: hashedPassword
         }
       })
+
+      const bookshelf = await ctx.db.mutation.createBookshelf({
+        data: {
+          owner: {
+            connect: {
+              id: user.id
+            }
+          },
+          books: null
+        }
+      })
+
+      return {
+        token: jwt.sign({ userId: user.id }, SECRET),
+        user: user,
+        bookshelf: bookshelf
+      }
     },
     deleteUser(parent, { id }, ctx, info) {
       return ctx.db.mutation.deleteUser({ where: { id: id } }, info)
@@ -71,7 +94,7 @@ const resolvers = {
       }
 
       return {
-        token: jwt.sign({ userId: user.id }, 'asecret'),
+        token: jwt.sign({ userId: user.id }, SECRET),
         user
       }
     },
