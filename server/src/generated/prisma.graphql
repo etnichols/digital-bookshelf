@@ -1,5 +1,5 @@
 # source: https://eu1.prisma.sh/public-junglepig-932/digital-bookshelf/dev
-# timestamp: Wed Aug 15 2018 21:48:38 GMT-0400 (EDT)
+# timestamp: Thu Aug 16 2018 00:50:10 GMT-0400 (EDT)
 
 type AggregateBook {
   count: Int!
@@ -22,7 +22,8 @@ type BatchPayload {
   count: Long!
 }
 
-type Book {
+type Book implements Node {
+  id: ID!
   isbn: Int!
   title: String!
 }
@@ -57,12 +58,12 @@ type BookEdge {
 }
 
 enum BookOrderByInput {
+  id_ASC
+  id_DESC
   isbn_ASC
   isbn_DESC
   title_ASC
   title_DESC
-  id_ASC
-  id_DESC
   updatedAt_ASC
   updatedAt_DESC
   createdAt_ASC
@@ -70,13 +71,14 @@ enum BookOrderByInput {
 }
 
 type BookPreviousValues {
+  id: ID!
   isbn: Int!
   title: String!
 }
 
 type Bookshelf implements Node {
-  owner(where: UserWhereInput): User!
   id: ID!
+  owner(where: UserWhereInput): User!
   books(where: BookWhereInput, orderBy: BookOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Book!]
 }
 
@@ -298,6 +300,46 @@ input BookWhereInput {
 
   """Logical NOT on all given filters combined by AND."""
   NOT: [BookWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
   isbn: Int
 
   """All values that are not equal to given value."""
@@ -363,6 +405,7 @@ input BookWhereInput {
 }
 
 input BookWhereUniqueInput {
+  id: ID
   isbn: Int
 }
 

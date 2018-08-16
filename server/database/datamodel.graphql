@@ -14,6 +14,7 @@ type User {
 }
 
 type Book {
+  id: ID! @unique
   isbn: Int! @unique
   title: String!
 }
