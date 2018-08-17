@@ -24,9 +24,3 @@ type Bookshelf {
   owner: User!
   books: [Book!]!
 }
-
-type AuthPayload {
-  token: String!
-  user: User!
-  bookshelf: Bookshelf!
-}

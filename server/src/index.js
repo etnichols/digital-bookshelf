@@ -22,7 +22,7 @@ const resolvers = {
       return ctx.db.query.users()
     },
     bookshelf(parent, { id }, ctx, info) {
-      return ctx.db.query.bookshelves({ where: { id: id } }, info)
+      return ctx.db.query.bookshelf({ where: { id: id } }, info)
     },
     bookshelves(parent, args, ctx, info) {
       return ctx.db.query.bookshelves()
@@ -63,6 +63,8 @@ const resolvers = {
         }
       })
 
+      console.log('user! -> ' + JSON.stringify(user))
+
       // TEST: Just seeding everyone's library with a single book.
       const seedbooks = await ctx.db.query.books()
       console.log('seedbooks!!! -> ' + JSON.stringify(seedbooks))
@@ -82,7 +84,7 @@ const resolvers = {
         }
       })
 
-      console.log('created bookshelf!!!! -> ' + JSON.stringify(bookshelf, null,2))
+      console.log('bookshelf!!!! -> ' + JSON.stringify(bookshelf, null,2))
 
       return {
         token: jwt.sign({ userId: user.id }, APP_SECRET),
@@ -105,16 +107,17 @@ const resolvers = {
         throw new Error('Invalid password')
       }
 
-      const bookshelf = await ctx.db.query.bookshelf({ where: { owner: user }})
+      const bookshelves = await
+        ctx.db.query.bookshelves({ where: { owner: {id: user.id} }})
 
-      if(!bookshelf){
+      if(!bookshelves.length){
         throw new Error('No bookshelf for user')
       }
 
       return {
         token: jwt.sign({ userId: user.id }, APP_SECRET),
         user: user,
-        bookshelf: bookshelf
+        bookshelfId: bookshelves[0].id
       }
     },
   },

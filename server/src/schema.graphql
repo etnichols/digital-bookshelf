@@ -16,8 +16,20 @@ type Mutation {
   createAccount(firstName: String!, lastName: String!, email: String!, password: String!): AuthPayload!
   deletePost(id: ID!): Post
   deleteUser(id: ID!): User
-  login(email: String!, password: String!): AuthPayload!
+  login(email: String!, password: String!): LoginPayload!
   publish(id: ID!): Post
+}
+
+type AuthPayload {
+  token: String!
+  user: User!
+  bookshelf: Bookshelf!
+}
+
+type LoginPayload {
+  token: String!
+  user: User!
+  bookshelfId: ID!
 }
 
 # The `User` type is a reduced version ("mask") of the `User` type from the data model (and database schema).
