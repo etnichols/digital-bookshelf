@@ -34,14 +34,14 @@ class CreateAccountPage extends Component {
         //   })
         // }}
       >
-        {(createUser, { data, loading, error }) => {
+        {(createUserAndBookshelf, { data, loading, error }) => {
           return (
             <div className="pa4 flex justify-center bg-white">
               <form
                 onSubmit={async e => {
                   e.preventDefault()
                   const { firstName, lastName, email, password } = this.state
-                  const user = await createUser({
+                  const res = await createUserAndBookshelf({
                     variables: {
                       firstName: firstName,
                       lastName: lastName,
@@ -49,9 +49,8 @@ class CreateAccountPage extends Component {
                       password: password
                     },
                   })
-                  console.log('created user: ' + JSON.stringify(user))
-                  this.props.history.replace(`/`)
-                  // this.props.history.replace(`/bookshelf/${12345}`)
+                  console.log('Res! -> ' + JSON.stringify(res, 2, null))
+                  this.props.history.replace(`/bookshelf/${res.data.createAccount.bookshelf.id}`)
                 }}
               >
                 <h1>Create Account</h1>
@@ -103,13 +102,18 @@ class CreateAccountPage extends Component {
   }
 }
 
+// This fails when the client is connected to dev endpoint. For some reason
+// this returns only a User object is returned. So it could be something with:
+// - cache
+// - the fact that this is a createUser mutation (naming issue?)
+
 const CREATE_ACCOUNT_MUTATION = gql`
-  mutation CreateAccountMutation(
+  mutation CreateAccountMutation1(
     $firstName: String!,
     $lastName: String!,
     $email: String!,
-    $password: String!) {
-      createUser(
+    $password: String! ) {
+      createAccount(
         firstName: $firstName,
         lastName: $lastName,
         email: $email,
@@ -121,7 +125,7 @@ const CREATE_ACCOUNT_MUTATION = gql`
           bookshelf {
             id
           }
-    }
+        }
   }
 `
 

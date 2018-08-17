@@ -18,12 +18,15 @@ class BookshelfPage extends Component {
   }
 
   render() {
+    console.log(this.props.match.params.id + " and typeof id: " + typeof this.props.match.params.id)
+
     return (
       <Query
         query={BOOKSHELF_QUERY}
         variables={{ id: this.props.match.params.id }}
       >
         {({ data, loading, error, refetch }) => {
+          console.log('data: ' + JSON.stringify(data))
           if (loading) {
             return (
               <div className="flex w-100 h-100 items-center justify-center pt7">
@@ -40,20 +43,19 @@ class BookshelfPage extends Component {
             )
           }
 
+          const shelf = !data.bookshelf.books.length ? <p>{`No books :(`}</p> :
+            data.bookshelf.books.map(
+              book => ( <div>
+                          <p>{`Title: ${book.title}`}</p>
+                          <p>{`ISBN: ${book.isbn}`}</p>
+                        </div> ))
+
           return (
             <Fragment>
-              <h1>This is your bookshelf.</h1>
+              <h1>Your bookshelf</h1>
+              <p>Red</p>
+              {shelf}
               <button onClick={this.cleanup}>Logout.</button>
-              {data.feed &&
-                data.feed.map(post => (
-                  <Post
-                    key={post.id}
-                    post={post}
-                    refresh={() => refetch()}
-                    isDraft={!post.isPublished}
-                  />
-                ))}
-              {this.props.children}
             </Fragment>
           )
         }}
@@ -62,10 +64,14 @@ class BookshelfPage extends Component {
   }
 }
 
-export const BOOKSHELF_QUERY = gql`
+// Query fails on
+const BOOKSHELF_QUERY = gql`
   query BookshelfQuery($id: ID!) {
     bookshelf(id: $id) {
-      books
+      books {
+        title
+        isbn
+      }
     }
   }
 `

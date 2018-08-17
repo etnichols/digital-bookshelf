@@ -7,7 +7,8 @@ class LoginPage extends Component {
   state = {
     email: '',
     password: '',
-    failed: false
+    failed: false,
+    errorMessage: null,
   }
 
   // TODO(etnichols): real form and password validation
@@ -47,13 +48,12 @@ class LoginPage extends Component {
                       password: password
                     },
                   }).then(res => {
-                    console.log('success logging in: ' + JSON.stringify(res))
-                    console.log('ze token is: ' + res.data.login.token)
                     localStorage.setItem('token', res.data.login.token)
-                    this.props.history.replace('/bookshelf')
+                    this.props.history.replace(`/bookshelf/${res.data.login.bookshelfId}`)
                   }).catch(e => {
                     this.setState({
-                      failed: true
+                      failed: true,
+                      errorMessage: e
                     })
                     console.log('error logging in: ' + e)
                   });
@@ -82,7 +82,7 @@ class LoginPage extends Component {
                   value="Login"
                 />
               </form>
-              {this.state.failed && <p>Failed to login.</p>}
+              {this.state.failed && <p>{`Failed to login. Reason: ${this.state.errorMessage}`}</p>}
             </div>
           </div>
           )
@@ -103,6 +103,7 @@ const LOGIN_MUTATION = gql`
           user {
             email
           }
+          bookshelfId
     }
   }
 `
