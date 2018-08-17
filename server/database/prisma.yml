@@ -20,3 +20,5 @@ hooks:
 # to the `Authorization` header of HTTP requests made against the Prisma API.
 # Info: https://www.prisma.io/docs/reference/prisma-api/concepts-utee3eiquo#authentication
 # secret: mysecret123
+
+# endpoint: http://localhost:4466

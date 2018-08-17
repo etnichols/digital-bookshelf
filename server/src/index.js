@@ -23,6 +23,9 @@ const resolvers = {
     },
     bookshelf(parent, { id }, ctx, info) {
       return ctx.db.query.bookshelves({ where: { id: id } }, info)
+    },
+    bookshelves(parent, args, ctx, info) {
+      return ctx.db.query.bookshelves()
     }
   },
   Mutation: {
@@ -49,7 +52,7 @@ const resolvers = {
         info,
       )
     },
-    async createUser(parent, { firstName, lastName, email, password }, ctx, info) {
+    async createAccount(parent, { firstName, lastName, email, password }, ctx, info) {
       const hashedPassword = await bcrypt.hash(password, 10)
       const user = await ctx.db.mutation.createUser({
         data: {
@@ -62,10 +65,9 @@ const resolvers = {
 
       // TEST: Just seeding everyone's library with a single book.
       const seedbooks = await ctx.db.query.books()
-
-      console.log('!!!' + seedbooks)
-
-      // const seedConnect = seedbooks
+      console.log('seedbooks!!! -> ' + JSON.stringify(seedbooks))
+      connectBooks = []
+      seedbooks.forEach(book => connectBooks.push({ id: book.id }))
 
       const bookshelf = await ctx.db.mutation.createBookshelf({
         data: {
@@ -75,10 +77,12 @@ const resolvers = {
             }
           },
           books: {
-            connect: null
+            connect: connectBooks
           }
         }
       })
+
+      console.log('created bookshelf!!!! -> ' + JSON.stringify(bookshelf, null,2))
 
       return {
         token: jwt.sign({ userId: user.id }, APP_SECRET),
@@ -116,6 +120,9 @@ const resolvers = {
   },
 }
 
+const PRISMA = 'https://eu1.prisma.sh/public-junglepig-932/digital-bookshelf/dev'
+const LOCAL = 'http://localhost:4000'
+
 const server = new GraphQLServer({
   typeDefs: './src/schema.graphql',
   resolvers,
@@ -123,7 +130,7 @@ const server = new GraphQLServer({
     ...req,
     db: new Prisma({
       typeDefs: 'src/generated/prisma.graphql', // the auto-generated GraphQL schema of the Prisma API
-      endpoint: 'https://eu1.prisma.sh/public-junglepig-932/digital-bookshelf/dev', // the endpoint of the Prisma API
+      endpoint: PRISMA, // the endpoint of the Prisma API
       debug: true, // log all GraphQL queries & mutations sent to the Prisma API
     }),
   }),
