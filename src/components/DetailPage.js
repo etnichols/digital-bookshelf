@@ -32,7 +32,7 @@ class DetailPage extends Component {
             <Fragment>
               <h1 className="f3 black-80 fw4 lh-solid">{data.post.title}</h1>
               <p className="black-80 fw3">{data.post.text}</p>
-              {action}
+              { action }
             </Fragment>
           )
         }}
@@ -76,6 +76,8 @@ class DetailPage extends Component {
         }}
       </Mutation>
     )
+
+    
     const deleteMutation = (
       <Mutation
         mutation={DELETE_MUTATION}
@@ -116,6 +118,8 @@ class DetailPage extends Component {
         }}
       </Mutation>
     )
+
+
     if (!isPublished) {
       return (
         <Fragment>
@@ -124,6 +128,7 @@ class DetailPage extends Component {
         </Fragment>
       )
     }
+
     return deleteMutation
   }
 
@@ -150,7 +155,7 @@ const PUBLISH_MUTATION = gql`
 `
 
 const DELETE_MUTATION = gql`
-  mutation DeleteMutatoin($id: ID!) {
+  mutation DeleteMutation($id: ID!) {
     deletePost(id: $id) {
       id
     }

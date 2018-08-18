@@ -7,64 +7,60 @@ import {
   Route,
   Switch,
 } from 'react-router-dom'
-import { ApolloProvider } from 'react-apollo'
-import ApolloClient from 'apollo-boost'
 
+import { ApolloProvider } from 'react-apollo'
+import ApolloClient from 'apollo-client'
+import { ApolloLink } from 'apollo-link'
+import { setContext } from 'apollo-link-context'
+import { InMemoryCache } from 'apollo-cache-inmemory'
+import { HttpLink, createHttpLink } from 'apollo-link-http'
+
+import BookshelfPage from './components/BookshelfPage'
 import FeedPage from './components/FeedPage'
 import DraftsPage from './components/DraftsPage'
 import CreatePage from './components/CreatePage'
 import DetailPage from './components/DetailPage'
+import CreateAccountPage from './components/CreateAccountPage'
+import LoginPage from './components/LoginPage'
 
 import 'tachyons'
 import './index.css'
 
-const client = new ApolloClient({ uri: 'http://localhost:4000' })
+const LOCAL_HOST = `http://localhost:4000`
+
+const httpLink = createHttpLink({
+  uri: LOCAL_HOST
+})
+
+const authLink = setContext((_, { headers }) => {
+  // Get the authentication token from session storage if it exists.
+  const token = localStorage.getItem('token')
+  // return the headers to the context so httpLink can read them
+  return {
+    headers: {
+      ...headers,
+      Authorization: token ? `Bearer ${token}` : '',
+    }
+  }
+})
+
+const client = new ApolloClient({
+  link: authLink.concat(httpLink),
+  cache: new InMemoryCache()
+})
 
 ReactDOM.render(
   <ApolloProvider client={client}>
     <Router>
       <Fragment>
-        <nav className="pa3 pa4-ns">
-          <Link
-            className="link dim black b f6 f5-ns dib mr3"
-            to="/"
-            title="Feed"
-          >
-            Blog
-          </Link>
-          <NavLink
-            className="link dim f6 f5-ns dib mr3 black"
-            activeClassName="gray"
-            exact={true}
-            to="/"
-            title="Feed"
-          >
-            Feed
-          </NavLink>
-          <NavLink
-            className="link dim f6 f5-ns dib mr3 black"
-            activeClassName="gray"
-            exact={true}
-            to="/drafts"
-            title="Drafts"
-          >
-            Drafts
-          </NavLink>
-          <Link
-            to="/create"
-            className="f6 link dim br1 ba ph3 pv2 fr mb2 dib black"
-          >
-            + Create Draft
-          </Link>
-        </nav>
-        <div className="fl w-100 pl4 pr4">
-          <Switch>
-            <Route exact path="/" component={FeedPage} />
-            <Route path="/drafts" component={DraftsPage} />
-            <Route path="/create" component={CreatePage} />
-            <Route path="/post/:id" component={DetailPage} />
-          </Switch>
-        </div>
+        <Switch>
+          <Route exact path="/" component={LoginPage} />
+          <Route path="/bookshelf/:id" component={BookshelfPage} />
+          <Route path="/signup" component={CreateAccountPage} />
+          <Route path="/drafts" component={DraftsPage} />
+          <Route path="/create" component={CreatePage} />
+          <Route path="/post/:id" component={DetailPage} />
+        </Switch>
       </Fragment>
     </Router>
   </ApolloProvider>,

@@ -1,24 +1,14 @@
 mutation {
-  first: createPost(data: {
-    title: "Hello World 👋"
-    text: "I like turtles."
-    isPublished: true
+  first: createBook(data: {
+    isbn: "9781405538855",
+    title: "Manhattan Beach"
   }) {
     id
   }
-  
-  second: createPost(data: {
-    title: "Join us at GraphQL Europe 🇪🇺 "
-    text: "Get a 10%-discount with this promo code on graphql-europe.org: gql-boilerplates"
-    isPublished: true
-  }) {
-    id
-  }
-  
-  third: createPost(data: {
-    title: "Solving world hunger"
-    text: "This is a draft..."
-    isPublished: false
+
+  second: createBook(data: {
+    isbn: "9780586090022",
+    title: "Player Piano"
   }) {
     id
   }
