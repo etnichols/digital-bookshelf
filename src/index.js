@@ -27,7 +27,6 @@ import 'tachyons'
 import './index.css'
 
 const LOCAL_HOST = `http://localhost:4000`
-const PRISMA_DEV = `https://eu1.prisma.sh/public-junglepig-932/digital-bookshelf/dev`
 
 const httpLink = createHttpLink({
   uri: LOCAL_HOST
@@ -35,7 +34,7 @@ const httpLink = createHttpLink({
 
 const authLink = setContext((_, { headers }) => {
   // Get the authentication token from session storage if it exists.
-  const token = sessionStorage.getItem('token')
+  const token = localStorage.getItem('token')
   // return the headers to the context so httpLink can read them
   return {
     headers: {

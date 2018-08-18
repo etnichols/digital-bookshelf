@@ -21,8 +21,36 @@ const resolvers = {
     users(parent, args, ctx, info) {
       return ctx.db.query.users()
     },
-    bookshelf(parent, { id }, ctx, info) {
-      return ctx.db.query.bookshelf({ where: { id: id } }, info)
+    books(parent, args, ctx, info) {
+      return ctx.db.query.books()
+    },
+    async bookshelf(parent, { id }, ctx, info) {
+      const bookshelf = await ctx.db.query.bookshelf({ where: { id: id } }, `
+        {
+          id
+          owner {
+            id
+          }
+          books {
+            id
+            title
+            isbn
+          }
+        }
+        `)
+
+      console.log('bookshelf: ' + JSON.stringify(bookshelf))
+
+      // `getUserId` throws an error if the requesting user is not authenticated
+      const userId = getUserId(ctx)
+
+      if(bookshelf.owner.id === userId){
+        return bookshelf
+      }
+
+      throw new Error(
+       'Invalid permissions, you must be an owner or follower of a bookshelf to access it.',
+      )
     },
     bookshelves(parent, args, ctx, info) {
       return ctx.db.query.bookshelves()
@@ -54,41 +82,47 @@ const resolvers = {
     },
     async createAccount(parent, { firstName, lastName, email, password }, ctx, info) {
       const hashedPassword = await bcrypt.hash(password, 10)
-      const user = await ctx.db.mutation.createUser({
-        data: {
-          firstName: firstName,
-          lastName: lastName,
-          email: email,
-          password: hashedPassword
-        }
-      })
 
-      console.log('user! -> ' + JSON.stringify(user))
-
-      // TEST: Just seeding everyone's library with a single book.
+      // TODO: Remove this when "Add a book" functionality exists.
       const seedbooks = await ctx.db.query.books()
       console.log('seedbooks!!! -> ' + JSON.stringify(seedbooks))
       connectBooks = []
       seedbooks.forEach(book => connectBooks.push({ id: book.id }))
 
+      // THIS IS NOT actually connecting owner id and books to the bookshelf. They are null.
+      // Fix: pass in the fields to query on the returned shelf, by default it will only be scalar.
+      // So we need to explicitly tell the mutation which fields we're interested in
+      // in the "info" argument.
       const bookshelf = await ctx.db.mutation.createBookshelf({
         data: {
           owner: {
-            connect: {
-              id: user.id
+            create: {
+              firstName: firstName,
+              lastName: lastName,
+              email: email,
+              password: hashedPassword
             }
           },
           books: {
             connect: connectBooks
           }
         }
-      })
-
-      console.log('bookshelf!!!! -> ' + JSON.stringify(bookshelf, null,2))
+      }, `{
+        id
+        owner {
+          id
+          email
+        }
+        books {
+          id
+          isbn
+          title
+        }
+      }`)
 
       return {
-        token: jwt.sign({ userId: user.id }, APP_SECRET),
-        user: user,
+        token: jwt.sign({ userId: bookshelf.owner.id }, APP_SECRET),
+        user: bookshelf.owner,
         bookshelf: bookshelf
       }
     },
@@ -124,7 +158,6 @@ const resolvers = {
 }
 
 const PRISMA = 'https://eu1.prisma.sh/public-junglepig-932/digital-bookshelf/dev'
-const LOCAL = 'http://localhost:4000'
 
 const server = new GraphQLServer({
   typeDefs: './src/schema.graphql',

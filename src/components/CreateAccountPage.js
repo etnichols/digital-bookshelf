@@ -50,6 +50,7 @@ class CreateAccountPage extends Component {
                     },
                   })
                   console.log('Res! -> ' + JSON.stringify(res, 2, null))
+                  localStorage.setItem('token', res.data.createAccount.token)
                   this.props.history.replace(`/bookshelf/${res.data.createAccount.bookshelf.id}`)
                 }}
               >

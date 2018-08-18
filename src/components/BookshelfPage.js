@@ -13,7 +13,7 @@ class BookshelfPage extends Component {
 
   cleanup(){
     // Remove saved data from sessionStorage.
-    sessionStorage.clear();
+    localStorage.clear();
     this.props.history.replace('/')
   }
 
@@ -38,12 +38,12 @@ class BookshelfPage extends Component {
           if (error) {
             return (
               <div className="flex w-100 h-100 items-center justify-center pt7">
-                <div>An unexpected error occured.</div>
+                <div>{`${error}.`}</div>
               </div>
             )
           }
 
-          const shelf = !data.bookshelf.books.length ? <p>{`No books :(`}</p> :
+          const shelf = !data.bookshelf.books ? <p>{`No books :(`}</p> :
             data.bookshelf.books.map(
               book => ( <div>
                           <p>{`Title: ${book.title}`}</p>
@@ -53,7 +53,6 @@ class BookshelfPage extends Component {
           return (
             <Fragment>
               <h1>Your bookshelf</h1>
-              <p>Red</p>
               {shelf}
               <button onClick={this.cleanup}>Logout.</button>
             </Fragment>
