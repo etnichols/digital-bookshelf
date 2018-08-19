@@ -12,12 +12,14 @@
     "apollo-link-context": "^1.0.8",
     "apollo-link-error": "^1.1.0",
     "apollo-link-http": "^1.5.4",
+    "formsy-react": "^1.1.4",
     "graphql": "0.13.2",
-    "react": "16.4.2",
+    "react": "^16.4.2",
     "react-apollo": "2.1.9",
-    "react-dom": "16.4.2",
+    "react-dom": "^16.4.2",
     "react-modal": "3.5.1",
     "react-router-dom": "4.3.1",
+    "semantic-ui-react": "^0.82.2",
     "tachyons": "4.11.1"
   },
   "scripts": {
