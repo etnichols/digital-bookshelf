@@ -58,7 +58,7 @@ export default class App extends React.Component {
           <Scene key={'root'}>
             <Scene key={'entry'} component={Entry} initial={true} />
             <Scene key={'bookshelf'} path='/bookshelf/' component={Bookshelf} />
-            <Scene key={'signup'} path='/signup/' component={CreateAccount} />
+            <Scene key={'signup'} path='/signup/' title={'Create Acount'} component={CreateAccount} />
             <Scene key={'login'} path='/login/' component={Login} />
           </Scene>
         </Router>

@@ -3,7 +3,7 @@ import React from 'react';
 import  gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
 import { Scene, Router, Actions } from 'react-native-router-flux';
-import { StyleSheet, Text, View, TouchableHighlight, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, View, TouchableHighlight, AsyncStorage, ScrollView } from 'react-native';
 import t from 'tcomb-form-native';
 
 let Form = t.form.Form
@@ -32,46 +32,58 @@ class CreateAccount extends React.Component {
             lastName: '',
             email: '',
             password: ''
-          }
+          },
+          hasError: false,
+          errorMessage: ''
         }
   }
 
   onChange(value){
-    this.setState({value: value})
+    this.setState({value: value, hasError: false})
   }
 
   render(){
+    const { hasError, errorMessage } = this.state
+
     return (
       <Mutation mutation={CREATE_ACCOUNT_MUTATION} >
       { (createUserAndBookshelf, { data, loading, error }) => {
         return (
-          <View style={styles.container}>
+
+          <ScrollView style={styles.container}>
             <Form
               ref="form"
               type={User}
               value={this.state.value}
               onChange={this.onChange}
               options={options}/>
-            <TouchableHighlight onPress={async e => {
-              const formData = this.state.value
-              try {
-                const response = await createUserAndBookshelf({variables: formData})
-                console.log('res -> ' + JSON.stringify(response, 2, null))
-                const token = response.data.createAccount.token
-                if(token){
-                  await AsyncStorage.setItem('dbtoken', token)
-                  console.log('set token successfully')
-                  Actions.bookshelf({
-                    bookshelfId: response.data.createAccount.bookshelf.id
+            <TouchableHighlight
+              style={styles.button}
+              onPress={async e => {
+                const formData = this.state.value
+                try {
+                  const response = await createUserAndBookshelf({variables: formData})
+                  console.log('res -> ' + JSON.stringify(response, 2, null))
+                  const token = response.data.createAccount.token
+                  if(token){
+                    await AsyncStorage.setItem('dbtoken', token)
+                    console.log('set token successfully')
+                    Actions.bookshelf({
+                      bookshelfId: response.data.createAccount.bookshelf.id
+                    })
+                  }
+                } catch(e){
+                  console.log('Error: ' + JSON.stringify(e, null, 2))
+                  this.setState({
+                    hasError: true,
+                    errorMessage: e.message
                   })
                 }
-              } catch(e){
-                console.log('Error: ' + e)
-              }
             }}>
               <Text>Create Account</Text>
             </TouchableHighlight>
-          </View>
+            {hasError && <Text style={styles.errorText}>{errorMessage}</Text>}
+          </ScrollView>
         )
       }}
       </Mutation>
@@ -103,11 +115,24 @@ const CREATE_ACCOUNT_MUTATION = gql`
 `
 
 const styles = StyleSheet.create({
+  errorText: {
+    padding: 20,
+    color: 'red',
+    alignSelf: 'center',
+  },
   container: {
+    alignSelf: 'stretch',
+    padding: 10,
+    marginTop: 30,
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
   },
+  button: {
+    backgroundColor: '#ADD8E6',
+    padding: 10,
+    borderRadius: 4,
+    alignItems: 'center'
+  }
 });
 
 export default CreateAccount

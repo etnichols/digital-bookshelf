@@ -5,6 +5,8 @@ import  gql from 'graphql-tag'
 import { Scene, Router } from 'react-native-router-flux';
 import { StyleSheet, Text, View } from 'react-native';
 
+import Book from './Book'
+
 class Bookshelf extends React.Component {
   render(){
     console.log('bookshelfId: ' + this.props.bookshelfId)
@@ -28,10 +30,7 @@ class Bookshelf extends React.Component {
 
           const shelf = !data.bookshelf.books ? <Text>{`No books :(`}</Text> :
             data.bookshelf.books.map(
-              book => ( <View>
-                          <Text>{`Title: ${book.title}`}</Text>
-                          <Text>{`ISBN: ${book.isbn}`}</Text>
-                        </View> ))
+              book => ( <Book data={book} /> ))
           return (
             <View style={styles.container}>
               {shelf}
@@ -46,7 +45,6 @@ class Bookshelf extends React.Component {
   }
 }
 
-// Query fails on
 const BOOKSHELF_QUERY = gql`
   query BookshelfQuery($id: ID!) {
     bookshelf(id: $id) {
