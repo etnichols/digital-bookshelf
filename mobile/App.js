@@ -1,6 +1,6 @@
 import React from 'react';
 import { Router, Scene, Actions } from 'react-native-router-flux';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, AsyncStorage } from 'react-native';
 
 import { ApolloProvider } from 'react-apollo'
 import ApolloClient from 'apollo-client'
@@ -21,20 +21,32 @@ const httpLink = createHttpLink({
   uri: LOCAL_HOST
 })
 
-const authLink = setContext((_, { headers }) => {
-  // Get the authentication token from session storage if it exists.
-  const token = null // localStorage.getItem('token')
-  // return the headers to the context so httpLink can read them
-  return {
-    headers: {
-      ...headers,
-      Authorization: token ? `Bearer ${token}` : '',
+const asyncAuthLink = setContext( async (_, { headers } ) => {
+  try {
+    const token = await AsyncStorage.getItem('dbtoken')
+
+    if(headers){
+      return {
+        headers: {
+          ...headers,
+          Authorization: token ? `Bearer ${token}` : '',
+        }
+      }
+    } else {
+      return {
+        headers: {
+          Authorization: token ? `Bearer ${token}` : ''
+        }
+      }
     }
+  }
+  catch(e){
+    console.log('error fetching token from AsyncStorage: ' + e)
   }
 })
 
 const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: asyncAuthLink.concat(httpLink),
   cache: new InMemoryCache()
 })
 
@@ -45,7 +57,7 @@ export default class App extends React.Component {
         <Router sceneStyle={styles.container}>
           <Scene key={'root'}>
             <Scene key={'entry'} component={Entry} initial={true} />
-            <Scene key={'bookshelf'} path='/bookshelf/:id/' component={Bookshelf} />
+            <Scene key={'bookshelf'} path='/bookshelf/' component={Bookshelf} />
             <Scene key={'signup'} path='/signup/' component={CreateAccount} />
             <Scene key={'login'} path='/login/' component={Login} />
           </Scene>

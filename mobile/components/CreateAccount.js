@@ -2,8 +2,8 @@ import React from 'react';
 
 import  gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
-import { Scene, Router } from 'react-native-router-flux';
-import { StyleSheet, Text, View, TouchableHighlight } from 'react-native';
+import { Scene, Router, Actions } from 'react-native-router-flux';
+import { StyleSheet, Text, View, TouchableHighlight, AsyncStorage } from 'react-native';
 import t from 'tcomb-form-native';
 
 let Form = t.form.Form
@@ -37,7 +37,6 @@ class CreateAccount extends React.Component {
   }
 
   onChange(value){
-    console.log('onChange: ' + JSON.stringify(value, null, 2))
     this.setState({value: value})
   }
 
@@ -55,15 +54,20 @@ class CreateAccount extends React.Component {
               options={options}/>
             <TouchableHighlight onPress={async e => {
               const formData = this.state.value
-
-              if(formData){
-                console.log('Form data: ' + JSON.stringify(formData, null, 2))
+              try {
+                const response = await createUserAndBookshelf({variables: formData})
+                console.log('res -> ' + JSON.stringify(response, 2, null))
+                const token = response.data.createAccount.token
+                if(token){
+                  await AsyncStorage.setItem('dbtoken', token)
+                  console.log('set token successfully')
+                  Actions.bookshelf({
+                    bookshelfId: response.data.createAccount.bookshelf.id
+                  })
+                }
+              } catch(e){
+                console.log('Error: ' + e)
               }
-
-              console.log('form submitted')
-              const response = await createUserAndBookshelf({variables: formData})
-              console.log('res -> ' + JSON.stringify(response, 2, null))
-
             }}>
               <Text>Create Account</Text>
             </TouchableHighlight>
