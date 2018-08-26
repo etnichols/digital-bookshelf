@@ -21,6 +21,9 @@ const resolvers = {
     users(parent, args, ctx, info) {
       return ctx.db.query.users()
     },
+    book(parent, { isbn }, ctx, info) {
+      return ctx.db.query.book({ where: { isbn: isbn } }, info)
+    },
     books(parent, args, ctx, info) {
       return ctx.db.query.books()
     },
@@ -57,6 +60,17 @@ const resolvers = {
     }
   },
   Mutation: {
+    //TODO: Finish this function.
+    // async addBooksToShelf(parent, { books, bookshelfId }, ctx, info){
+    //   console.log('addBooksToShelf called')
+    //   // First check if books exist in DB. Save as an array of bool.
+    //
+    //   // Filter books that already exist in DB - CONNECT object
+    //
+    //   // Filter books that do not exist in DB - CREATE object
+    //
+    //   // return ctx.db.mutation.updateBookshelf()
+    // },
     createDraft(parent, { title, text }, ctx, info) {
       return ctx.db.mutation.createPost(
         {
@@ -147,6 +161,8 @@ const resolvers = {
       if(!bookshelves.length){
         throw new Error('No bookshelf for user')
       }
+
+      console.log('num bookshelf for this user: ' + bookshelves.length)
 
       return {
         token: jwt.sign({ userId: user.id }, APP_SECRET),

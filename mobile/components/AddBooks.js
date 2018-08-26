@@ -1,5 +1,3 @@
-import React from 'react';
-
 import  gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
 import { Scene, Router, Actions } from 'react-native-router-flux';
@@ -8,26 +6,21 @@ import t from 'tcomb-form-native';
 
 let Form = t.form.Form
 
-let User = t.struct({
-  email: t.String,
-  password: t.String
+let Book = t.struct({
+  title: t.String,
+  isbn: t.String
 })
 
-let options = {
-  fields: {
-    password: { secureTextEntry: true }
-  }
-}
-
-class Login extends React.Component {
+// TODO: Finish this class.
+class AddBook extends React.Component {
   constructor(props){
     super(props)
     this.onChange = this.onChange.bind(this)
 
     this.state = {
           value: {
-            email: '',
-            password: ''
+            title: '',
+            isbn: '',
           },
           hasError: false,
           errorMessage: ''
@@ -39,17 +32,17 @@ class Login extends React.Component {
   }
 
   render(){
+    const { bookshelfId } = this.props
     const { hasError, errorMessage } = this.state
 
     return (
-      <Mutation mutation={LOGIN_MUTATION} >
-      { (loginMutation, { data, loading, error }) => {
+      <Mutation mutation={ADD_BOOK_MUTATION} >
+      { (addBooksToShelf, { data, loading, error }) => {
         return (
-
           <ScrollView style={styles.container}>
             <Form
               ref="form"
-              type={User}
+              type={Book}
               value={this.state.value}
               onChange={this.onChange}
               options={options}/>
@@ -58,14 +51,10 @@ class Login extends React.Component {
               onPress={async e => {
                 const formData = this.state.value
                 try {
-                  const response = await loginMutation({variables: formData})
-                  console.log('res -> ' + JSON.stringify(response, 2, null))
-                  const token = response.data.login.token
-                  if(token){
-                    await AsyncStorage.setItem('dbtoken', token)
-                    console.log('set token successfully')
+                  const response = await addBooksToShelf({variables: formData})
+                  if(response){
                     Actions.bookshelf({
-                      bookshelfId: response.data.login.bookshelfId
+                      bookshelfId: bookshelfId
                     })
                   }
                 } catch(e){
@@ -76,7 +65,7 @@ class Login extends React.Component {
                   })
                 }
             }}>
-              <Text>Login</Text>
+              <Text>Add Book to Shelf</Text>
             </TouchableHighlight>
             {hasError && <Text style={styles.errorText}>{errorMessage}</Text>}
           </ScrollView>
@@ -88,21 +77,19 @@ class Login extends React.Component {
   }
 }
 
-const LOGIN_MUTATION = gql`
-  mutation LoginMutation(
-    $email: String!,
-    $password: String! ) {
-      login(
-        email: $email,
-        password: $password ) {
-          token
-          user {
-            id
+const CREATE_BOOK_MUTATION = gql`
+  mutation AddBookToShelfMutation(
+    $title: String!,
+    $isbn: String! ) {
+      addBooksToShelf(
+        title: $title,
+        isbn: $isbn ) {
+          books {
+            title
+            isbn
           }
-          bookshelfId
         }
-  }
-`
+      }`
 
 const styles = StyleSheet.create({
   errorText: {
@@ -112,7 +99,8 @@ const styles = StyleSheet.create({
   },
   container: {
     alignSelf: 'stretch',
-    padding: 20,
+    padding: 10,
+    marginTop: 30,
     flex: 1,
     backgroundColor: '#fff',
   },
@@ -124,4 +112,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Login
+export default CreateAccount

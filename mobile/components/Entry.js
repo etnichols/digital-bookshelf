@@ -7,6 +7,7 @@ class Entry extends React.Component {
     return (
       <View style={styles.container}>
         <Text>Digital Bookshelf</Text>
+        <Text>Test Text</Text>
         <Button title="Go to Login" onPress={() => Actions.login()} />
         <Text>Or</Text>
         <Button title="Create an Account" onPress={() => Actions.signup()} />

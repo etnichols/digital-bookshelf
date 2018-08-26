@@ -2,8 +2,8 @@ import React from 'react';
 
 import { Query } from 'react-apollo';
 import  gql from 'graphql-tag'
-import { Scene, Router } from 'react-native-router-flux';
-import { StyleSheet, Text, View } from 'react-native';
+import { Actions, Scene, Router } from 'react-native-router-flux';
+import { StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 
 import Book from './Book'
 
@@ -34,6 +34,9 @@ class Bookshelf extends React.Component {
           return (
             <View style={styles.container}>
               {shelf}
+              <TouchableHighlight onPress={ () => { Actions.entry() } }>
+                <Text>{'Logout (not really logout)'}</Text>
+              </TouchableHighlight>
             </View>
           )
         }

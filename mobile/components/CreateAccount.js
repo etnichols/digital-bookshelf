@@ -122,8 +122,7 @@ const styles = StyleSheet.create({
   },
   container: {
     alignSelf: 'stretch',
-    padding: 10,
-    marginTop: 30,
+    padding: 20,
     flex: 1,
     backgroundColor: '#fff',
   },
