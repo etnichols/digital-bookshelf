@@ -33,6 +33,14 @@
     "react-apollo": "^2.1.11",
     "react-native": "~0.55.2",
     "react-native-router-flux": "^4.0.1",
-    "tcomb-form-native": "^0.6.15"
+    "react-navigation": "^2.14.2",
+    "tcomb-form-native": "^0.6.15",
+    "typeface-oxygen": "^0.0.54",
+    "typeface-oxygen-mono": "^0.0.54"
+  },
+  "rnpm": {
+    "assets": [
+      "./assets/fonts/"
+    ]
   }
 }
