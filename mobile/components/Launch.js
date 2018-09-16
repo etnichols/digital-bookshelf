@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, TouchableHighlight } from 'react-native';
 import commonstyles from './commonstyles'
 
-class LaunchScreen extends React.Component {
+class Launch extends React.Component {
 
   render(){
     return (
@@ -28,14 +28,4 @@ class LaunchScreen extends React.Component {
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    fontFamily: 'Oxygen-Regular'
-  },
-});
-
-export default LaunchScreen
+export default Launch

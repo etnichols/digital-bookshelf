@@ -6,6 +6,8 @@ import { Scene, Router, Actions } from 'react-native-router-flux';
 import { StyleSheet, Text, View, TouchableHighlight, AsyncStorage, ScrollView } from 'react-native';
 import t from 'tcomb-form-native';
 
+import commonstyles from './commonstyles';
+
 let Form = t.form.Form
 
 let User = t.struct({
@@ -39,14 +41,16 @@ class Login extends React.Component {
   }
 
   render(){
+
+    console.log('Login component; ' +JSON.stringify(this.props))
+
     const { hasError, errorMessage } = this.state
 
     return (
       <Mutation mutation={LOGIN_MUTATION} >
       { (loginMutation, { data, loading, error }) => {
         return (
-
-          <ScrollView style={styles.container}>
+          <ScrollView contentContainerStyle={commonstyles.formContainer}>
             <Form
               ref="form"
               type={User}
@@ -54,7 +58,7 @@ class Login extends React.Component {
               onChange={this.onChange}
               options={options}/>
             <TouchableHighlight
-              style={styles.button}
+              style={commonstyles.button}
               onPress={async e => {
                 const formData = this.state.value
                 try {
@@ -76,7 +80,7 @@ class Login extends React.Component {
                   })
                 }
             }}>
-              <Text>Login</Text>
+              <Text style={commonstyles.buttonText}>Login</Text>
             </TouchableHighlight>
             {hasError && <Text style={styles.errorText}>{errorMessage}</Text>}
           </ScrollView>
@@ -103,25 +107,5 @@ const LOGIN_MUTATION = gql`
         }
   }
 `
-
-const styles = StyleSheet.create({
-  errorText: {
-    padding: 20,
-    color: 'red',
-    alignSelf: 'center',
-  },
-  container: {
-    alignSelf: 'stretch',
-    padding: 20,
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  button: {
-    backgroundColor: '#ADD8E6',
-    padding: 10,
-    borderRadius: 4,
-    alignItems: 'center'
-  }
-});
 
 export default Login

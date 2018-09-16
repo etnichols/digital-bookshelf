@@ -7,6 +7,12 @@ const commonstyles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'space-between',
     },
+    formContainer: {
+      backgroundColor: '#fff',
+      flex: 1,
+      alignItems: 'stretch',
+      padding: 20,
+    },
     button: {
       borderRadius: 30,
       backgroundColor: '#008B8B',
@@ -15,20 +21,26 @@ const commonstyles = StyleSheet.create({
       margin: 5,
     },
     buttonText: {
-      fontFamily: 'Oxygen-Regular',
+      // fontFamily: 'Oxygen-Regular',
       color: '#fff',
       fontSize: 18,
+      alignSelf: 'center',
     },
     header: {
       paddingTop: 40,
-      fontFamily: 'OxygenMono-Regular',
+      // fontFamily: 'OxygenMono-Regular',
       fontSize: 32,
     },
     loginContainer: {
       alignItems: 'center',
       justifyContent: 'center',
       paddingBottom: 100,
-    }
+    },
+    errorText: {
+      padding: 20,
+      color: 'red',
+      alignSelf: 'center',
+    },
 });
 
 export default commonstyles;

@@ -12,12 +12,10 @@ import { HttpLink, createHttpLink } from 'apollo-link-http'
 
 import Bookshelf from './components/Bookshelf'
 import CreateAccount from './components/CreateAccount'
-import LaunchScreen from './components/LaunchScreen'
+import Launch from './components/Launch'
 import Login from './components/Login'
 import Profile from './components/Profile'
-
-// import 'typeface-oxygen'
-// import 'typeface-oxygen-mono'
+// import ApolloWrapper from './ApolloWrapper'
 
 // https://www.prisma.io/forum/t/using-apollo-boost-in-react-native-with-prisma-graphql-api/2961
 const LOCAL_HOST = `http://192.168.0.8:4000`
@@ -50,26 +48,46 @@ const asyncAuthLink = setContext( async (_, { headers } ) => {
   }
 })
 
-const client = new ApolloClient({
-  link: asyncAuthLink.concat(httpLink),
-  cache: new InMemoryCache()
-})
+
+const getApolloClient = () => {
+  const client = new ApolloClient({
+    link: asyncAuthLink.concat(httpLink),
+    cache: new InMemoryCache()
+  })
+  return client
+}
 
 const RootStack = createStackNavigator({
-  Launch: LaunchScreen,
-  Login: Login,
-  CreateAccount: CreateAccount,
-  Profile: Profile
-},{})
+  Bookshelf: {
+    screen: Bookshelf
+  },
+  Launch: {
+    screen: Launch
+   },
+  Login: {
+    screen: Login
+   },
+  CreateAccount: {
+    screen: CreateAccount
+   },
+  Profile: {
+    screen: Profile
+   }
+},{
+  initialRouteName: 'Launch',
+})
 
 export default class App extends React.Component {
-
   constructor() {
     super()
     this.state =
     {
       fontLoaded: false,
     }
+
+    this.client = getApolloClient()
+
+    console.log('got client! ' + JSON.stringify(this.client))
   }
 
   async componentWillMount() {
@@ -85,17 +103,14 @@ export default class App extends React.Component {
       })
     }
 
+    // { this.state.fontLoaded ? ( <RootStack {...this.props}/> ) : ( <Text>Loading</Text> ) }
+
+
   render() {
-    if(this.state.fontLoaded){
       return (
-      <ApolloProvider client={client}>
+      <ApolloProvider client={this.client}>
         <RootStack />
-      </ApolloProvider> )
-    } else
-    {
-      return(
-        <View>Loading</View>
-      )
+        </ApolloProvider>
+       )
     }
-  }
 }
