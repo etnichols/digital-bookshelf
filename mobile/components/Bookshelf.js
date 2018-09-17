@@ -3,10 +3,19 @@ import React from 'react';
 import { Query } from 'react-apollo';
 import { AsyncStorage, StyleSheet, Text, TouchableHighlight, ScrollView } from 'react-native';
 
+import AddBooksModal from './AddBooksModal'
 import Book from './Book'
 import commonstyles from './commonstyles'
 
 class Bookshelf extends React.Component {
+  constructor(){
+    super()
+    this.state = {
+      modalVisible: false
+    }
+  }
+
+
   static navigationOptions = {
       title: 'Your Bookshelf',
       headerLeft: null
@@ -31,6 +40,24 @@ class Bookshelf extends React.Component {
           return (
             <ScrollView contentContainerstyle={commonstyles.container}>
               { shelf }
+
+              <AddBooksModal modalVisible={this.state.modalVisible} />
+
+              <TouchableHighlight
+                onPress={ () => {
+                  console.log('mod vis')
+                  this.setState({
+                    modalVisible: true
+                  })
+                  // this.props.navigation.navigate('AddBooksModal')
+                }}
+                style={commonstyles.button}
+              >
+                <Text style={commonstyles.buttonText}>
+                  {'Add Books'}
+                </Text>
+              </TouchableHighlight>
+
               <TouchableHighlight
                 onPress={ async () => {
                   await AsyncStorage.removeItem('dbtoken', () => {

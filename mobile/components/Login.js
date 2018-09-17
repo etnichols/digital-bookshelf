@@ -66,11 +66,9 @@ class Login extends React.Component {
                 console.log('formData: ' + JSON.stringify(formData, null, 2))
                 try {
                   const response = await loginMutation({variables: formData})
-                  console.log('res -> ' + JSON.stringify(response, 2, null))
                   const token = response.data.login.token
                   if(token){
                     await AsyncStorage.setItem('dbtoken', token)
-                    console.log('set token successfully' + token)
                     this.props.navigation.navigate('Bookshelf', {
                       bookshelfId: response.data.login.bookshelfId
                     })

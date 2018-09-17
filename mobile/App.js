@@ -10,16 +10,14 @@ import { setContext } from 'apollo-link-context'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { HttpLink, createHttpLink } from 'apollo-link-http'
 
+import AddBooksModal from './components/AddBooksModal'
 import Bookshelf from './components/Bookshelf'
 import CreateAccount from './components/CreateAccount'
 import Launch from './components/Launch'
 import Login from './components/Login'
 import Profile from './components/Profile'
-// import ApolloWrapper from './ApolloWrapper'
 
-// https://www.prisma.io/forum/t/using-apollo-boost-in-react-native-with-prisma-graphql-api/2961
 // const LOCAL_HOST = `http://192.168.0.8:4000`
-
 const LOCAL_HOST = `http://localhost:4000`
 
 const httpLink = createHttpLink({
@@ -59,7 +57,7 @@ const getApolloClient = () => {
   return client
 }
 
-const RootStack = createStackNavigator({
+const MainStack = createStackNavigator({
   Bookshelf: {
     screen: Bookshelf
   },
@@ -78,6 +76,7 @@ const RootStack = createStackNavigator({
 },{
   initialRouteName: 'Launch',
   headerMode: 'screen',
+  mode: 'modal',
   navigationOptions: {
     headerStyle: {
       backgroundColor: '#008B8B',
@@ -87,6 +86,20 @@ const RootStack = createStackNavigator({
       fontWeight: 'bold',
     }
   },
+})
+
+const RootStack = createStackNavigator(
+  {
+    Main: {
+      screen: MainStack,
+    },
+    AddBooksModal: {
+      screen: AddBooksModal,
+    }
+  },
+  {
+    headerMode: 'none',
+    mode: 'modal',
 })
 
 export default class App extends React.Component {
