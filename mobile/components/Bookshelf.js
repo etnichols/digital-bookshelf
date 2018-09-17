@@ -15,7 +15,6 @@ class Bookshelf extends React.Component {
     }
   }
 
-
   static navigationOptions = {
       title: 'Your Bookshelf',
       headerLeft: null
@@ -45,11 +44,9 @@ class Bookshelf extends React.Component {
 
               <TouchableHighlight
                 onPress={ () => {
-                  console.log('mod vis')
                   this.setState({
                     modalVisible: true
                   })
-                  // this.props.navigation.navigate('AddBooksModal')
                 }}
                 style={commonstyles.button}
               >

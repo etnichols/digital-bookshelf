@@ -5,26 +5,28 @@ class Book extends React.Component {
   render(){
     return (
       <View style={styles.book}>
-        <Text>{`Title: ${this.props.data.title}`}</Text>
-        <Text>{`ISBN: ${this.props.data.isbn}`}</Text>
+        <Text style={styles.bookTitle}>{`Title: ${this.props.data.title}`}</Text>
+        <Text stlye={styles.bookInfo}>{`ISBN: ${this.props.data.isbn}`}</Text>
       </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  header: {
-    padding: 10,
-    fontFamily: 'OxygenMono-Regular',
+  bookTitle: {
+    fontFamily: 'Oxygen-Regular',
+    color: '#008B8B',
     fontSize: 18,
+    paddingBottom: 5,
+  },
+  bookInfo: {
+    fontFamily: 'Oxygen-Regular',
   },
   book: {
     height: 80,
-    width: 300,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 10,
+    alignItems: 'stretch',
+    padding: 20,
     marginHorizontal: 40,
     marginVertical: 20,
   }

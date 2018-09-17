@@ -34,6 +34,20 @@ const commonstyles = StyleSheet.create({
       alignItems: 'stretch',
       padding: 20,
     },
+    cancelButton: {
+      borderRadius: 30,
+      borderColor: '#008B8B',
+      borderWidth: 2,
+      paddingHorizontal: 60,
+      paddingVertical: 12,
+      margin: 10,
+    },
+    cancelButtonText: {
+      fontFamily: OXYGEN_REGULAR,
+      color: '#008B8B',
+      fontSize: 18,
+      alignSelf: 'center',
+    },
     button: {
       borderRadius: 30,
       backgroundColor: '#008B8B',

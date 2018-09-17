@@ -1,3 +1,2 @@
-Digital Bookshelf
-
-Like Goodreads but more fun to look at 
+# Digital Bookshelf.
+Goodreads Clone using Prisma and React Native.

@@ -60,8 +60,6 @@ class AddBooksModal extends React.Component {
               animationType="slide"
               transparent={true}
               visible={this.state.modalVisible}
-              onRequestClose={() => {
-              }}
             >
             <ScrollView contentContainerStyle={commonstyles.modalContainer}>
             <Text style={commonstyles.modalTitle}>
@@ -98,13 +96,13 @@ class AddBooksModal extends React.Component {
                 <Text style={commonstyles.buttonText}>Add Book to Shelf</Text>
               </TouchableHighlight>
               <TouchableHighlight
-                style={commonstyles.button}
+                style={commonstyles.cancelButton}
                 onPress={() => {
                   this.setState({
                     modalVisible: false
                 })
               }}>
-                <Text style={commonstyles.buttonText}>Cancel</Text>
+                <Text style={commonstyles.cancelButtonText}>Cancel</Text>
               </TouchableHighlight>
               {hasError && <Text style={commonstyles.errorText}>{errorMessage}</Text>}
               </ScrollView>
