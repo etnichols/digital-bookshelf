@@ -16,19 +16,19 @@ const commonstyles = StyleSheet.create({
     button: {
       borderRadius: 30,
       backgroundColor: '#008B8B',
-      paddingHorizontal: 30,
-      paddingVertical: 10,
-      margin: 5,
+      paddingHorizontal: 60,
+      paddingVertical: 12,
+      margin: 10,
     },
     buttonText: {
-      // fontFamily: 'Oxygen-Regular',
+      fontFamily: 'Oxygen-Regular',
       color: '#fff',
       fontSize: 18,
       alignSelf: 'center',
     },
     header: {
-      paddingTop: 40,
-      // fontFamily: 'OxygenMono-Regular',
+      paddingTop: 120,
+      fontFamily: 'OxygenMono-Regular',
       fontSize: 32,
     },
     loginContainer: {

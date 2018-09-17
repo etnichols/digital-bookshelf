@@ -24,6 +24,11 @@ let options = {
 }
 
 class CreateAccount extends React.Component {
+
+  static navigationOptions = {
+      title: 'Create Account'
+    };
+
   constructor(props){
     super(props)
     this.onChange = this.onChange.bind(this)
@@ -45,7 +50,6 @@ class CreateAccount extends React.Component {
   }
 
   render(){
-    console.log("create account form render")
     const { hasError, errorMessage } = this.state
 
     return (
@@ -62,25 +66,15 @@ class CreateAccount extends React.Component {
             <TouchableHighlight
               style={commonstyles.button}
               onPress={async e => {
-
-                this.props.navigation.navigate('Bookshelf', {
-                  bookshelfId: 1
-                }
-                )
-
-                console.log("submit button")
                 const formData = this.state.value
                 try {
                   const response = await createUserAndBookshelf({variables: formData})
-                  console.log('res -> ' + JSON.stringify(response, 2, null))
                   const token = response.data.createAccount.token
                   if(token){
                     await AsyncStorage.setItem('dbtoken', token)
-                    console.log('set token successfully')
-                  //   this.props.navigation.navigate('Bookshelf', {
-                  //     bookshelfId: response.data.createAccount.bookshelf.id
-                  //   }
-                  // )
+                    this.props.navigation.navigate('Bookshelf', {
+                      bookshelfId: response.data.createAccount.bookshelf.id
+                    })
                 }
                 } catch(e){
                   console.log('Error: ' + JSON.stringify(e, null, 2))

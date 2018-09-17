@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom'
 import { Mutation } from 'react-apollo'
 import  { gql } from 'apollo-boost'
 
@@ -22,6 +21,9 @@ class LoginPage extends Component {
   }
 
   render() {
+    console.log("This props: " + JSON.stringify(this.props))
+
+
     return (
       <Mutation
         mutation={LOGIN_MUTATION}
@@ -34,6 +36,8 @@ class LoginPage extends Component {
         // }}
       >
         {(login, { data, loading, error }) => {
+
+
           return (
             <div>
             <h1>Digital Bookshelf.</h1>
@@ -49,7 +53,10 @@ class LoginPage extends Component {
                     },
                   }).then(res => {
                     localStorage.setItem('token', res.data.login.token)
-                    this.props.history.replace(`/bookshelf/${res.data.login.bookshelfId}`)
+                    this.props.navigation.navigate('Bookshelf',
+                      {
+                        bookshelfId: res.data.login.bookshelfId
+                      });
                   }).catch(e => {
                     this.setState({
                       failed: true,
@@ -108,4 +115,4 @@ const LOGIN_MUTATION = gql`
   }
 `
 
-export default withRouter(LoginPage)
+export default LoginPage

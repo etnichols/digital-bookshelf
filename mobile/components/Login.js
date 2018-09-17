@@ -2,7 +2,6 @@ import React from 'react';
 
 import  gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
-import { Scene, Router, Actions } from 'react-native-router-flux';
 import { StyleSheet, Text, View, TouchableHighlight, AsyncStorage, ScrollView } from 'react-native';
 import t from 'tcomb-form-native';
 
@@ -17,11 +16,17 @@ let User = t.struct({
 
 let options = {
   fields: {
+    email: { autoCapitalize: 'none' },
     password: { secureTextEntry: true }
   }
 }
 
 class Login extends React.Component {
+
+  static navigationOptions = {
+      title: 'Login'
+    };
+
   constructor(props){
     super(props)
     this.onChange = this.onChange.bind(this)
@@ -41,13 +46,10 @@ class Login extends React.Component {
   }
 
   render(){
-
-    console.log('Login component; ' +JSON.stringify(this.props))
-
     const { hasError, errorMessage } = this.state
 
     return (
-      <Mutation mutation={LOGIN_MUTATION} >
+      <Mutation mutation={LOGIN_MUTATION}>
       { (loginMutation, { data, loading, error }) => {
         return (
           <ScrollView contentContainerStyle={commonstyles.formContainer}>
@@ -61,14 +63,15 @@ class Login extends React.Component {
               style={commonstyles.button}
               onPress={async e => {
                 const formData = this.state.value
+                console.log('formData: ' + JSON.stringify(formData, null, 2))
                 try {
                   const response = await loginMutation({variables: formData})
                   console.log('res -> ' + JSON.stringify(response, 2, null))
                   const token = response.data.login.token
                   if(token){
                     await AsyncStorage.setItem('dbtoken', token)
-                    console.log('set token successfully')
-                    Actions.bookshelf({
+                    console.log('set token successfully' + token)
+                    this.props.navigation.navigate('Bookshelf', {
                       bookshelfId: response.data.login.bookshelfId
                     })
                   }
@@ -82,12 +85,11 @@ class Login extends React.Component {
             }}>
               <Text style={commonstyles.buttonText}>Login</Text>
             </TouchableHighlight>
-            {hasError && <Text style={styles.errorText}>{errorMessage}</Text>}
+            {hasError && <Text style={commonstyles.errorText}>{errorMessage}</Text>}
           </ScrollView>
         )
       }}
       </Mutation>
-
     )
   }
 }

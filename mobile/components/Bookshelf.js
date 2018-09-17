@@ -1,50 +1,55 @@
-import React from 'react';
-
-import { Query } from 'react-apollo';
 import  gql from 'graphql-tag'
-import { Actions, Scene, Router } from 'react-native-router-flux';
-import { StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import React from 'react';
+import { Query } from 'react-apollo';
+import { AsyncStorage, StyleSheet, Text, TouchableHighlight, ScrollView } from 'react-native';
 
 import Book from './Book'
+import commonstyles from './commonstyles'
 
 class Bookshelf extends React.Component {
+  static navigationOptions = {
+      title: 'Your Bookshelf',
+      headerLeft: null
+    }
+
   render(){
-    console.log('bookshelfId: ' + this.props.bookshelfId)
+    const bookshelfId = this.props.navigation.getParam('bookshelfId', 1);
     return (
-      <Query query={BOOKSHELF_QUERY} variables={{id: this.props.bookshelfId}}>
+      <Query query={BOOKSHELF_QUERY} variables={{id: bookshelfId}}>
         {
           ( { data, loading, error, refetch } ) => {
-          if(loading){
-            return (
-              <Text>Loading...</Text>
-            )
-          }
 
-          if(error){
-            return(
-              <Text>{`${error}`}</Text>
-            )
-          }
+          if(loading){ return ( <Text>Loading...</Text> ) }
 
-          console.log('Bookshelf Query data: ' + JSON.stringify(data, null, 2))
+          if(error){ return( <Text>{`${error}`}</Text> ) }
 
           const shelf = !data.bookshelf.books ? <Text>{`No books :(`}</Text> :
             data.bookshelf.books.map(
-              book => ( <Book data={book} /> ))
+              (book, i) =>
+                ( <Book key={i} data={book} /> ) )
+
           return (
-            <View style={styles.container}>
-              {shelf}
-              <TouchableHighlight onPress={ () => { Actions.entry() } }>
-                <Text>{'Logout (not really logout)'}</Text>
+            <ScrollView contentContainerstyle={commonstyles.container}>
+              { shelf }
+              <TouchableHighlight
+                onPress={ async () => {
+                  await AsyncStorage.removeItem('dbtoken', () => {
+                    console.log('logout - removed token')
+                  })
+                  this.props.navigation.navigate('Launch')
+                }}
+                style={commonstyles.button}
+              >
+                <Text style={commonstyles.buttonText}>
+                  {'Logout'}
+                </Text>
               </TouchableHighlight>
-            </View>
+            </ScrollView>
           )
         }
       }
       </Query>
-
     )
-
   }
 }
 
@@ -58,14 +63,5 @@ const BOOKSHELF_QUERY = gql`
     }
   }
 `
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
 
 export default Bookshelf

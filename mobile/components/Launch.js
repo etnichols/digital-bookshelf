@@ -4,6 +4,10 @@ import commonstyles from './commonstyles'
 
 class Launch extends React.Component {
 
+  static navigationOptions = {
+      header: null
+    }
+
   render(){
     return (
       <View style={commonstyles.container}>

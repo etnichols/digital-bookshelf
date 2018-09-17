@@ -1,9 +1,9 @@
 import { Font } from 'expo';
 import React from 'react';
 import { createStackNavigator } from 'react-navigation'
-import { StyleSheet, Text, View, AsyncStorage } from 'react-native';
+import { AppRegistry, StyleSheet, Text, View, AsyncStorage } from 'react-native';
 
-import { ApolloProvider } from 'react-apollo'
+import { ApolloProvider, withApollo } from 'react-apollo'
 import ApolloClient from 'apollo-client'
 import { ApolloLink } from 'apollo-link'
 import { setContext } from 'apollo-link-context'
@@ -18,7 +18,9 @@ import Profile from './components/Profile'
 // import ApolloWrapper from './ApolloWrapper'
 
 // https://www.prisma.io/forum/t/using-apollo-boost-in-react-native-with-prisma-graphql-api/2961
-const LOCAL_HOST = `http://192.168.0.8:4000`
+// const LOCAL_HOST = `http://192.168.0.8:4000`
+
+const LOCAL_HOST = `http://localhost:4000`
 
 const httpLink = createHttpLink({
   uri: LOCAL_HOST
@@ -75,22 +77,28 @@ const RootStack = createStackNavigator({
    }
 },{
   initialRouteName: 'Launch',
+  headerMode: 'screen',
+  navigationOptions: {
+    headerStyle: {
+      backgroundColor: '#008B8B',
+    },
+    headerTintColor: '#fff',
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    }
+  },
 })
 
 export default class App extends React.Component {
   constructor() {
     super()
-    this.state =
-    {
+    this.state = {
       fontLoaded: false,
     }
-
     this.client = getApolloClient()
-
-    console.log('got client! ' + JSON.stringify(this.client))
   }
 
-  async componentWillMount() {
+ async componentWillMount() {
     await Font.loadAsync({
         'Oxygen-Bold': require('./assets/fonts/Oxygen-Bold.ttf'),
         'Oxygen-Light': require('./assets/fonts/Oxygen-Light.ttf'),
@@ -103,14 +111,15 @@ export default class App extends React.Component {
       })
     }
 
-    // { this.state.fontLoaded ? ( <RootStack {...this.props}/> ) : ( <Text>Loading</Text> ) }
-
-
   render() {
       return (
-      <ApolloProvider client={this.client}>
-        <RootStack />
+        <ApolloProvider client={this.client}>
+          { this.state.fontLoaded ?
+            ( <RootStack /> ) : ( <Text>Loading</Text> )
+          }
         </ApolloProvider>
        )
     }
 }
+
+AppRegistry.registerComponent('App', () => App);
