@@ -13,12 +13,21 @@ class Book extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  book: {
+  header: {
     padding: 10,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 2,
-    borderWidth: 1,
+    fontFamily: 'OxygenMono-Regular',
+    fontSize: 18,
   },
+  book: {
+    height: 80,
+    width: 300,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
+    marginHorizontal: 40,
+    marginVertical: 20,
+  }
 });
 
 export default Book

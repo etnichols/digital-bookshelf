@@ -6,6 +6,8 @@ import { Scene, Router, Actions } from 'react-native-router-flux';
 import { StyleSheet, Text, View, TouchableHighlight, AsyncStorage, ScrollView } from 'react-native';
 import t from 'tcomb-form-native';
 
+import commonstyles from './commonstyles'
+
 let Form = t.form.Form
 
 let User = t.struct({
@@ -22,6 +24,11 @@ let options = {
 }
 
 class CreateAccount extends React.Component {
+
+  static navigationOptions = {
+      title: 'Create Account'
+    };
+
   constructor(props){
     super(props)
     this.onChange = this.onChange.bind(this)
@@ -49,8 +56,7 @@ class CreateAccount extends React.Component {
       <Mutation mutation={CREATE_ACCOUNT_MUTATION} >
       { (createUserAndBookshelf, { data, loading, error }) => {
         return (
-
-          <ScrollView style={styles.container}>
+          <ScrollView contentContainerStyle={commonstyles.formContainer}>
             <Form
               ref="form"
               type={User}
@@ -58,20 +64,18 @@ class CreateAccount extends React.Component {
               onChange={this.onChange}
               options={options}/>
             <TouchableHighlight
-              style={styles.button}
+              style={commonstyles.button}
               onPress={async e => {
                 const formData = this.state.value
                 try {
                   const response = await createUserAndBookshelf({variables: formData})
-                  console.log('res -> ' + JSON.stringify(response, 2, null))
                   const token = response.data.createAccount.token
                   if(token){
                     await AsyncStorage.setItem('dbtoken', token)
-                    console.log('set token successfully')
-                    Actions.bookshelf({
+                    this.props.navigation.navigate('Bookshelf', {
                       bookshelfId: response.data.createAccount.bookshelf.id
                     })
-                  }
+                }
                 } catch(e){
                   console.log('Error: ' + JSON.stringify(e, null, 2))
                   this.setState({
@@ -80,14 +84,13 @@ class CreateAccount extends React.Component {
                   })
                 }
             }}>
-              <Text>Create Account</Text>
+              <Text style={commonstyles.buttonText}>Create Account</Text>
             </TouchableHighlight>
-            {hasError && <Text style={styles.errorText}>{errorMessage}</Text>}
+            {hasError && <Text style={commonstyles.errorText}>{errorMessage}</Text>}
           </ScrollView>
         )
       }}
       </Mutation>
-
     )
   }
 }
@@ -113,25 +116,5 @@ const CREATE_ACCOUNT_MUTATION = gql`
         }
   }
 `
-
-const styles = StyleSheet.create({
-  errorText: {
-    padding: 20,
-    color: 'red',
-    alignSelf: 'center',
-  },
-  container: {
-    alignSelf: 'stretch',
-    padding: 20,
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  button: {
-    backgroundColor: '#ADD8E6',
-    padding: 10,
-    borderRadius: 4,
-    alignItems: 'center'
-  }
-});
 
 export default CreateAccount

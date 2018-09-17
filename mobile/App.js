@@ -1,8 +1,9 @@
+import { Font } from 'expo';
 import React from 'react';
-import { Actions, Drawer, Lightbox, Modal, Overlay, Router, Scene, Stack  } from 'react-native-router-flux';
-import { StyleSheet, Text, View, AsyncStorage } from 'react-native';
+import { createStackNavigator } from 'react-navigation'
+import { AppRegistry, StyleSheet, Text, View, AsyncStorage } from 'react-native';
 
-import { ApolloProvider } from 'react-apollo'
+import { ApolloProvider, withApollo } from 'react-apollo'
 import ApolloClient from 'apollo-client'
 import { ApolloLink } from 'apollo-link'
 import { setContext } from 'apollo-link-context'
@@ -11,13 +12,15 @@ import { HttpLink, createHttpLink } from 'apollo-link-http'
 
 import Bookshelf from './components/Bookshelf'
 import CreateAccount from './components/CreateAccount'
-import Entry from './components/Entry'
+import Launch from './components/Launch'
 import Login from './components/Login'
 import Profile from './components/Profile'
-import DrawerContent from './components/DrawerContent'
+// import ApolloWrapper from './ApolloWrapper'
 
 // https://www.prisma.io/forum/t/using-apollo-boost-in-react-native-with-prisma-graphql-api/2961
-const LOCAL_HOST = `http://192.168.0.8:4000`
+// const LOCAL_HOST = `http://192.168.0.8:4000`
+
+const LOCAL_HOST = `http://localhost:4000`
 
 const httpLink = createHttpLink({
   uri: LOCAL_HOST
@@ -47,52 +50,76 @@ const asyncAuthLink = setContext( async (_, { headers } ) => {
   }
 })
 
-const client = new ApolloClient({
-  link: asyncAuthLink.concat(httpLink),
-  cache: new InMemoryCache()
+
+const getApolloClient = () => {
+  const client = new ApolloClient({
+    link: asyncAuthLink.concat(httpLink),
+    cache: new InMemoryCache()
+  })
+  return client
+}
+
+const RootStack = createStackNavigator({
+  Bookshelf: {
+    screen: Bookshelf
+  },
+  Launch: {
+    screen: Launch
+   },
+  Login: {
+    screen: Login
+   },
+  CreateAccount: {
+    screen: CreateAccount
+   },
+  Profile: {
+    screen: Profile
+   }
+},{
+  initialRouteName: 'Launch',
+  headerMode: 'screen',
+  navigationOptions: {
+    headerStyle: {
+      backgroundColor: '#008B8B',
+    },
+    headerTintColor: '#fff',
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    }
+  },
 })
 
 export default class App extends React.Component {
-  render() {
-    return (
-      <ApolloProvider client={client}>
-        <Router sceneStyle={styles.container}>
-          <Modal>
-            <Scene hideNavBar key={'root'}>
-              <Scene
-                key='entry'
-                title='Entry Page'
-                component={Entry}
-                initial={true}
-              />
-              <Scene
-                title='Your Bookshelf'
-                key='bookshelf'
-                path='/bookshelf/'
-                component={Bookshelf}
-              />
-            </Scene>
-            <Scene
-              key='signup'
-              path='/signup/'
-              title='Create Account'
-              backTitle='Cancel'
-              component={CreateAccount}
-            />
-            <Scene
-              key='login'
-              path='/login/'
-              title='Login'
-              backTitle='Cancel'
-              component={Login} />
-          </Modal>
-        </Router>
-      </ApolloProvider> );
+  constructor() {
+    super()
+    this.state = {
+      fontLoaded: false,
+    }
+    this.client = getApolloClient()
   }
+
+ async componentWillMount() {
+    await Font.loadAsync({
+        'Oxygen-Bold': require('./assets/fonts/Oxygen-Bold.ttf'),
+        'Oxygen-Light': require('./assets/fonts/Oxygen-Light.ttf'),
+        'Oxygen-Regular': require('./assets/fonts/Oxygen-Regular.ttf'),
+        'OxygenMono-Regular': require('./assets/fonts/OxygenMono-Regular.ttf')
+      })
+
+      this.setState({
+        fontLoaded: true
+      })
+    }
+
+  render() {
+      return (
+        <ApolloProvider client={this.client}>
+          { this.state.fontLoaded ?
+            ( <RootStack /> ) : ( <Text>Loading</Text> )
+          }
+        </ApolloProvider>
+       )
+    }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
+AppRegistry.registerComponent('App', () => App);

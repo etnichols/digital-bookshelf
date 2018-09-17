@@ -5,7 +5,7 @@
   "devDependencies": {
     "babel-plugin-graphql-tag": "^1.6.0",
     "jest-expo": "~27.0.0",
-    "react-native-scripts": "1.14.0",
+    "react-native-scripts": "^1.14.0",
     "react-test-renderer": "16.3.1"
   },
   "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
@@ -31,8 +31,16 @@
     "graphql-tag": "^2.9.2",
     "react": "16.3.1",
     "react-apollo": "^2.1.11",
-    "react-native": "~0.55.2",
+    "react-native": "^0.55.4",
     "react-native-router-flux": "^4.0.1",
-    "tcomb-form-native": "^0.6.15"
+    "react-navigation": "^2.14.2",
+    "tcomb-form-native": "^0.6.15",
+    "typeface-oxygen": "^0.0.54",
+    "typeface-oxygen-mono": "^0.0.54"
+  },
+  "rnpm": {
+    "assets": [
+      "./assets/fonts/"
+    ]
   }
 }
