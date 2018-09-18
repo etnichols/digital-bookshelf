@@ -6,15 +6,6 @@ const { Context, getUserId, APP_SECRET } = require('./utils')
 
 const resolvers = {
   Query: {
-    feed(parent, args, ctx, info) {
-      return ctx.db.query.posts({ where: { isPublished: true } }, info)
-    },
-    drafts(parent, args, ctx, info) {
-      return ctx.db.query.posts({ where: { isPublished: false } }, info)
-    },
-    post(parent, { id }, ctx, info) {
-      return ctx.db.query.post({ where: { id: id } }, info)
-    },
     user(parent, { id }, ctx, info) {
       return ctx.db.query.user({ where: { id: id } }, info)
     },
@@ -60,15 +51,8 @@ const resolvers = {
     }
   },
   Mutation: {
-    //TODO: Finish this function.
     async addBooksToShelf(parent, { books, bookshelfId }, ctx, info){
-      console.log('addBooksToShelf called: ' + JSON.stringify(books, null, 2) + " \n and bookshelfId: " + bookshelfId)
-
-      // First check if books exist in DB. Save as an array of bool.
-      // Filter books that already exist in DB - CONNECT object
-      // Filter books that do not exist in DB - CREATE object
-      // return ctx.db.mutation.updateBookshelf()
-
+      // TODO: update the addBooksToShelf input type to avoid this books.books call.
       const upsertBooks = books.books.map(book => {
         return {
           where: {
@@ -103,29 +87,6 @@ const resolvers = {
           title
         }
       }`)
-    },
-    createDraft(parent, { title, text }, ctx, info) {
-      return ctx.db.mutation.createPost(
-        {
-          data: {
-            title,
-            text,
-          },
-        },
-        info,
-      )
-    },
-    deletePost(parent, { id }, ctx, info) {
-      return ctx.db.mutation.deletePost({ where: { id: id } }, info)
-    },
-    publish(parent, { id }, ctx, info) {
-      return ctx.db.mutation.updatePost(
-        {
-          where: { id: id },
-          data: { isPublished: true },
-        },
-        info,
-      )
     },
     async createAccount(parent, { firstName, lastName, email, password }, ctx, info) {
       const hashedPassword = await bcrypt.hash(password, 10)

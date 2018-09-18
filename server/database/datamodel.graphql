@@ -1,10 +1,3 @@
-type Post {
-  id: ID! @unique
-  isPublished: Boolean! @default(value: true)
-  title: String!
-  text: String!
-}
-
 type User {
   id: ID! @unique
   firstName: String!
@@ -23,4 +16,10 @@ type Bookshelf {
   id: ID! @unique
   owner: User!
   books: [Book!]!
+}
+
+enum BookStatus {
+  COMPLETED,
+  IN_PROGRESS,
+  NOT_STARTED
 }

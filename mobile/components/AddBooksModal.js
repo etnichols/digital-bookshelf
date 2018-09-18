@@ -54,6 +54,7 @@ class AddBooksModal extends React.Component {
       <Mutation mutation={ADD_BOOKS_MUTATION} >
       { (addBooksToShelf, { data, loading, error }) => {
         return (
+          <View style={commonstyles.modalBackground}>
           <View style={commonstyles.modal}>
             <Modal
               animationType="slide"
@@ -109,6 +110,7 @@ class AddBooksModal extends React.Component {
               </ScrollView>
             </Modal>
             </View>
+          </View>
         )
       }}
       </Mutation>

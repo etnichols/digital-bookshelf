@@ -12,6 +12,9 @@ const commonstyles = StyleSheet.create({
       justifyContent: 'space-between',
     },
     modal: {
+      flex: 1,
+      backgroundColor: 'rgba(52,52,52,0.8)',
+      opacity: 0.7,
       alignItems: 'center'
     },
     modalContainer: {
@@ -19,14 +22,17 @@ const commonstyles = StyleSheet.create({
       alignItems: 'stretch',
       marginTop: 200,
       marginHorizontal: 10,
-      padding: 10,
+      padding: 15,
       height: 400,
+      shadowColor: '#000',
+      shadowOffset: { width: 2, height: 2},
+      shadowOpacity: 0.5
     },
     modalTitle: {
       alignSelf: 'center',
       fontSize: 18,
       padding: 20,
-      fontFamily: OXYGEN_REGULAR
+      fontFamily: OXYGEN_BOLD
     },
     formContainer: {
       backgroundColor: '#fff',
@@ -76,6 +82,12 @@ const commonstyles = StyleSheet.create({
       color: 'red',
       alignSelf: 'center',
     },
+    loadingText: {
+      paddingTop: 100,
+      fontFamily: OXYGEN_MONO_REGULAR,
+      fontSize: 18,
+      alignSelf: 'center'
+    }
 });
 
 export default commonstyles;

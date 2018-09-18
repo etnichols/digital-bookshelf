@@ -17,8 +17,9 @@ import Launch from './components/Launch'
 import Login from './components/Login'
 import Profile from './components/Profile'
 
-// const LOCAL_HOST = `http://192.168.0.8:4000`
-const LOCAL_HOST = `http://localhost:4000`
+const LOCAL_HOST = `http://192.168.0.4:4000`
+
+// const LOCAL_HOST = `http://localhost:4000`
 
 const httpLink = createHttpLink({
   uri: LOCAL_HOST

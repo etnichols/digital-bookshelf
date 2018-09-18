@@ -1,7 +1,7 @@
 import  gql from 'graphql-tag'
 import React from 'react';
 import { Query } from 'react-apollo';
-import { AsyncStorage, StyleSheet, Text, TouchableHighlight, ScrollView } from 'react-native';
+import { AsyncStorage, StyleSheet, Text, TouchableHighlight, ScrollView, View } from 'react-native';
 
 import AddBooksModal from './AddBooksModal'
 import Book from './Book'
@@ -27,9 +27,23 @@ class Bookshelf extends React.Component {
         {
           ( { data, loading, error, refetch } ) => {
 
-          if(loading){ return ( <Text>Loading...</Text> ) }
+          if(loading){
+            return (
+              <View style={commonstyles.container}>
+                <Text style={commonstyles.loadingText}>
+                  Loading...
+                </Text>
+              </View> )
+          }
 
-          if(error){ return( <Text>{`${error}`}</Text> ) }
+          if(error){
+            return (
+            <View style={commonstyles.container}>
+              <Text style={commonstyles.loadingText}>
+                {`${error}`}
+              </Text>
+            </View> )
+          }
 
           const shelf = !data.bookshelf.books ? <Text>{`No books :(`}</Text> :
             data.bookshelf.books.map(

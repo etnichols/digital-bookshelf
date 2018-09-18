@@ -19,7 +19,8 @@ let User = t.struct({
 
 let options = {
   fields: {
-    password: { secureTextEntry: true }
+    password: { secureTextEntry: true },
+    email: { autoCapitalize: 'none' }
   }
 }
 
