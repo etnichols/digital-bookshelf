@@ -57,7 +57,7 @@ const getApolloClient = () => {
   return client
 }
 
-const MainStack = createStackNavigator({
+const RootStack = createStackNavigator({
   Bookshelf: {
     screen: Bookshelf
   },
@@ -76,7 +76,6 @@ const MainStack = createStackNavigator({
 },{
   initialRouteName: 'Launch',
   headerMode: 'screen',
-  mode: 'modal',
   navigationOptions: {
     headerStyle: {
       backgroundColor: '#008B8B',
@@ -88,19 +87,19 @@ const MainStack = createStackNavigator({
   },
 })
 
-const RootStack = createStackNavigator(
-  {
-    Main: {
-      screen: MainStack,
-    },
-    AddBooksModal: {
-      screen: AddBooksModal,
-    }
-  },
-  {
-    headerMode: 'none',
-    mode: 'modal',
-})
+// const RootStack = createStackNavigator(
+//   {
+//     Main: {
+//       screen: MainStack,
+//     },
+//     AddBooksModal: {
+//       screen: AddBooksModal,
+//     }
+//   },
+//   {
+//     headerMode: 'none',
+//     mode: 'modal',
+// })
 
 export default class App extends React.Component {
   constructor() {

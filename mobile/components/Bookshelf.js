@@ -40,7 +40,16 @@ class Bookshelf extends React.Component {
             <ScrollView contentContainerstyle={commonstyles.container}>
               { shelf }
 
-              <AddBooksModal modalVisible={this.state.modalVisible} />
+              <AddBooksModal
+                bookshelfId={bookshelfId}
+                modalVisible={this.state.modalVisible}
+                callback={() => {
+                  refetch();
+                  this.setState({
+                    modalVisible: false
+                  })
+                }}
+                />
 
               <TouchableHighlight
                 onPress={ () => {

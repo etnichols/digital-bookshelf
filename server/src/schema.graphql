@@ -14,7 +14,7 @@ type Query {
 }
 
 type Mutation {
-  # addBooksToShelf(books: [Book!], bookshelfId: ID!): [Book!]!
+  addBooksToShelf(books: BooksInput!, bookshelfId: ID!): Bookshelf!
   createDraft(title: String!, text: String): Post
   createAccount(firstName: String!, lastName: String!, email: String!, password: String!): AuthPayload!
   deletePost(id: ID!): Post
@@ -42,4 +42,13 @@ type User {
   lastName: String!
   id: ID!
   email: String!
+}
+
+input BookInput {
+  isbn: String!
+  title: String!
+}
+
+input BooksInput {
+  books: [BookInput!]
 }

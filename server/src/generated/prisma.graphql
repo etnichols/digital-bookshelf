@@ -1,5 +1,5 @@
 # source: https://eu1.prisma.sh/public-junglepig-932/digital-bookshelf/dev
-# timestamp: Sat Aug 18 2018 13:33:17 GMT-0400 (EDT)
+# timestamp: Mon Sep 17 2018 19:44:37 GMT-0400 (EDT)
 
 type AggregateBook {
   count: Int!
@@ -159,7 +159,7 @@ input BookshelfSubscriptionWhereInput {
 }
 
 input BookshelfUpdateInput {
-  owner: UserUpdateOneInput
+  owner: UserUpdateOneRequiredInput
   books: BookUpdateManyInput
 }
 
@@ -870,10 +870,9 @@ input UserUpdateInput {
   password: String
 }
 
-input UserUpdateOneInput {
+input UserUpdateOneRequiredInput {
   create: UserCreateInput
   connect: UserWhereUniqueInput
-  delete: Boolean
   update: UserUpdateDataInput
   upsert: UserUpsertNestedInput
 }

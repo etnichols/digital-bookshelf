@@ -61,16 +61,49 @@ const resolvers = {
   },
   Mutation: {
     //TODO: Finish this function.
-    // async addBooksToShelf(parent, { books, bookshelfId }, ctx, info){
-    //   console.log('addBooksToShelf called')
-    //   // First check if books exist in DB. Save as an array of bool.
-    //
-    //   // Filter books that already exist in DB - CONNECT object
-    //
-    //   // Filter books that do not exist in DB - CREATE object
-    //
-    //   // return ctx.db.mutation.updateBookshelf()
-    // },
+    async addBooksToShelf(parent, { books, bookshelfId }, ctx, info){
+      console.log('addBooksToShelf called: ' + JSON.stringify(books, null, 2) + " \n and bookshelfId: " + bookshelfId)
+
+      // First check if books exist in DB. Save as an array of bool.
+      // Filter books that already exist in DB - CONNECT object
+      // Filter books that do not exist in DB - CREATE object
+      // return ctx.db.mutation.updateBookshelf()
+
+      const upsertBooks = books.books.map(book => {
+        return {
+          where: {
+            isbn: book.isbn
+          },
+          update: {
+            title: book.title
+          },
+          create: {
+            isbn: book.isbn,
+            title: book.title
+          }
+        }
+      })
+
+      return ctx.db.mutation.updateBookshelf({
+          data: {
+            books: { upsert: upsertBooks }
+          },
+          where: {
+            id: bookshelfId
+          }
+        }, `{
+        id
+        owner {
+          id
+          email
+        }
+        books {
+          id
+          isbn
+          title
+        }
+      }`)
+    },
     createDraft(parent, { title, text }, ctx, info) {
       return ctx.db.mutation.createPost(
         {

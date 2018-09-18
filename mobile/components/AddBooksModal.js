@@ -1,7 +1,6 @@
 import  gql from 'graphql-tag'
 import React from 'react';
 import { Mutation } from 'react-apollo'
-import { Scene, Router, Actions } from 'react-native-router-flux';
 import { StyleSheet, Text, View, TouchableHighlight, AsyncStorage, Modal, ScrollView } from 'react-native';
 import t from 'tcomb-form-native';
 
@@ -33,14 +32,14 @@ class AddBooksModal extends React.Component {
           },
           hasError: false,
           errorMessage: '',
-          modalVisible: props.modalVisible
+          modalVisible: false
       }
   }
 
   componentWillReceiveProps(props){
     if(props.modalVisible){
       this.setState({
-        modalVisible: true
+        modalVisible: props.modalVisible
       })
     }
   }
@@ -52,7 +51,7 @@ class AddBooksModal extends React.Component {
   render(){
     const { hasError, errorMessage, modalVisible } = this.state
     return (
-      <Mutation mutation={ADD_BOOK_MUTATION} >
+      <Mutation mutation={ADD_BOOKS_MUTATION} >
       { (addBooksToShelf, { data, loading, error }) => {
         return (
           <View style={commonstyles.modal}>
@@ -78,20 +77,22 @@ class AddBooksModal extends React.Component {
                     modalVisible: true,
                   })
                   const formData = this.state.value
-                  // try {
-                  //   const response = await addBooksToShelf({variables: formData})
-                  //   if(response){
-                  //     Actions.bookshelf({
-                  //       bookshelfId: bookshelfId
-                  //     })
-                  //   }
-                  // } catch(e){
-                  //   console.log('Error: ' + JSON.stringify(e, null, 2))
-                  //   this.setState({
-                  //     hasError: true,
-                  //     errorMessage: e.message
-                  //   })
-                  // }
+                  try {
+                    const response = await addBooksToShelf({variables: {
+                      bookshelfId: this.props.bookshelfId,
+                      books: { books: [formData] }
+                    }})
+                    if(response){
+                      console.log('got response! + ' + JSON.stringify(response, null, 2))
+                      this.props.callback();
+                    }
+                  } catch(e){
+                    console.log('Error: ' + JSON.stringify(e, null, 2))
+                    this.setState({
+                      hasError: true,
+                      errorMessage: e.message
+                    })
+                  }
               }}>
                 <Text style={commonstyles.buttonText}>Add Book to Shelf</Text>
               </TouchableHighlight>
@@ -116,13 +117,13 @@ class AddBooksModal extends React.Component {
   }
 }
 
-const ADD_BOOK_MUTATION = gql`
-  mutation AddBookToShelfMutation(
-    $title: String!,
-    $isbn: String! ) {
+const ADD_BOOKS_MUTATION = gql`
+  mutation AddBooksToShelfMutation(
+    $books: BooksInput!,
+    $bookshelfId: ID! ) {
       addBooksToShelf(
-        title: $title,
-        isbn: $isbn ) {
+        books: $books,
+        bookshelfId: $bookshelfId ) {
           books {
             title
             isbn
