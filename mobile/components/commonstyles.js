@@ -87,6 +87,11 @@ const commonstyles = StyleSheet.create({
       fontFamily: OXYGEN_MONO_REGULAR,
       fontSize: 18,
       alignSelf: 'center'
+    },
+    camera: {
+      alignSelf: 'center',
+      height: 200,
+      width: 200,
     }
 });
 

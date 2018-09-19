@@ -3,6 +3,7 @@ import React from 'react';
 import { Query } from 'react-apollo';
 import { AsyncStorage, StyleSheet, Text, TouchableHighlight, ScrollView, View } from 'react-native';
 
+import BarcodeScannerExample from './BarcodeScannerExample'
 import AddBooksModal from './AddBooksModal'
 import Book from './Book'
 import commonstyles from './commonstyles'
@@ -54,7 +55,7 @@ class Bookshelf extends React.Component {
             <ScrollView contentContainerstyle={commonstyles.container}>
               { shelf }
 
-              <AddBooksModal
+              <BarcodeScannerExample
                 bookshelfId={bookshelfId}
                 modalVisible={this.state.modalVisible}
                 callback={() => {

@@ -10,7 +10,8 @@ import { setContext } from 'apollo-link-context'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { HttpLink, createHttpLink } from 'apollo-link-http'
 
-import AddBooksModal from './components/AddBooksModal'
+import AddBooksCameraModal from './components/AddBooksCameraModal'
+import BarcodeScannerExample from './components/BarcodeScannerExample'
 import Bookshelf from './components/Bookshelf'
 import CreateAccount from './components/CreateAccount'
 import Launch from './components/Launch'
@@ -73,7 +74,10 @@ const RootStack = createStackNavigator({
    },
   Profile: {
     screen: Profile
-   }
+  },
+  BarcodeScanner: {
+    screen: AddBooksCameraModal
+  }
 },{
   initialRouteName: 'Launch',
   headerMode: 'screen',
@@ -134,5 +138,7 @@ export default class App extends React.Component {
        )
     }
 }
+
+
 
 AppRegistry.registerComponent('App', () => App);
