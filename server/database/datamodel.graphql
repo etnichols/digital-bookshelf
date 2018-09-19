@@ -12,6 +12,21 @@ type Book {
   title: String!
 }
 
+# User should be able to save their own notes on a Book. Where should these live?
+# A book can be shared across multiple shelves, so I don't feel that it should be
+# a field on bookshelf.
+#
+# I feel like it should be it's own entity, and fetched in tandem with the shelf.
+# So BookDetails becomes its own table where each table has a unique owner and
+# unique book associated with it.
+
+type BookReview {
+  id: ID! @unique
+  author: User!
+  book: Book!
+  review: String!
+}
+
 type Bookshelf {
   id: ID! @unique
   owner: User!
