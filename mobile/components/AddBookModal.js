@@ -18,6 +18,7 @@ export default class AddBookModal extends React.Component {
     super(props)
     this._fetchBook = this._fetchBook.bind(this)
     this._requestCameraPermission = this._requestCameraPermission.bind(this)
+    this._hideModal = this._hideModal.bind(this)
 
     this.state = {
           hasCameraPermission: null,
@@ -44,13 +45,11 @@ export default class AddBookModal extends React.Component {
     }
   }
 
-  _handleBarCodeRead = async data => {
-    Alert.alert(
-      'Scan successful!',
-      JSON.stringify(data)
-    );
-  };
-
+  _hideModal(){
+    this.setState({
+      modalVisible: false
+    })
+  }
 
   async _requestCameraPermission() {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
@@ -77,17 +76,20 @@ export default class AddBookModal extends React.Component {
       const json = await response.json();
 
       if(json.totalItems < 1){
-        this.setState({
-          hasError: true,
-          errorMessage: 'Book ISBN Not recognized.'
-        }, () => {
-          setTimeout(() => {
-            this.setState({
-              hasError: false,
-              errorMessage: null
-            })
-          }, 5000)
-        });
+          this.setState({
+            hasError: true,
+            errorMessage: 'ISBN not recognized :('
+          }, () => {
+            setTimeout(() => {
+              this.setState({
+                hasError: false,
+                errorMessage: null
+              })
+            }, 5000)
+          })
+          return null
+        }
+
         const volume = json.items[0]
         const title = volume.volumeInfo.title
         // TODO: Support multiple authors.
@@ -102,8 +104,7 @@ export default class AddBookModal extends React.Component {
           title: title,
           isbn: data.data
         }
-      }
-    } catch(e) {
+      } catch(e) {
       console.log('e: ' + e)
     }
   }
@@ -135,22 +136,25 @@ export default class AddBookModal extends React.Component {
                       <BarCodeScanner
                         style={styles.camera}
                         onBarCodeRead={ async data => {
-                          const book = await this._fetchBook(data)
-                          if(book){
-                            const response = await addBooksMutation({
-                              variables: {
-                                bookshelfId: this.props.bookshelfId,
-                                books: { books: [book] }
+                            const book = await this._fetchBook(data)
+                            if(book){
+                              try {
+                                const response = await addBooksMutation({
+                                  variables: {
+                                    bookshelfId: this.props.bookshelfId,
+                                    books: { books: [book] }
+                                  }
+                                })
+
+                                console.log('response from addBooksMutation: ' + JSON.stringify(response))
+                                this._hideModal();
+                                this.props.callback()
+                              } catch(e) {
+                                console.log('addBooksMutation error: ' + e)
                               }
-                            })
-                          }
-                          if(response){
-                            console.log('addBooksMutation: + ' +
-                              JSON.stringify(response, null, 2))
-                            this.props.callback();
+                            }
                           }
                         }
-                      }
                       />
                   }
                   {
@@ -221,6 +225,7 @@ const ADD_BOOKS_MUTATION = gql`
       addBooksToShelf(
         books: $books,
         bookshelfId: $bookshelfId ) {
+          id
           books {
             title
             isbn

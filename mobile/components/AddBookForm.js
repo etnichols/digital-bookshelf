@@ -30,12 +30,12 @@ export default class AddBookForm extends React.Component {
   }
 
   componentWillReceiveProps(props){
-  //   if(props.modalVisible){
-  //     this.setState({
-  //       modalVisible: props.modalVisible
-  //     })
-  //   }
-  // }
+    if(props.modalVisible){
+      this.setState({
+        modalVisible: props.modalVisible
+      })
+    }
+  }
 
   onChange(value){
     this.setState({value: value, hasError: false})

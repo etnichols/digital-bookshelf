@@ -10,8 +10,6 @@ import { setContext } from 'apollo-link-context'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { HttpLink, createHttpLink } from 'apollo-link-http'
 
-import AddBooksCameraModal from './components/AddBooksCameraModal'
-import BarcodeScannerExample from './components/BarcodeScannerExample'
 import Bookshelf from './components/Bookshelf'
 import CreateAccount from './components/CreateAccount'
 import Launch from './components/Launch'
@@ -19,7 +17,6 @@ import Login from './components/Login'
 import Profile from './components/Profile'
 
 const LOCAL_HOST = `http://192.168.0.4:4000`
-
 // const LOCAL_HOST = `http://localhost:4000`
 
 const httpLink = createHttpLink({
@@ -74,9 +71,6 @@ const RootStack = createStackNavigator({
    },
   Profile: {
     screen: Profile
-  },
-  BarcodeScanner: {
-    screen: AddBooksCameraModal
   }
 },{
   initialRouteName: 'Launch',

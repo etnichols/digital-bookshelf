@@ -3,7 +3,6 @@ import React from 'react';
 import { Query } from 'react-apollo';
 import { AsyncStorage, StyleSheet, Text, TouchableHighlight, ScrollView, View } from 'react-native';
 
-import BarcodeScannerExample from './BarcodeScannerExample'
 import AddBookModal from './AddBookModal'
 import Book from './Book'
 import { commonstyles } from './commonstyles'
@@ -11,9 +10,16 @@ import { commonstyles } from './commonstyles'
 class Bookshelf extends React.Component {
   constructor(){
     super()
+    this._hideModal = this._hideModal.bind(this)
     this.state = {
       modalVisible: false
     }
+  }
+
+  _hideModal() {
+    this.setState({
+      modalVisible: false,
+    })
   }
 
   static navigationOptions = {
@@ -52,16 +58,6 @@ class Bookshelf extends React.Component {
               (book, i) =>
                 ( <Book key={i} data={book} /> ) )
 
-                // shelf.push((
-                //   <Book
-                //   key={1555555}
-                //   data={{
-                //     title: 'A super long title to test wrap around because wrap around is important',
-                //     isbn: '12134141'
-                //   }}
-                //   />
-                // ))
-
           return (
             <ScrollView contentContainerstyle={commonstyles.container}>
               <View style={styles.shelfContainer}>
@@ -73,9 +69,9 @@ class Bookshelf extends React.Component {
                 modalVisible={this.state.modalVisible}
                 callback={() => {
                   this.setState({
-                    modalVisible: false
-                  }, () => {
-                    refetch();
+                    modalVisible: false,
+                  }, () =>{
+                    refetch()
                   })
                 }}
                 />
