@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableHighlight } from 'react-native';
-import commonstyles from './commonstyles'
+import { commonstyles } from './commonstyles'
 
 class Launch extends React.Component {
 

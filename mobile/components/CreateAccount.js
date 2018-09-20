@@ -6,7 +6,7 @@ import { Scene, Router, Actions } from 'react-native-router-flux';
 import { StyleSheet, Text, View, TouchableHighlight, AsyncStorage, ScrollView } from 'react-native';
 import t from 'tcomb-form-native';
 
-import commonstyles from './commonstyles'
+import { commonstyles } from './commonstyles'
 
 let Form = t.form.Form
 

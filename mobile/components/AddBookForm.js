@@ -13,14 +13,7 @@ let Book = t.struct({
   isbn: t.String
 })
 
-let options = {
-  // fields: {
-  //   password: { secureTextEntry: true }
-  // }
-}
-
-// TODO: Finish this class.
-class AddBooksModal extends React.Component {
+export default class AddBookForm extends React.Component {
   constructor(props){
     super(props)
     this.onChange = this.onChange.bind(this)
@@ -37,12 +30,12 @@ class AddBooksModal extends React.Component {
   }
 
   componentWillReceiveProps(props){
-    if(props.modalVisible){
-      this.setState({
-        modalVisible: props.modalVisible
-      })
-    }
-  }
+  //   if(props.modalVisible){
+  //     this.setState({
+  //       modalVisible: props.modalVisible
+  //     })
+  //   }
+  // }
 
   onChange(value){
     this.setState({value: value, hasError: false})
@@ -50,18 +43,8 @@ class AddBooksModal extends React.Component {
 
   render(){
     const { hasError, errorMessage, modalVisible } = this.state
-    return (
-      <Mutation mutation={ADD_BOOKS_MUTATION} >
-      { (addBooksToShelf, { data, loading, error }) => {
         return (
-          <View style={commonstyles.modalBackground}>
-          <View style={commonstyles.modal}>
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={this.state.modalVisible}
-            >
-            <ScrollView contentContainerStyle={commonstyles.modalContainer}>
+            <View contentContainerStyle={commonstyles.modalContainer}>
             <Text style={commonstyles.modalTitle}>
               Add one or many Books.
             </Text>
@@ -79,7 +62,7 @@ class AddBooksModal extends React.Component {
                   })
                   const formData = this.state.value
                   try {
-                    const response = await addBooksToShelf({variables: {
+                    const response = await this.props.addBookMutation({variables: {
                       bookshelfId: this.props.bookshelfId,
                       books: { books: [formData] }
                     }})
@@ -107,30 +90,7 @@ class AddBooksModal extends React.Component {
                 <Text style={commonstyles.cancelButtonText}>Cancel</Text>
               </TouchableHighlight>
               {hasError && <Text style={commonstyles.errorText}>{errorMessage}</Text>}
-              </ScrollView>
-            </Modal>
-            </View>
           </View>
         )
-      }}
-      </Mutation>
-
-    )
   }
 }
-
-const ADD_BOOKS_MUTATION = gql`
-  mutation AddBooksToShelfMutation(
-    $books: BooksInput!,
-    $bookshelfId: ID! ) {
-      addBooksToShelf(
-        books: $books,
-        bookshelfId: $bookshelfId ) {
-          books {
-            title
-            isbn
-          }
-        }
-      }`
-
-export default AddBooksModal

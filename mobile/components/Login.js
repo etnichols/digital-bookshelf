@@ -4,8 +4,7 @@ import  gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
 import { StyleSheet, Text, View, TouchableHighlight, AsyncStorage, ScrollView } from 'react-native';
 import t from 'tcomb-form-native';
-
-import commonstyles from './commonstyles';
+import { commonstyles } from './commonstyles'
 
 let Form = t.form.Form
 

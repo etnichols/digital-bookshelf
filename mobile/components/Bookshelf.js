@@ -4,9 +4,9 @@ import { Query } from 'react-apollo';
 import { AsyncStorage, StyleSheet, Text, TouchableHighlight, ScrollView, View } from 'react-native';
 
 import BarcodeScannerExample from './BarcodeScannerExample'
-import AddBooksModal from './AddBooksModal'
+import AddBookModal from './AddBookModal'
 import Book from './Book'
-import commonstyles from './commonstyles'
+import { commonstyles } from './commonstyles'
 
 class Bookshelf extends React.Component {
   constructor(){
@@ -23,6 +23,7 @@ class Bookshelf extends React.Component {
 
   render(){
     const bookshelfId = this.props.navigation.getParam('bookshelfId', 1);
+    // const bookshelfId = `cjm9z9jqq5ofu0b01jup1cxkf`
     return (
       <Query query={BOOKSHELF_QUERY} variables={{id: bookshelfId}}>
         {
@@ -51,17 +52,30 @@ class Bookshelf extends React.Component {
               (book, i) =>
                 ( <Book key={i} data={book} /> ) )
 
+                // shelf.push((
+                //   <Book
+                //   key={1555555}
+                //   data={{
+                //     title: 'A super long title to test wrap around because wrap around is important',
+                //     isbn: '12134141'
+                //   }}
+                //   />
+                // ))
+
           return (
             <ScrollView contentContainerstyle={commonstyles.container}>
-              { shelf }
+              <View style={styles.shelfContainer}>
+                { shelf }
+              </View>
 
-              <BarcodeScannerExample
+              <AddBookModal
                 bookshelfId={bookshelfId}
                 modalVisible={this.state.modalVisible}
                 callback={() => {
-                  refetch();
                   this.setState({
                     modalVisible: false
+                  }, () => {
+                    refetch();
                   })
                 }}
                 />
@@ -100,6 +114,13 @@ class Bookshelf extends React.Component {
     )
   }
 }
+
+const styles = StyleSheet.create({
+  shelfContainer:{
+    paddingTop: 20,
+    flex: 1,
+  }
+})
 
 const BOOKSHELF_QUERY = gql`
   query BookshelfQuery($id: ID!) {
