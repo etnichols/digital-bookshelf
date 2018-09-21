@@ -101,8 +101,9 @@ export default class AddBookModal extends React.Component {
         })
 
         return {
+          author: author,
           title: title,
-          isbn: data.data
+          isbn: isbn
         }
       } catch(e) {
       console.log('e: ' + e)
@@ -142,7 +143,7 @@ export default class AddBookModal extends React.Component {
                                 const response = await addBooksMutation({
                                   variables: {
                                     bookshelfId: this.props.bookshelfId,
-                                    books: { books: [book] }
+                                    books: { books: [ book ] }
                                   }
                                 })
 
@@ -227,6 +228,7 @@ const ADD_BOOKS_MUTATION = gql`
         bookshelfId: $bookshelfId ) {
           id
           books {
+            author
             title
             isbn
           }

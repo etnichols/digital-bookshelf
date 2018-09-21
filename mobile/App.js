@@ -9,6 +9,8 @@ import { ApolloProvider, withApollo } from 'react-apollo'
 import { createStackNavigator } from 'react-navigation'
 import { AppRegistry, AsyncStorage, StyleSheet, Text, View } from 'react-native'
 
+import { CommonStyles } from './components/CommonStyles'
+
 import Bookshelf from './components/Bookshelf'
 import CreateAccount from './components/CreateAccount'
 import Launch from './components/Launch'
@@ -112,7 +114,7 @@ export default class App extends React.Component {
         <ApolloProvider client={this.client}>
         { this.state.fontLoaded ?
           ( <RootStack /> ) :
-          ( <Text style={CommonStyles.loadingText}>Loading...</Text> )
+          ( <Text>Loading...</Text> )
         }
         </ApolloProvider>
        )

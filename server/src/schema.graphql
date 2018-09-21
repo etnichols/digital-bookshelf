@@ -39,6 +39,7 @@ type User {
 }
 
 input BookInput {
+  author: String!
   isbn: String!
   title: String!
 }

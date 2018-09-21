@@ -108,6 +108,7 @@ const BOOKSHELF_QUERY = gql`
   query BookshelfQuery($id: ID!) {
     bookshelf(id: $id) {
       books {
+        author
         title
         isbn
       }
