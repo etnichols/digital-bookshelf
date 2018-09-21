@@ -53,14 +53,13 @@ const resolvers = {
   Mutation: {
     async addBooksToShelf(parent, { books, bookshelfId }, ctx, info){
       // TODO: update the addBooksToShelf input type to avoid this books.books call.
+      // TODO: check if each book exists already in the DB. If yes, connect, if not, create.
       const upsertBooks = books.books.map(book => {
         return {
           where: {
             isbn: book.isbn
           },
-          update: {
-            title: book.title
-          },
+          update: {title: book.title},
           create: {
             isbn: book.isbn,
             title: book.title
@@ -92,10 +91,10 @@ const resolvers = {
       const hashedPassword = await bcrypt.hash(password, 10)
 
       // TODO: Remove this when "Add a book" functionality exists.
-      const seedbooks = await ctx.db.query.books()
-      console.log('seedbooks!!! -> ' + JSON.stringify(seedbooks))
-      connectBooks = []
-      seedbooks.forEach(book => connectBooks.push({ id: book.id }))
+      // const seedbooks = await ctx.db.query.books()
+      // console.log('seedbooks!!! -> ' + JSON.stringify(seedbooks))
+      // connectBooks = []
+      // seedbooks.forEach(book => connectBooks.push({ id: book.id }))
 
       // THIS IS NOT actually connecting owner id and books to the bookshelf. They are null.
       // Fix: pass in the fields to query on the returned shelf, by default it will only be scalar.
@@ -110,9 +109,6 @@ const resolvers = {
               email: email,
               password: hashedPassword
             }
-          },
-          books: {
-            connect: connectBooks
           }
         }
       }, `{

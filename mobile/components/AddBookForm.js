@@ -1,13 +1,12 @@
 import  gql from 'graphql-tag'
-import React from 'react';
+import React from 'react'
 import { Mutation } from 'react-apollo'
-import { StyleSheet, Text, View, TouchableHighlight, AsyncStorage, Modal, ScrollView } from 'react-native';
-import t from 'tcomb-form-native';
+import { AsyncStorage, Modal, ScrollView, StyleSheet, Text, TouchableHighlight, View  } from 'react-native'
+import t from 'tcomb-form-native'
 
-import commonstyles from './commonstyles'
+import CommonStyles from './CommonStyles'
 
 let Form = t.form.Form
-
 let Book = t.struct({
   title: t.String,
   isbn: t.String
@@ -44,8 +43,8 @@ export default class AddBookForm extends React.Component {
   render(){
     const { hasError, errorMessage, modalVisible } = this.state
         return (
-            <View contentContainerStyle={commonstyles.modalContainer}>
-            <Text style={commonstyles.modalTitle}>
+            <View contentContainerStyle={CommonStyles.modalContainer}>
+            <Text style={CommonStyles.modalTitle}>
               Add one or many Books.
             </Text>
               <Form
@@ -55,7 +54,7 @@ export default class AddBookForm extends React.Component {
                 onChange={this.onChange}
                 options={options}/>
               <TouchableHighlight
-                style={commonstyles.button}
+                style={CommonStyles.button}
                 onPress={async e => {
                   this.setState({
                     modalVisible: true,
@@ -78,18 +77,18 @@ export default class AddBookForm extends React.Component {
                     })
                   }
               }}>
-                <Text style={commonstyles.buttonText}>Add Book to Shelf</Text>
+                <Text style={CommonStyles.buttonText}>Add Book to Shelf</Text>
               </TouchableHighlight>
               <TouchableHighlight
-                style={commonstyles.cancelButton}
+                style={CommonStyles.cancelButton}
                 onPress={() => {
                   this.setState({
                     modalVisible: false
                 })
               }}>
-                <Text style={commonstyles.cancelButtonText}>Cancel</Text>
+                <Text style={CommonStyles.cancelButtonText}>Cancel</Text>
               </TouchableHighlight>
-              {hasError && <Text style={commonstyles.errorText}>{errorMessage}</Text>}
+              {hasError && <Text style={CommonStyles.errorText}>{errorMessage}</Text>}
           </View>
         )
   }

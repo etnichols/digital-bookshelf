@@ -1,10 +1,10 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native'
 
 const OXYGEN_MONO_REGULAR = 'OxygenMono-Regular'
 const OXYGEN_REGULAR = 'Oxygen-Regular'
 const OXYGEN_BOLD = 'Oxygen-Bold'
 
-const commonstyles = StyleSheet.create({
+const CommonStyles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: '#EDEEF3',
@@ -67,11 +67,11 @@ const commonstyles = StyleSheet.create({
       fontSize: 18,
       alignSelf: 'center'
     }
-});
+})
 
 module.exports = {
    OXYGEN_MONO_REGULAR: OXYGEN_MONO_REGULAR,
    OXYGEN_REGULAR: OXYGEN_REGULAR,
    OXYGEN_BOLD: OXYGEN_BOLD,
-   commonstyles: commonstyles
+   CommonStyles: CommonStyles
 }

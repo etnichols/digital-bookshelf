@@ -2,10 +2,10 @@ import { Constants, BarCodeScanner, Permissions } from 'expo'
 import  gql from 'graphql-tag'
 import React from 'react'
 import { Mutation } from 'react-apollo'
-import { Alert, StyleSheet, Text, View, TouchableHighlight, AsyncStorage, Modal, ScrollView } from 'react-native'
+import { Alert, AsyncStorage, Modal, ScrollView, StyleSheet, Text, TouchableHighlight, View  } from 'react-native'
 import t from 'tcomb-form-native'
 
-import { OXYGEN_BOLD, commonstyles } from './commonstyles'
+import { CommonStyles, OXYGEN_BOLD } from './CommonStyles'
 
 let Form = t.form.Form
 let Book = t.struct({
@@ -159,16 +159,16 @@ export default class AddBookModal extends React.Component {
                   }
                   {
                     hasError &&
-                    <Text style={commonstyles.errorText}>{errorMessage}</Text>
+                    <Text style={CommonStyles.errorText}>{errorMessage}</Text>
                   }
                   <TouchableHighlight
-                    style={commonstyles.button}
+                    style={CommonStyles.button}
                     onPress={() => {
                       this.setState({
                         modalVisible: false
                     })
                   }}>
-                    <Text style={commonstyles.buttonText}>Cancel</Text>
+                    <Text style={CommonStyles.buttonText}>Cancel</Text>
                   </TouchableHighlight>
                 </View>
               </Modal>

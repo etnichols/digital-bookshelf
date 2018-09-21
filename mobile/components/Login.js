@@ -4,7 +4,7 @@ import  gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
 import { StyleSheet, Text, View, TouchableHighlight, AsyncStorage, ScrollView } from 'react-native';
 import t from 'tcomb-form-native';
-import { commonstyles } from './commonstyles'
+import { CommonStyles } from './CommonStyles'
 
 let Form = t.form.Form
 
@@ -51,7 +51,7 @@ class Login extends React.Component {
       <Mutation mutation={LOGIN_MUTATION}>
       { (loginMutation, { data, loading, error }) => {
         return (
-          <ScrollView contentContainerStyle={commonstyles.formContainer}>
+          <ScrollView contentContainerStyle={CommonStyles.formContainer}>
             <Form
               ref="form"
               type={User}
@@ -59,7 +59,7 @@ class Login extends React.Component {
               onChange={this.onChange}
               options={options}/>
             <TouchableHighlight
-              style={commonstyles.button}
+              style={CommonStyles.button}
               onPress={async e => {
                 const formData = this.state.value
                 console.log('formData: ' + JSON.stringify(formData, null, 2))
@@ -80,9 +80,9 @@ class Login extends React.Component {
                   })
                 }
             }}>
-              <Text style={commonstyles.buttonText}>Login</Text>
+              <Text style={CommonStyles.buttonText}>Login</Text>
             </TouchableHighlight>
-            {hasError && <Text style={commonstyles.errorText}>{errorMessage}</Text>}
+            {hasError && <Text style={CommonStyles.errorText}>{errorMessage}</Text>}
           </ScrollView>
         )
       }}

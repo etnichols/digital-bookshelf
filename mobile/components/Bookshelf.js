@@ -1,13 +1,13 @@
 import  gql from 'graphql-tag'
-import React from 'react';
-import { Query } from 'react-apollo';
-import { AsyncStorage, StyleSheet, Text, TouchableHighlight, ScrollView, View } from 'react-native';
+import React from 'react'
+import { Query } from 'react-apollo'
+import { AsyncStorage, ScrollView, StyleSheet, Text, TouchableHighlight, View } from 'react-native'
 
 import AddBookModal from './AddBookModal'
 import Book from './Book'
-import { commonstyles } from './commonstyles'
+import { CommonStyles } from './CommonStyles'
 
-class Bookshelf extends React.Component {
+export default class Bookshelf extends React.Component {
   constructor(){
     super()
     this._hideModal = this._hideModal.bind(this)
@@ -32,13 +32,11 @@ class Bookshelf extends React.Component {
     // const bookshelfId = `cjm9z9jqq5ofu0b01jup1cxkf`
     return (
       <Query query={BOOKSHELF_QUERY} variables={{id: bookshelfId}}>
-        {
-          ( { data, loading, error, refetch } ) => {
-
+        { ( { data, loading, error, refetch } ) => {
           if(loading){
             return (
-              <View style={commonstyles.container}>
-                <Text style={commonstyles.loadingText}>
+              <View style={CommonStyles.container}>
+                <Text style={CommonStyles.loadingText}>
                   Loading...
                 </Text>
               </View> )
@@ -46,8 +44,8 @@ class Bookshelf extends React.Component {
 
           if(error){
             return (
-            <View style={commonstyles.container}>
-              <Text style={commonstyles.loadingText}>
+            <View style={CommonStyles.container}>
+              <Text style={CommonStyles.loadingText}>
                 {`${error}`}
               </Text>
             </View> )
@@ -59,11 +57,8 @@ class Bookshelf extends React.Component {
                 ( <Book key={i} data={book} /> ) )
 
           return (
-            <ScrollView contentContainerstyle={commonstyles.container}>
-              <View style={styles.shelfContainer}>
-                { shelf }
-              </View>
-
+            <ScrollView contentContainerstyle={CommonStyles.container}>
+              <View style={styles.shelfContainer}>{shelf}</View>
               <AddBookModal
                 bookshelfId={bookshelfId}
                 modalVisible={this.state.modalVisible}
@@ -77,33 +72,24 @@ class Bookshelf extends React.Component {
                 />
 
               <TouchableHighlight
+                style={CommonStyles.button}
                 onPress={ () => {
                   this.setState({
                     modalVisible: true
                   })
-                }}
-                style={commonstyles.button}
-              >
-                <Text style={commonstyles.buttonText}>
-                  {'Add Books'}
-                </Text>
+                }} >
+                <Text style={CommonStyles.buttonText}>{'Add Books'}</Text>
               </TouchableHighlight>
 
               <TouchableHighlight
+                style={CommonStyles.button}
                 onPress={ async () => {
-                  await AsyncStorage.removeItem('dbtoken', () => {
-                    console.log('logout - removed token')
-                  })
+                  await AsyncStorage.removeItem('dbtoken')
                   this.props.navigation.navigate('Launch')
-                }}
-                style={commonstyles.button}
-              >
-                <Text style={commonstyles.buttonText}>
-                  {'Logout'}
-                </Text>
+                }} >
+                <Text style={CommonStyles.buttonText}>{'Logout'}</Text>
               </TouchableHighlight>
-            </ScrollView>
-          )
+            </ScrollView> )
         }
       }
       </Query>
@@ -128,5 +114,3 @@ const BOOKSHELF_QUERY = gql`
     }
   }
 `
-
-export default Bookshelf

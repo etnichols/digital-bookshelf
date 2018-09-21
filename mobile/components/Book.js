@@ -1,13 +1,13 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react'
+import { StyleSheet, Text, View } from 'react-native'
 
-class Book extends React.Component {
+export default class Book extends React.Component {
   render(){
     return (
       <View style={styles.book}>
         <Text style={styles.bookTitle}>{`${this.props.data.title}`}</Text>
-        <Text style={styles.bookAuthor}>{`Sally Author`}</Text>
-        <Text style={styles.bookIsbn}>{`114144414414`}</Text>
+        <Text style={styles.bookAuthor}>{`${this.props.data.author}`}</Text>
+        <Text style={styles.bookIsbn}>{`${this.props.data.isbn}`}</Text>
       </View>
     )
   }
@@ -37,6 +37,4 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     borderRadius: 5,
   }
-});
-
-export default Book
+})
