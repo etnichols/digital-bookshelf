@@ -13,18 +13,23 @@ let Book = t.struct({
   isbn: t.String
 })
 
+const ISBN_NOT_RECOGNIZED_ERROR_MESSAGE = 'ISBN not recognized :('
+const BOOK_ALREADY_SCANNED_ERROR_MESSAGE = 'Book already scanned in this session.'
+const ERROR_MESSAGE_DISPLAY_LENGTH_MS = 3000
+
 export default class AddBookModal extends React.Component {
   constructor(props){
     super(props)
-    this._maybeFetchBook = this._maybeFetchBook.bind(this)
-    this._requestCameraPermission = this._requestCameraPermission.bind(this)
+    this._displayError = this._displayError.bind(this)
     this._hideModal = this._hideModal.bind(this)
+    this._maybeFetchBook = this._maybeFetchBook.bind(this)
     this._onBarCodeRead = this._onBarCodeRead.bind(this)
+    this._requestCameraPermission = this._requestCameraPermission.bind(this)
 
     this.state = {
+          errorMessage: null,
           hasCameraPermission: null,
           hasError: false,
-          errorMessage: null,
           modalVisible: false,
           response: '',
           scannedBooks: [],
@@ -33,7 +38,7 @@ export default class AddBookModal extends React.Component {
   }
 
   componentDidMount() {
-    this._requestCameraPermission();
+    this._requestCameraPermission()
   }
 
   componentWillReceiveProps(props){
@@ -44,6 +49,15 @@ export default class AddBookModal extends React.Component {
     }
   }
 
+  _delay(time){
+    return new Promise((resolve, reject) => {
+      setTimeout(() => resolve(), time)
+    })
+  }
+
+  /**
+   * Hides modal and resets scanned books.
+   */
   _hideModal(){
     this.setState({
       modalVisible: false,
@@ -51,19 +65,17 @@ export default class AddBookModal extends React.Component {
     })
   }
 
-  _delay(time){
-    return new Promise((resolve, reject) => {
-      setTimeout(() => resolve(), time)
+  async _requestCameraPermission() {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA)
+    this.setState({
+      hasCameraPermission: status === 'granted',
     })
   }
 
-  async _requestCameraPermission() {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA);
-    this.setState({
-      hasCameraPermission: status === 'granted',
-    });
-  };
-
+  /**
+   * Handles recognition of a book barcode by processing and adding the book
+   * to the current scannedBooks state variable.
+   */
   async _onBarCodeRead(data) {
      const book = await this._maybeFetchBook(data)
      if(book){
@@ -78,62 +90,61 @@ export default class AddBookModal extends React.Component {
            this.setState({
              scannerDisabled: false,
            })
-         }, 3000)
+         }, ERROR_MESSAGE_DISPLAY_LENGTH_MS)
        })
      }
   }
 
-  // Fetch a book from a database.
+  /**
+   * Display an error in the modal using a timeout.
+   */
+  _displayError(msg){
+    this.setState({
+      hasError: true,
+      errorMessage: msg,
+      scannerDisabled: true
+    }, () => {
+      setTimeout(() => {
+        this.setState({
+          hasError: false,
+          errorMessage: null,
+          scannerDisabled: false
+        })
+      }, ERROR_MESSAGE_DISPLAY_LENGTH_MS)
+    })
+  }
+
+  _constructQueryString(isbn){
+    return `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}&key=AIzaSyDsbGjdoQdTMPfP7q7WubHV21NKdrjTLtA`
+  }
+
+  /**
+   * Fetch a book from a database. If the supplied book has already been
+   * scanned during this session, or the book cannot be found via the Google
+   * Books API, display an error to the user. Else, return a constructed
+   * Book object compatible with the addBooksMutation.
+   */
   async _maybeFetchBook(data) {
     const isbn = data.data
-
-    // first check if book has already been added.
     let scannedBooks = this.state.scannedBooks
+
     if(scannedBooks.filter(book => book.isbn === isbn).length > 0){
-      this.setState({
-        hasError: true,
-        errorMessage: 'Book already scanned in this session.',
-        scannerDisabled: true
-      }, () => {
-        setTimeout(() => {
-          this.setState({
-            hasError: false,
-            errorMessage: null,
-            scannerDisabled: false
-          })
-        }, 3000)
-      })
+      this._displayError(BOOK_ALREADY_SCANNED_ERROR_MESSAGE)
       return null
     }
 
-    const queryString =
-      `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}&key=AIzaSyDsbGjdoQdTMPfP7q7WubHV21NKdrjTLtA`
-    const opts = {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    }
-
     try {
-      const response = await fetch(queryString, opts)
-      const json = await response.json();
+      const response = await fetch(this._constructQueryString(isbn), {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      })
+      const json = await response.json()
 
       if(json.totalItems < 1){
-          this.setState({
-            hasError: true,
-            errorMessage: 'ISBN not recognized :(',
-            scannerDisabled: true,
-          }, () => {
-            setTimeout(() => {
-              this.setState({
-                hasError: false,
-                errorMessage: null,
-                scannerDisabled: false
-              })
-            }, 3000)
-          })
+        this._displayError(ISBN_NOT_RECOGNIZED_ERROR_MESSAGE)
           return null
         }
 
@@ -161,7 +172,9 @@ export default class AddBookModal extends React.Component {
       scannedBooks,
       scannerDisabled
      } = this.state
-     
+
+     const { bookshelfId } = this.props
+
     return (
       <Mutation mutation={ADD_BOOKS_MUTATION} >
       { (addBooksMutation, { data, loading, error }) => {
@@ -179,46 +192,38 @@ export default class AddBookModal extends React.Component {
                     Scan a Book Barcode.
                   </Text>
                 </View>
-                {
-                  this.state.hasCameraPermission === null ?
+                { this.state.hasCameraPermission === null ?
                   <Text>Requesting for camera permission</Text> :
                     this.state.hasCameraPermission === false ?
                       <Text>Camera permission is not granted</Text> :
                       <BarCodeScanner
                         style={styles.camera}
                         onBarCodeRead={scannerDisabled ? undefined : this._onBarCodeRead}
-                      />
-                  }
-                  {
-                    hasError &&
-                    <Text style={CommonStyles.errorText}>{errorMessage}</Text>
-                  }
-
+                      /> }
+                  { hasError &&
+                    <Text style={CommonStyles.errorText}>{errorMessage}</Text> }
                   <TouchableHighlight
                     disabled={scannedBooks.length > 0 ? false : true}
-                    style={scannedBooks.length > 0 ? CommonStyles.button : CommonStyles.disabledButton }
+                    style={scannedBooks.length > 0 ?
+                      CommonStyles.button : CommonStyles.disabledButton }
                     onPress={async () => {
                       console.log('adding ' + this.state.scannedBooks.length + ' books')
                         try {
                           const response = await addBooksMutation({
                             variables: {
-                              bookshelfId: this.props.bookshelfId,
-                              books: { books: this.state.scannedBooks }
+                              bookshelfId: bookshelfId,
+                              books: { books: scannedBooks }
                             }
                           })
-                          console.log('response from addBooksMutation: ' + JSON.stringify(response))
-                          this._hideModal();
+                          this._hideModal()
                           this.props.callback()
                         } catch(e) {
+                          // TODO: Meaningful error handling.
                           console.log('addBooksMutation error: ' + e)
                         }
                       }}>
                     <Text style={CommonStyles.buttonText}>
-                      {
-                        scannedBooks.length > 0 ?
-                        `Add Books (${this.state.scannedBooks.length})` :
-                        `Can't add books yet`
-                      }
+                      {`Add Books (${this.state.scannedBooks.length})`}
                     </Text>
                   </TouchableHighlight>
 
@@ -236,11 +241,8 @@ export default class AddBookModal extends React.Component {
               </Modal>
             </View>
           </View>
-        )
-      }}
-      </Mutation>
-
-    )
+        )}}
+      </Mutation> )
   }
 }
 
