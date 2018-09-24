@@ -19,18 +19,16 @@ export default class AddBookModal extends React.Component {
     this._maybeFetchBook = this._maybeFetchBook.bind(this)
     this._requestCameraPermission = this._requestCameraPermission.bind(this)
     this._hideModal = this._hideModal.bind(this)
+    this._onBarCodeRead = this._onBarCodeRead.bind(this)
 
     this.state = {
           hasCameraPermission: null,
-          value: {
-            title: '',
-            isbn: '',
-          },
           hasError: false,
           errorMessage: null,
           modalVisible: false,
           response: '',
           scannedBooks: [],
+          scannerDisabled: false,
       }
   }
 
@@ -66,6 +64,25 @@ export default class AddBookModal extends React.Component {
     });
   };
 
+  async _onBarCodeRead(data) {
+     const book = await this._maybeFetchBook(data)
+     if(book){
+       console.log('\n\ngot book not null!: ' + JSON.stringify(book))
+       let curBooks = this.state.scannedBooks
+       curBooks.push(book)
+       this.setState({
+         scannedBooks: curBooks,
+         scannerDisabled: true
+       }, () => {
+         setTimeout(() => {
+           this.setState({
+             scannerDisabled: false,
+           })
+         }, 3000)
+       })
+     }
+  }
+
   // Fetch a book from a database.
   async _maybeFetchBook(data) {
     const isbn = data.data
@@ -75,14 +92,16 @@ export default class AddBookModal extends React.Component {
     if(scannedBooks.filter(book => book.isbn === isbn).length > 0){
       this.setState({
         hasError: true,
-        errorMessage: 'Book already scanned during this session.'
+        errorMessage: 'Book already scanned in this session.',
+        scannerDisabled: true
       }, () => {
         setTimeout(() => {
           this.setState({
             hasError: false,
-            errorMessage: null
+            errorMessage: null,
+            scannerDisabled: false
           })
-        }, 4000)
+        }, 3000)
       })
       return null
     }
@@ -104,12 +123,14 @@ export default class AddBookModal extends React.Component {
       if(json.totalItems < 1){
           this.setState({
             hasError: true,
-            errorMessage: 'ISBN not recognized :('
+            errorMessage: 'ISBN not recognized :(',
+            scannerDisabled: true,
           }, () => {
             setTimeout(() => {
               this.setState({
                 hasError: false,
-                errorMessage: null
+                errorMessage: null,
+                scannerDisabled: false
               })
             }, 3000)
           })
@@ -132,7 +153,15 @@ export default class AddBookModal extends React.Component {
   }
 
   render(){
-    const { hasError, errorMessage, modalVisible, response, scannedBooks } = this.state
+    const {
+      errorMessage,
+      hasError,
+      modalVisible,
+      response,
+      scannedBooks,
+      scannerDisabled
+     } = this.state
+     
     return (
       <Mutation mutation={ADD_BOOKS_MUTATION} >
       { (addBooksMutation, { data, loading, error }) => {
@@ -157,18 +186,7 @@ export default class AddBookModal extends React.Component {
                       <Text>Camera permission is not granted</Text> :
                       <BarCodeScanner
                         style={styles.camera}
-                        onBarCodeRead={ async data => {
-                            const book = await this._maybeFetchBook(data)
-                            if(book){
-                              console.log('\n\ngot book not null!: ' + JSON.stringify(book))
-                              let curBooks = this.state.scannedBooks
-                              curBooks.push(book)
-                              this.setState({
-                                scannedBooks: curBooks
-                              })
-                            }
-                            await this._delay(500)
-                          }}
+                        onBarCodeRead={scannerDisabled ? undefined : this._onBarCodeRead}
                       />
                   }
                   {
@@ -177,7 +195,8 @@ export default class AddBookModal extends React.Component {
                   }
 
                   <TouchableHighlight
-                    style={CommonStyles.button}
+                    disabled={scannedBooks.length > 0 ? false : true}
+                    style={scannedBooks.length > 0 ? CommonStyles.button : CommonStyles.disabledButton }
                     onPress={async () => {
                       console.log('adding ' + this.state.scannedBooks.length + ' books')
                         try {

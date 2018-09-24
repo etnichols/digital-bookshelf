@@ -35,7 +35,18 @@ const CommonStyles = StyleSheet.create({
       shadowColor: '#000',
       shadowOffset: { width: 1, height: 1},
       shadowOpacity: 0.2
-
+    },
+    disabledButton: {
+      borderRadius: 30,
+      backgroundColor: '#008B8B',
+      paddingHorizontal: 60,
+      paddingVertical: 12,
+      marginHorizontal: 10,
+      marginVertical: 10,
+      shadowColor: '#000',
+      shadowOffset: { width: 1, height: 1},
+      shadowOpacity: 0.2,
+      opacity: 0.5
     },
     buttonText: {
       fontFamily: OXYGEN_REGULAR,
