@@ -53,23 +53,47 @@ const resolvers = {
   },
   Mutation: {
     async addBooksToShelf(parent, { books, bookshelfId }, ctx, info){
-      // TODO: update the addBooksToShelf input type to avoid this books.books call.
-      // TODO: check if each book exists already in the DB. If yes, connect, if not, create.
-      const upsertBooks = books.books.map(book => {
-        return {
-          where: { isbn: book.isbn },
-          update: { title: book.title },
-          create: {
-            author: book.author,
-            isbn: book.isbn,
-            title: book.title
-          }
-        }
-      })
+      // Split into create and connect.
+      let createBooks = []
+      let connectBooks = []
 
+      console.log('books.books.length: ' + books.books.length)
+
+      // An async forEach implementation.
+      const asyncForEach = async (array, callback) => {
+        for(let i = 0; i < array.length; i++){
+          await callback(array[i], i, array)
+        }
+      }
+
+      const processBooks = async books => {
+        await asyncForEach(books, async book => {
+          if(await ctx.db.exists.Book({ isbn: book.isbn })) {
+            console.log('connecting book ' + JSON.stringify(book))
+            connectBooks.push({
+              isbn: book.isbn
+            })
+          } else {
+            console.log('creating book ' + JSON.stringify(book))
+            createBooks.push({
+              isbn: book.isbn,
+              title: book.title,
+              author: book.author,
+            })
+          }
+        })
+        console.log('\n\ncreateBooks: ' + createBooks)
+        console.log('connectBooks: ' + connectBooks)
+      }
+
+      await processBooks(books.books)
+      
       return ctx.db.mutation.updateBookshelf({
           data: {
-            books: { upsert: upsertBooks }
+            books: {
+              create: createBooks,
+              connect: connectBooks
+            }
           },
           where: {
             id: bookshelfId
@@ -93,7 +117,7 @@ const resolvers = {
 
       // Pass in the fields to query on the returned shelf, by default it will
       // only be scalar. So we need to explicitly tell the mutation which
-      // fields we're interested in in the "info" argument.
+      // fields we're interested in to the "info" argument.
       const bookshelf = await ctx.db.mutation.createBookshelf({
         data: {
           owner: {

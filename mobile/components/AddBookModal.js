@@ -16,7 +16,7 @@ let Book = t.struct({
 export default class AddBookModal extends React.Component {
   constructor(props){
     super(props)
-    this._fetchBook = this._fetchBook.bind(this)
+    this._maybeFetchBook = this._maybeFetchBook.bind(this)
     this._requestCameraPermission = this._requestCameraPermission.bind(this)
     this._hideModal = this._hideModal.bind(this)
 
@@ -29,7 +29,8 @@ export default class AddBookModal extends React.Component {
           hasError: false,
           errorMessage: null,
           modalVisible: false,
-          response: ''
+          response: '',
+          scannedBooks: [],
       }
   }
 
@@ -47,7 +48,14 @@ export default class AddBookModal extends React.Component {
 
   _hideModal(){
     this.setState({
-      modalVisible: false
+      modalVisible: false,
+      scannedBooks: []
+    })
+  }
+
+  _delay(time){
+    return new Promise((resolve, reject) => {
+      setTimeout(() => resolve(), time)
     })
   }
 
@@ -59,8 +67,26 @@ export default class AddBookModal extends React.Component {
   };
 
   // Fetch a book from a database.
-  async _fetchBook(data) {
+  async _maybeFetchBook(data) {
     const isbn = data.data
+
+    // first check if book has already been added.
+    let scannedBooks = this.state.scannedBooks
+    if(scannedBooks.filter(book => book.isbn === isbn).length > 0){
+      this.setState({
+        hasError: true,
+        errorMessage: 'Book already scanned during this session.'
+      }, () => {
+        setTimeout(() => {
+          this.setState({
+            hasError: false,
+            errorMessage: null
+          })
+        }, 4000)
+      })
+      return null
+    }
+
     const queryString =
       `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}&key=AIzaSyDsbGjdoQdTMPfP7q7WubHV21NKdrjTLtA`
     const opts = {
@@ -85,7 +111,7 @@ export default class AddBookModal extends React.Component {
                 hasError: false,
                 errorMessage: null
               })
-            }, 5000)
+            }, 3000)
           })
           return null
         }
@@ -94,11 +120,6 @@ export default class AddBookModal extends React.Component {
         const title = volume.volumeInfo.title
         // TODO: Support multiple authors.
         const author = volume.volumeInfo.authors[0]
-
-        this.setState({
-          title: title,
-          author: author
-        })
 
         return {
           author: author,
@@ -111,7 +132,7 @@ export default class AddBookModal extends React.Component {
   }
 
   render(){
-    const { hasError, errorMessage, modalVisible, response } = this.state
+    const { hasError, errorMessage, modalVisible, response, scannedBooks } = this.state
     return (
       <Mutation mutation={ADD_BOOKS_MUTATION} >
       { (addBooksMutation, { data, loading, error }) => {
@@ -137,36 +158,57 @@ export default class AddBookModal extends React.Component {
                       <BarCodeScanner
                         style={styles.camera}
                         onBarCodeRead={ async data => {
-                            const book = await this._fetchBook(data)
+                            const book = await this._maybeFetchBook(data)
                             if(book){
-                              try {
-                                const response = await addBooksMutation({
-                                  variables: {
-                                    bookshelfId: this.props.bookshelfId,
-                                    books: { books: [ book ] }
-                                  }
-                                })
-
-                                console.log('response from addBooksMutation: ' + JSON.stringify(response))
-                                this._hideModal();
-                                this.props.callback()
-                              } catch(e) {
-                                console.log('addBooksMutation error: ' + e)
-                              }
+                              console.log('\n\ngot book not null!: ' + JSON.stringify(book))
+                              let curBooks = this.state.scannedBooks
+                              curBooks.push(book)
+                              this.setState({
+                                scannedBooks: curBooks
+                              })
                             }
-                          }
-                        }
+                            await this._delay(500)
+                          }}
                       />
                   }
                   {
                     hasError &&
                     <Text style={CommonStyles.errorText}>{errorMessage}</Text>
                   }
+
+                  <TouchableHighlight
+                    style={CommonStyles.button}
+                    onPress={async () => {
+                      console.log('adding ' + this.state.scannedBooks.length + ' books')
+                        try {
+                          const response = await addBooksMutation({
+                            variables: {
+                              bookshelfId: this.props.bookshelfId,
+                              books: { books: this.state.scannedBooks }
+                            }
+                          })
+                          console.log('response from addBooksMutation: ' + JSON.stringify(response))
+                          this._hideModal();
+                          this.props.callback()
+                        } catch(e) {
+                          console.log('addBooksMutation error: ' + e)
+                        }
+                      }}>
+                    <Text style={CommonStyles.buttonText}>
+                      {
+                        scannedBooks.length > 0 ?
+                        `Add Books (${this.state.scannedBooks.length})` :
+                        `Can't add books yet`
+                      }
+                    </Text>
+                  </TouchableHighlight>
+
                   <TouchableHighlight
                     style={CommonStyles.button}
                     onPress={() => {
                       this.setState({
-                        modalVisible: false
+                        modalVisible: false,
+                        scannedBooks: [],
                     })
                   }}>
                     <Text style={CommonStyles.buttonText}>Cancel</Text>
