@@ -2,10 +2,10 @@ import { Constants, BarCodeScanner, Permissions } from 'expo'
 import  gql from 'graphql-tag'
 import React from 'react'
 import { Mutation } from 'react-apollo'
-import { Alert, AsyncStorage, Modal, ScrollView, StyleSheet, Text, TouchableHighlight, View  } from 'react-native'
+import { Alert, AsyncStorage, FlatList, Modal, ScrollView, StyleSheet, Text, TouchableHighlight, View  } from 'react-native'
 import t from 'tcomb-form-native'
 
-import { CommonStyles, OXYGEN_BOLD } from './CommonStyles'
+import { CommonStyles, OXYGEN_BOLD, OXYGEN_REGULAR } from './CommonStyles'
 
 let Form = t.form.Form
 let Book = t.struct({
@@ -22,7 +22,7 @@ export default class AddBookModal extends React.Component {
     super(props)
     this._displayError = this._displayError.bind(this)
     this._hideModal = this._hideModal.bind(this)
-    this._maybeFetchBook = this._maybeFetchBook.bind(this)
+    this._fetchBookOrDisplayError = this._fetchBookOrDisplayError.bind(this)
     this._onBarCodeRead = this._onBarCodeRead.bind(this)
     this._requestCameraPermission = this._requestCameraPermission.bind(this)
 
@@ -49,12 +49,6 @@ export default class AddBookModal extends React.Component {
     }
   }
 
-  _delay(time){
-    return new Promise((resolve, reject) => {
-      setTimeout(() => resolve(), time)
-    })
-  }
-
   /**
    * Hides modal and resets scanned books.
    */
@@ -63,36 +57,6 @@ export default class AddBookModal extends React.Component {
       modalVisible: false,
       scannedBooks: []
     })
-  }
-
-  async _requestCameraPermission() {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA)
-    this.setState({
-      hasCameraPermission: status === 'granted',
-    })
-  }
-
-  /**
-   * Handles recognition of a book barcode by processing and adding the book
-   * to the current scannedBooks state variable.
-   */
-  async _onBarCodeRead(data) {
-     const book = await this._maybeFetchBook(data)
-     if(book){
-       console.log('\n\ngot book not null!: ' + JSON.stringify(book))
-       let curBooks = this.state.scannedBooks
-       curBooks.push(book)
-       this.setState({
-         scannedBooks: curBooks,
-         scannerDisabled: true
-       }, () => {
-         setTimeout(() => {
-           this.setState({
-             scannerDisabled: false,
-           })
-         }, ERROR_MESSAGE_DISPLAY_LENGTH_MS)
-       })
-     }
   }
 
   /**
@@ -118,13 +82,59 @@ export default class AddBookModal extends React.Component {
     return `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}&key=AIzaSyDsbGjdoQdTMPfP7q7WubHV21NKdrjTLtA`
   }
 
+  //TODO: Render the Close button SVG and attach onClick handler to it.
+  _renderScannedBook({ item }){
+    return (
+      <View style={styles.scannedBook}>
+        <Text style={styles.scannedBookTitle}>
+          {item.title}
+        </Text>
+        <Text style={styles.scannedBookAuthor}>
+          {item.author}
+        </Text>
+      </View> )
+  }
+
+  _removeBook(book){
+    //TODO: a function to remove the book from the scanned book array.
+  }
+
+  async _requestCameraPermission() {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA)
+    this.setState({
+      hasCameraPermission: status === 'granted',
+    })
+  }
+
+  /**
+   * Handles recognition of a book barcode by processing and adding the book
+   * to the current scannedBooks state variable.
+   */
+  async _onBarCodeRead(data) {
+     const book = await this._fetchBookOrDisplayError(data)
+     if(book){
+       let curBooks = this.state.scannedBooks
+       curBooks.push(book)
+       this.setState({
+         scannedBooks: curBooks,
+         scannerDisabled: true
+       }, () => {
+         setTimeout(() => {
+           this.setState({
+             scannerDisabled: false,
+           })
+         }, ERROR_MESSAGE_DISPLAY_LENGTH_MS)
+       })
+     }
+  }
+
   /**
    * Fetch a book from a database. If the supplied book has already been
    * scanned during this session, or the book cannot be found via the Google
    * Books API, display an error to the user. Else, return a constructed
    * Book object compatible with the addBooksMutation.
    */
-  async _maybeFetchBook(data) {
+  async _fetchBookOrDisplayError(data) {
     const isbn = data.data
     let scannedBooks = this.state.scannedBooks
 
@@ -173,6 +183,8 @@ export default class AddBookModal extends React.Component {
       scannerDisabled
      } = this.state
 
+     console.log('scanned books! -> ' + scannedBooks)
+
      const { bookshelfId } = this.props
 
     return (
@@ -198,10 +210,18 @@ export default class AddBookModal extends React.Component {
                       <Text>Camera permission is not granted</Text> :
                       <BarCodeScanner
                         style={styles.camera}
-                        onBarCodeRead={scannerDisabled ? undefined : this._onBarCodeRead}
+                        onBarCodeRead={scannerDisabled ? null : this._onBarCodeRead}
                       /> }
                   { hasError &&
                     <Text style={CommonStyles.errorText}>{errorMessage}</Text> }
+
+                    <FlatList
+                      data={scannedBooks}
+                      keyExtractor={(item, index) => item.isbn}
+                      extraData={this.state}
+                      renderItem={this._renderScannedBook}
+                    />
+
                   <TouchableHighlight
                     disabled={scannedBooks.length > 0 ? false : true}
                     style={scannedBooks.length > 0 ?
@@ -256,7 +276,7 @@ const styles = StyleSheet.create({
   modalContainer: {
     backgroundColor: '#fff',
     alignItems: 'stretch',
-    marginTop: 200,
+    marginTop: 50,
     marginHorizontal: 8,
     shadowColor: '#000',
     shadowOffset: { width: 2, height: 2},
@@ -264,6 +284,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#fff',
     borderRadius: 3,
+    height: 600,
   },
   modalTitleContainer: {
     alignSelf: 'stretch',
@@ -279,6 +300,26 @@ const styles = StyleSheet.create({
   camera: {
     alignSelf: 'stretch',
     height: 200,
+  },
+  scannedBooksContainer: {
+    flex: 1,
+    alignItems: 'stretch',
+  },
+  scannedBook: {
+    alignSelf: 'stretch',
+    padding: 10,
+    margin: 5,
+    borderColor: '#008B8B',
+    borderWidth: 2,
+    borderRadius: 5,
+  },
+  scannedBookTitle: {
+    fontFamily: OXYGEN_BOLD,
+    fontSize: 14
+  },
+  scannedBookAuthor: {
+    fontFamily: OXYGEN_REGULAR,
+    fontSize: 14
   }
 })
 
