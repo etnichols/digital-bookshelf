@@ -3,6 +3,7 @@ import  gql from 'graphql-tag'
 import React from 'react'
 import { Mutation } from 'react-apollo'
 import { Alert, AsyncStorage, FlatList, Modal, ScrollView, StyleSheet, Text, TouchableHighlight, View  } from 'react-native'
+import Svg, { Path } from 'react-native-svg'
 import t from 'tcomb-form-native'
 
 import { CommonStyles, OXYGEN_BOLD, OXYGEN_REGULAR } from './CommonStyles'
@@ -85,13 +86,25 @@ export default class AddBookModal extends React.Component {
   //TODO: Render the Close button SVG and attach onClick handler to it.
   _renderScannedBook({ item }){
     return (
-      <View style={styles.scannedBook}>
-        <Text style={styles.scannedBookTitle}>
-          {item.title}
-        </Text>
-        <Text style={styles.scannedBookAuthor}>
-          {item.author}
-        </Text>
+      <View style={styles.scannedBookContainer}>
+        <View style={styles.scannedBook}>
+          <Text style={styles.scannedBookTitle}>
+            {item.title}
+          </Text>
+          <Text style={styles.scannedBookAuthor}>
+            {item.author}
+          </Text>
+        </View>
+        <View style={styles.scannedBookRemoveIcon}>
+          <Svg height="30" width="30">
+            <Path
+            d="M 10,10 L 30,30 M 30,10 L 10,30"
+            fill="none"
+            stroke="red"
+            strokeWidth="2"
+            />
+          </Svg>
+        </View>
       </View> )
   }
 
@@ -301,17 +314,18 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     height: 200,
   },
-  scannedBooksContainer: {
+  scannedBookContainer: {
     flex: 1,
-    alignItems: 'stretch',
-  },
-  scannedBook: {
     alignSelf: 'stretch',
+    flexDirection: 'row',
     padding: 10,
     margin: 5,
     borderColor: '#008B8B',
     borderWidth: 2,
     borderRadius: 5,
+    justifyContent: 'space-between'
+  },
+  scannedBook: {
   },
   scannedBookTitle: {
     fontFamily: OXYGEN_BOLD,
@@ -320,6 +334,8 @@ const styles = StyleSheet.create({
   scannedBookAuthor: {
     fontFamily: OXYGEN_REGULAR,
     fontSize: 14
+  },
+  scannedBookRemoveIcon: {
   }
 })
 

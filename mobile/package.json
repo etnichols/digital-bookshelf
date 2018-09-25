@@ -34,6 +34,7 @@
     "react-apollo": "^2.1.11",
     "react-native": "~0.55.2",
     "react-native-router-flux": "^4.0.1",
+    "react-native-svg": "^7.0.3",
     "react-navigation": "^2.14.2",
     "tcomb-form-native": "^0.6.15",
     "typeface-oxygen": "^0.0.54",
