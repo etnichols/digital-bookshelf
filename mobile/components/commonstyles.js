@@ -1,38 +1,15 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native'
 
 const OXYGEN_MONO_REGULAR = 'OxygenMono-Regular'
 const OXYGEN_REGULAR = 'Oxygen-Regular'
 const OXYGEN_BOLD = 'Oxygen-Bold'
 
-const commonstyles = StyleSheet.create({
+const CommonStyles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#fff',
+      backgroundColor: '#EDEEF3',
       alignItems: 'center',
       justifyContent: 'space-between',
-    },
-    modal: {
-      flex: 1,
-      backgroundColor: 'rgba(52,52,52,0.8)',
-      opacity: 0.7,
-      alignItems: 'center'
-    },
-    modalContainer: {
-      backgroundColor: '#fff',
-      alignItems: 'stretch',
-      marginTop: 200,
-      marginHorizontal: 10,
-      padding: 15,
-      height: 400,
-      shadowColor: '#000',
-      shadowOffset: { width: 2, height: 2},
-      shadowOpacity: 0.5
-    },
-    modalTitle: {
-      alignSelf: 'center',
-      fontSize: 18,
-      padding: 20,
-      fontFamily: OXYGEN_BOLD
     },
     formContainer: {
       backgroundColor: '#fff',
@@ -48,18 +25,28 @@ const commonstyles = StyleSheet.create({
       paddingVertical: 12,
       margin: 10,
     },
-    cancelButtonText: {
-      fontFamily: OXYGEN_REGULAR,
-      color: '#008B8B',
-      fontSize: 18,
-      alignSelf: 'center',
-    },
     button: {
       borderRadius: 30,
       backgroundColor: '#008B8B',
       paddingHorizontal: 60,
       paddingVertical: 12,
-      margin: 10,
+      marginHorizontal: 10,
+      marginVertical: 10,
+      shadowColor: '#000',
+      shadowOffset: { width: 1, height: 1},
+      shadowOpacity: 0.2
+    },
+    disabledButton: {
+      borderRadius: 30,
+      backgroundColor: '#008B8B',
+      paddingHorizontal: 60,
+      paddingVertical: 12,
+      marginHorizontal: 10,
+      marginVertical: 10,
+      shadowColor: '#000',
+      shadowOffset: { width: 1, height: 1},
+      shadowOpacity: 0.2,
+      opacity: 0.5
     },
     buttonText: {
       fontFamily: OXYGEN_REGULAR,
@@ -78,9 +65,12 @@ const commonstyles = StyleSheet.create({
       paddingBottom: 100,
     },
     errorText: {
-      padding: 20,
-      color: 'red',
+      fontFamily: OXYGEN_REGULAR,
+      fontSize: 18,
+      padding: 10,
+      color: '#E83338',
       alignSelf: 'center',
+      justifyContent: 'center',
     },
     loadingText: {
       paddingTop: 100,
@@ -88,6 +78,11 @@ const commonstyles = StyleSheet.create({
       fontSize: 18,
       alignSelf: 'center'
     }
-});
+})
 
-export default commonstyles;
+module.exports = {
+   OXYGEN_MONO_REGULAR: OXYGEN_MONO_REGULAR,
+   OXYGEN_REGULAR: OXYGEN_REGULAR,
+   OXYGEN_BOLD: OXYGEN_BOLD,
+   CommonStyles: CommonStyles
+}

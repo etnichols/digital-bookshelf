@@ -1,26 +1,18 @@
 import  gql from 'graphql-tag'
-import React from 'react';
+import React from 'react'
 import { Mutation } from 'react-apollo'
-import { StyleSheet, Text, View, TouchableHighlight, AsyncStorage, Modal, ScrollView } from 'react-native';
-import t from 'tcomb-form-native';
+import { AsyncStorage, Modal, ScrollView, StyleSheet, Text, TouchableHighlight, View  } from 'react-native'
+import t from 'tcomb-form-native'
 
-import commonstyles from './commonstyles'
+import CommonStyles from './CommonStyles'
 
 let Form = t.form.Form
-
 let Book = t.struct({
   title: t.String,
   isbn: t.String
 })
 
-let options = {
-  // fields: {
-  //   password: { secureTextEntry: true }
-  // }
-}
-
-// TODO: Finish this class.
-class AddBooksModal extends React.Component {
+export default class AddBookForm extends React.Component {
   constructor(props){
     super(props)
     this.onChange = this.onChange.bind(this)
@@ -50,19 +42,9 @@ class AddBooksModal extends React.Component {
 
   render(){
     const { hasError, errorMessage, modalVisible } = this.state
-    return (
-      <Mutation mutation={ADD_BOOKS_MUTATION} >
-      { (addBooksToShelf, { data, loading, error }) => {
         return (
-          <View style={commonstyles.modalBackground}>
-          <View style={commonstyles.modal}>
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={this.state.modalVisible}
-            >
-            <ScrollView contentContainerStyle={commonstyles.modalContainer}>
-            <Text style={commonstyles.modalTitle}>
+            <View contentContainerStyle={CommonStyles.modalContainer}>
+            <Text style={CommonStyles.modalTitle}>
               Add one or many Books.
             </Text>
               <Form
@@ -72,14 +54,14 @@ class AddBooksModal extends React.Component {
                 onChange={this.onChange}
                 options={options}/>
               <TouchableHighlight
-                style={commonstyles.button}
+                style={CommonStyles.button}
                 onPress={async e => {
                   this.setState({
                     modalVisible: true,
                   })
                   const formData = this.state.value
                   try {
-                    const response = await addBooksToShelf({variables: {
+                    const response = await this.props.addBookMutation({variables: {
                       bookshelfId: this.props.bookshelfId,
                       books: { books: [formData] }
                     }})
@@ -95,42 +77,19 @@ class AddBooksModal extends React.Component {
                     })
                   }
               }}>
-                <Text style={commonstyles.buttonText}>Add Book to Shelf</Text>
+                <Text style={CommonStyles.buttonText}>Add Book to Shelf</Text>
               </TouchableHighlight>
               <TouchableHighlight
-                style={commonstyles.cancelButton}
+                style={CommonStyles.cancelButton}
                 onPress={() => {
                   this.setState({
                     modalVisible: false
                 })
               }}>
-                <Text style={commonstyles.cancelButtonText}>Cancel</Text>
+                <Text style={CommonStyles.cancelButtonText}>Cancel</Text>
               </TouchableHighlight>
-              {hasError && <Text style={commonstyles.errorText}>{errorMessage}</Text>}
-              </ScrollView>
-            </Modal>
-            </View>
+              {hasError && <Text style={CommonStyles.errorText}>{errorMessage}</Text>}
           </View>
         )
-      }}
-      </Mutation>
-
-    )
   }
 }
-
-const ADD_BOOKS_MUTATION = gql`
-  mutation AddBooksToShelfMutation(
-    $books: BooksInput!,
-    $bookshelfId: ID! ) {
-      addBooksToShelf(
-        books: $books,
-        bookshelfId: $bookshelfId ) {
-          books {
-            title
-            isbn
-          }
-        }
-      }`
-
-export default AddBooksModal

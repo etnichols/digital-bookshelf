@@ -1,12 +1,10 @@
-import React from 'react';
-
 import  gql from 'graphql-tag'
+import React from 'react'
 import { Mutation } from 'react-apollo'
-import { Scene, Router, Actions } from 'react-native-router-flux';
-import { StyleSheet, Text, View, TouchableHighlight, AsyncStorage, ScrollView } from 'react-native';
-import t from 'tcomb-form-native';
+import { AsyncStorage, ScrollView, StyleSheet, Text, TouchableHighlight, View  } from 'react-native'
+import t from 'tcomb-form-native'
 
-import commonstyles from './commonstyles'
+import { CommonStyles } from './CommonStyles'
 
 let Form = t.form.Form
 
@@ -24,7 +22,7 @@ let options = {
   }
 }
 
-class CreateAccount extends React.Component {
+export default class CreateAccount extends React.Component {
 
   static navigationOptions = {
       title: 'Create Account'
@@ -57,7 +55,7 @@ class CreateAccount extends React.Component {
       <Mutation mutation={CREATE_ACCOUNT_MUTATION} >
       { (createUserAndBookshelf, { data, loading, error }) => {
         return (
-          <ScrollView contentContainerStyle={commonstyles.formContainer}>
+          <ScrollView contentContainerStyle={CommonStyles.formContainer}>
             <Form
               ref="form"
               type={User}
@@ -65,7 +63,7 @@ class CreateAccount extends React.Component {
               onChange={this.onChange}
               options={options}/>
             <TouchableHighlight
-              style={commonstyles.button}
+              style={CommonStyles.button}
               onPress={async e => {
                 const formData = this.state.value
                 try {
@@ -76,7 +74,7 @@ class CreateAccount extends React.Component {
                     this.props.navigation.navigate('Bookshelf', {
                       bookshelfId: response.data.createAccount.bookshelf.id
                     })
-                }
+                  }
                 } catch(e){
                   console.log('Error: ' + JSON.stringify(e, null, 2))
                   this.setState({
@@ -84,10 +82,10 @@ class CreateAccount extends React.Component {
                     errorMessage: e.message
                   })
                 }
-            }}>
-              <Text style={commonstyles.buttonText}>Create Account</Text>
+              }}>
+              <Text style={CommonStyles.buttonText}>Create Account</Text>
             </TouchableHighlight>
-            {hasError && <Text style={commonstyles.errorText}>{errorMessage}</Text>}
+            {hasError && <Text style={CommonStyles.errorText}>{errorMessage}</Text>}
           </ScrollView>
         )
       }}
@@ -117,5 +115,3 @@ const CREATE_ACCOUNT_MUTATION = gql`
         }
   }
 `
-
-export default CreateAccount

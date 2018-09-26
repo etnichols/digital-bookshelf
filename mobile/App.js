@@ -1,16 +1,16 @@
-import { Font } from 'expo';
-import React from 'react';
-import { createStackNavigator } from 'react-navigation'
-import { AppRegistry, StyleSheet, Text, View, AsyncStorage } from 'react-native';
-
-import { ApolloProvider, withApollo } from 'react-apollo'
 import ApolloClient from 'apollo-client'
 import { ApolloLink } from 'apollo-link'
 import { setContext } from 'apollo-link-context'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { HttpLink, createHttpLink } from 'apollo-link-http'
+import { Font } from 'expo'
+import React from 'react'
+import { ApolloProvider, withApollo } from 'react-apollo'
+import { createStackNavigator } from 'react-navigation'
+import { AppRegistry, AsyncStorage, StyleSheet, Text, View } from 'react-native'
 
-import AddBooksModal from './components/AddBooksModal'
+import { CommonStyles } from './components/CommonStyles'
+
 import Bookshelf from './components/Bookshelf'
 import CreateAccount from './components/CreateAccount'
 import Launch from './components/Launch'
@@ -18,7 +18,6 @@ import Login from './components/Login'
 import Profile from './components/Profile'
 
 const LOCAL_HOST = `http://192.168.0.4:4000`
-
 // const LOCAL_HOST = `http://localhost:4000`
 
 const httpLink = createHttpLink({
@@ -73,7 +72,7 @@ const RootStack = createStackNavigator({
    },
   Profile: {
     screen: Profile
-   }
+  }
 },{
   initialRouteName: 'Launch',
   headerMode: 'screen',
@@ -87,20 +86,6 @@ const RootStack = createStackNavigator({
     }
   },
 })
-
-// const RootStack = createStackNavigator(
-//   {
-//     Main: {
-//       screen: MainStack,
-//     },
-//     AddBooksModal: {
-//       screen: AddBooksModal,
-//     }
-//   },
-//   {
-//     headerMode: 'none',
-//     mode: 'modal',
-// })
 
 export default class App extends React.Component {
   constructor() {
@@ -127,12 +112,11 @@ export default class App extends React.Component {
   render() {
       return (
         <ApolloProvider client={this.client}>
-          { this.state.fontLoaded ?
-            ( <RootStack /> ) : ( <Text>Loading</Text> )
-          }
+        { this.state.fontLoaded ?
+          ( <RootStack /> ) :
+          ( <Text>Loading...</Text> )
+        }
         </ApolloProvider>
        )
     }
 }
-
-AppRegistry.registerComponent('App', () => App);

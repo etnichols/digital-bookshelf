@@ -27,6 +27,7 @@ const resolvers = {
           }
           books {
             id
+            author
             title
             isbn
           }
@@ -52,25 +53,47 @@ const resolvers = {
   },
   Mutation: {
     async addBooksToShelf(parent, { books, bookshelfId }, ctx, info){
-      // TODO: update the addBooksToShelf input type to avoid this books.books call.
-      const upsertBooks = books.books.map(book => {
-        return {
-          where: {
-            isbn: book.isbn
-          },
-          update: {
-            title: book.title
-          },
-          create: {
-            isbn: book.isbn,
-            title: book.title
-          }
-        }
-      })
+      // Split into create and connect.
+      let createBooks = []
+      let connectBooks = []
 
+      console.log('books.books.length: ' + books.books.length)
+
+      // An async forEach implementation.
+      const asyncForEach = async (array, callback) => {
+        for(let i = 0; i < array.length; i++){
+          await callback(array[i], i, array)
+        }
+      }
+
+      const processBooks = async books => {
+        await asyncForEach(books, async book => {
+          if(await ctx.db.exists.Book({ isbn: book.isbn })) {
+            console.log('connecting book ' + JSON.stringify(book))
+            connectBooks.push({
+              isbn: book.isbn
+            })
+          } else {
+            console.log('creating book ' + JSON.stringify(book))
+            createBooks.push({
+              isbn: book.isbn,
+              title: book.title,
+              author: book.author,
+            })
+          }
+        })
+        console.log('\n\ncreateBooks: ' + createBooks)
+        console.log('connectBooks: ' + connectBooks)
+      }
+
+      await processBooks(books.books)
+      
       return ctx.db.mutation.updateBookshelf({
           data: {
-            books: { upsert: upsertBooks }
+            books: {
+              create: createBooks,
+              connect: connectBooks
+            }
           },
           where: {
             id: bookshelfId
@@ -82,6 +105,7 @@ const resolvers = {
           email
         }
         books {
+          author
           id
           isbn
           title
@@ -91,16 +115,9 @@ const resolvers = {
     async createAccount(parent, { firstName, lastName, email, password }, ctx, info) {
       const hashedPassword = await bcrypt.hash(password, 10)
 
-      // TODO: Remove this when "Add a book" functionality exists.
-      const seedbooks = await ctx.db.query.books()
-      console.log('seedbooks!!! -> ' + JSON.stringify(seedbooks))
-      connectBooks = []
-      seedbooks.forEach(book => connectBooks.push({ id: book.id }))
-
-      // THIS IS NOT actually connecting owner id and books to the bookshelf. They are null.
-      // Fix: pass in the fields to query on the returned shelf, by default it will only be scalar.
-      // So we need to explicitly tell the mutation which fields we're interested in
-      // in the "info" argument.
+      // Pass in the fields to query on the returned shelf, by default it will
+      // only be scalar. So we need to explicitly tell the mutation which
+      // fields we're interested in to the "info" argument.
       const bookshelf = await ctx.db.mutation.createBookshelf({
         data: {
           owner: {
@@ -110,9 +127,6 @@ const resolvers = {
               email: email,
               password: hashedPassword
             }
-          },
-          books: {
-            connect: connectBooks
           }
         }
       }, `{
@@ -122,6 +136,7 @@ const resolvers = {
           email
         }
         books {
+          author
           id
           isbn
           title
@@ -182,4 +197,5 @@ const server = new GraphQLServer({
   }),
 })
 
-server.start(() => console.log('Server is running on http://localhost:4000'))
+server.start(() =>
+  console.log('Server is running on http://localhost:4000'))
