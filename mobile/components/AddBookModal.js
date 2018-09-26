@@ -1,11 +1,12 @@
+import _ from 'lodash'
 import { Constants, BarCodeScanner, Permissions } from 'expo'
 import  gql from 'graphql-tag'
 import React from 'react'
 import { Mutation } from 'react-apollo'
 import { Alert, AsyncStorage, FlatList, Modal, ScrollView, StyleSheet, Text, TouchableHighlight, View  } from 'react-native'
-import Svg, { Path } from 'react-native-svg'
 import t from 'tcomb-form-native'
 
+import ScannedBook from './ScannedBook'
 import { CommonStyles, OXYGEN_BOLD, OXYGEN_REGULAR } from './CommonStyles'
 
 let Form = t.form.Form
@@ -24,7 +25,12 @@ export default class AddBookModal extends React.Component {
     this._displayError = this._displayError.bind(this)
     this._hideModal = this._hideModal.bind(this)
     this._fetchBookOrDisplayError = this._fetchBookOrDisplayError.bind(this)
-    this._onBarCodeRead = this._onBarCodeRead.bind(this)
+    this._onBarCodeRead = _.debounce(this._onBarCodeRead.bind(this), 1000, {
+      'leading': true,
+      'trailing': false
+    })
+    this._removeBook = this._removeBook.bind(this)
+    this._renderScannedBook = this._renderScannedBook.bind(this)
     this._requestCameraPermission = this._requestCameraPermission.bind(this)
 
     this.state = {
@@ -83,7 +89,17 @@ export default class AddBookModal extends React.Component {
     return `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}&key=AIzaSyDsbGjdoQdTMPfP7q7WubHV21NKdrjTLtA`
   }
 
-  //TODO: Render the Close button SVG and attach onClick handler to it.
+  /**
+   * Remove a book from the scanned books.
+   */
+  _removeBook(isbn){
+    const curBooks = this.state.scannedBooks
+    _.remove(curBooks, { isbn: isbn })
+    this.setState({
+      scannedBooks: curBooks
+    })
+  }
+
   _renderScannedBook({ item }){
     return (
       <View style={styles.scannedBookContainer}>
@@ -96,6 +112,9 @@ export default class AddBookModal extends React.Component {
           </Text>
         </View>
         <View style={styles.scannedBookRemoveIcon}>
+          <TouchableHighlight
+            onPress={ e =>  this._removeBook(item.isbn) }
+          >
           <Svg height="30" width="30">
             <Path
             d="M 10,10 L 30,30 M 30,10 L 10,30"
@@ -104,12 +123,9 @@ export default class AddBookModal extends React.Component {
             strokeWidth="2"
             />
           </Svg>
+          </TouchableHighlight>
         </View>
       </View> )
-  }
-
-  _removeBook(book){
-    //TODO: a function to remove the book from the scanned book array.
   }
 
   async _requestCameraPermission() {
@@ -223,16 +239,22 @@ export default class AddBookModal extends React.Component {
                       <Text>Camera permission is not granted</Text> :
                       <BarCodeScanner
                         style={styles.camera}
-                        onBarCodeRead={scannerDisabled ? null : this._onBarCodeRead}
+                        onBarCodeRead={this._onBarCodeRead}
                       /> }
                   { hasError &&
                     <Text style={CommonStyles.errorText}>{errorMessage}</Text> }
 
                     <FlatList
+                      ref={ref => this.flatList = ref}
                       data={scannedBooks}
                       keyExtractor={(item, index) => item.isbn}
+                      onContentSizeChange={() => this.flatList.scrollToEnd({animated: true})}
                       extraData={this.state}
-                      renderItem={this._renderScannedBook}
+                      renderItem={ ({ item }) =>
+                        <ScannedBook
+                          item={item}
+                          removeBook={this._removeBook}
+                        /> }
                     />
 
                   <TouchableHighlight
@@ -240,7 +262,6 @@ export default class AddBookModal extends React.Component {
                     style={scannedBooks.length > 0 ?
                       CommonStyles.button : CommonStyles.disabledButton }
                     onPress={async () => {
-                      console.log('adding ' + this.state.scannedBooks.length + ' books')
                         try {
                           const response = await addBooksMutation({
                             variables: {

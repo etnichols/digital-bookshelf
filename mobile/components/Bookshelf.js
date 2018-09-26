@@ -5,7 +5,7 @@ import { AsyncStorage, ScrollView, StyleSheet, Text, TouchableHighlight, View } 
 
 import AddBookModal from './AddBookModal'
 import Book from './Book'
-import { CommonStyles } from './CommonStyles'
+import { CommonStyles, OXYGEN_MONO_REGULAR } from './CommonStyles'
 
 export default class Bookshelf extends React.Component {
   constructor(){
@@ -29,7 +29,7 @@ export default class Bookshelf extends React.Component {
 
   render(){
     const bookshelfId = this.props.navigation.getParam('bookshelfId', 1);
-    // const bookshelfId = `cjmfk6gc2swom0b01oyt6ou4j`
+    // const bookshelfId = `cjmh2u8ti2i2a0b01vvwvp5hk`
     return (
       <Query query={BOOKSHELF_QUERY} variables={{id: bookshelfId}}>
         { ( { data, loading, error, refetch } ) => {
@@ -51,7 +51,8 @@ export default class Bookshelf extends React.Component {
             </View> )
           }
 
-          const shelf = !data.bookshelf.books ? <Text>{`No books :(`}</Text> :
+          const shelf = !data.bookshelf.books.length ?
+            <Text style={styles.emptyShelfText}>{`Your shelf is empty. Add some books!`}</Text> :
             data.bookshelf.books.map(
               (book, i) =>
                 ( <Book key={i} data={book} /> ) )
@@ -98,9 +99,14 @@ export default class Bookshelf extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  shelfContainer:{
-    paddingTop: 20,
+  emptyShelfText: {
     flex: 1,
+    paddingVertical: 50,
+    paddingHorizontal: 20,
+    fontSize: 18,
+    fontFamily: OXYGEN_MONO_REGULAR,
+    alignSelf: 'center',
+    justifyContent: 'center',
   }
 })
 
