@@ -18,12 +18,13 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     fontFamily: 'Oxygen-Bold',
     color: '#fff',
-    fontSize: 24,
+    fontSize: 18,
     paddingBottom: 5,
   },
   bookAuthor: {
     fontFamily: 'Oxygen-Regular',
     color: '#fff',
+    fontSize: 14,
   },
   bookIsbn: {
     fontFamily: 'Oxygen-Regular',
@@ -33,7 +34,7 @@ const styles = StyleSheet.create({
     height: 200,
     backgroundColor: '#22556E',
     padding: 20,
-    marginHorizontal: 20,
+    marginHorizontal: 40,
     marginVertical: 10,
     borderRadius: 5,
   }

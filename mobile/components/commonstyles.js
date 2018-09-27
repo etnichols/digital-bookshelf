@@ -10,6 +10,7 @@ const CommonStyles = StyleSheet.create({
       backgroundColor: '#EDEEF3',
       alignItems: 'center',
       justifyContent: 'space-between',
+      marginTop: 50,
     },
     formContainer: {
       backgroundColor: '#fff',

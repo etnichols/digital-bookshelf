@@ -5,6 +5,7 @@ import { AsyncStorage, ScrollView, StyleSheet, Text, TouchableHighlight, View } 
 
 import AddBookModal from './AddBookModal'
 import Book from './Book'
+import BookshelfLedge from './BookshelfLedge'
 import { CommonStyles, OXYGEN_MONO_REGULAR } from './CommonStyles'
 
 export default class Bookshelf extends React.Component {
@@ -14,6 +15,16 @@ export default class Bookshelf extends React.Component {
     this.state = {
       modalVisible: false
     }
+  }
+
+  _createBookshelf(books){
+    const shelf = !books.length ?
+      <Text style={styles.emptyShelfText}>{`Your shelf is empty. Add some books!`}</Text> :
+      books.map(
+        (book, i) =>
+          ( <Book key={i} data={book} /> ) )
+
+    return shelf
   }
 
   _hideModal() {
@@ -29,7 +40,7 @@ export default class Bookshelf extends React.Component {
 
   render(){
     const bookshelfId = this.props.navigation.getParam('bookshelfId', 1);
-    // const bookshelfId = `cjmh2u8ti2i2a0b01vvwvp5hk`
+    // const bookshelfId = `cjmil956x041g0b45loyq2a0e`
     return (
       <Query query={BOOKSHELF_QUERY} variables={{id: bookshelfId}}>
         { ( { data, loading, error, refetch } ) => {
@@ -51,15 +62,12 @@ export default class Bookshelf extends React.Component {
             </View> )
           }
 
-          const shelf = !data.bookshelf.books.length ?
-            <Text style={styles.emptyShelfText}>{`Your shelf is empty. Add some books!`}</Text> :
-            data.bookshelf.books.map(
-              (book, i) =>
-                ( <Book key={i} data={book} /> ) )
-
           return (
             <ScrollView contentContainerstyle={CommonStyles.container}>
-              <View style={styles.shelfContainer}>{shelf}</View>
+              <View style={styles.shelfContainer}>
+                {this._createBookshelf(data.bookshelf.books)}
+              </View>
+              <BookshelfLedge />
               <AddBookModal
                 bookshelfId={bookshelfId}
                 modalVisible={this.state.modalVisible}
