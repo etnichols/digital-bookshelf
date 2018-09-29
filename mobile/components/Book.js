@@ -1,14 +1,25 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, TouchableHighlight, View } from 'react-native'
 
 export default class Book extends React.Component {
+  constructor(props){
+    super(props)
+    this._onPress = this._onPress.bind(this)
+  }
+  _onPress(){
+    console.log('pressed book fuck yeah')
+    this.props.onPressItem(this.props.item);
+  }
+
   render(){
     return (
-      <View style={styles.book}>
-        <Text style={styles.bookTitle}>{`${this.props.data.title}`}</Text>
-        <Text style={styles.bookAuthor}>{`${this.props.data.author}`}</Text>
-        <Text style={styles.bookIsbn}>{`${this.props.data.isbn}`}</Text>
-      </View>
+        <TouchableHighlight onPress={this._onPress}>
+          <View style={styles.book}>
+            <Text style={styles.bookTitle}>{`${this.props.item.title}`}</Text>
+            <Text style={styles.bookAuthor}>{`${this.props.item.author}`}</Text>
+            <Text style={styles.bookIsbn}>{`${this.props.item.isbn}`}</Text>
+          </View>
+        </TouchableHighlight>
     )
   }
 }
@@ -31,10 +42,11 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   book: {
-    height: 200,
+    height: 250,
+    width: 150,
     backgroundColor: '#22556E',
     padding: 20,
-    marginHorizontal: 40,
+    marginHorizontal: 10,
     marginVertical: 10,
     borderRadius: 5,
   }

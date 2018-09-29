@@ -30,6 +30,7 @@ const resolvers = {
             author
             title
             isbn
+            description
           }
         }
         `)
@@ -79,6 +80,7 @@ const resolvers = {
               isbn: book.isbn,
               title: book.title,
               author: book.author,
+              description: book.description
             })
           }
         })
@@ -87,7 +89,7 @@ const resolvers = {
       }
 
       await processBooks(books.books)
-      
+
       return ctx.db.mutation.updateBookshelf({
           data: {
             books: {

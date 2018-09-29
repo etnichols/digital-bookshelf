@@ -11,6 +11,7 @@ type Book {
   isbn: String! @unique
   title: String!
   author: String!
+  description: String!
 }
 
 # User should be able to save their own notes on a Book. Where should these live?
