@@ -7,7 +7,6 @@ const OXYGEN_BOLD = 'Oxygen-Bold'
 const CommonStyles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#EDEEF3',
       alignItems: 'center',
       justifyContent: 'space-between',
       marginTop: 50,

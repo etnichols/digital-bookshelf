@@ -1,7 +1,7 @@
 import  gql from 'graphql-tag'
 import React from 'react'
 import { Query } from 'react-apollo'
-import { AsyncStorage, FlatList, ScrollView, StyleSheet, Text, TouchableHighlight, View } from 'react-native'
+import { AsyncStorage, Dimensions, FlatList, ScrollView, StyleSheet, Text, TouchableHighlight, View } from 'react-native'
 
 import AddBookModal from './AddBookModal'
 import Book from './Book'
@@ -17,7 +17,8 @@ export default class Bookshelf extends React.Component {
 
     this.state = {
       modalVisible: false,
-      selectedBook: null
+      selectedBook: null,
+      index: null,
     }
   }
 
@@ -28,23 +29,35 @@ export default class Bookshelf extends React.Component {
           {`Your shelf is empty. Add some books!`}
         </Text> )
     }
-
+    const selectedIndex = this.state.index
     return(
       <FlatList
         horizontal
         ref={ref => this.flatList = ref}
         data={books}
         keyExtractor={(item, index) => item.isbn}
-        renderItem={ ({ item }) =>
-          <Book item={item} onPressItem={this._handleBookSelected} /> }
+        extraData={this.state}
+        renderItem={ ({ item, index }) =>
+          <Book
+            item={item}
+            index={index}
+            isSelected={false}
+            onPressItem={this._handleBookSelected}
+            /> }
       /> )
   }
 
-  _handleBookSelected(book){
+  _handleBookSelected(book, index){
     this.setState({
-      selectedBook: book
+      index: index,
+      selectedBook: book,
+    }, () => {
+      this.flatList.scrollToIndex({
+        index: index,
+        animated: true,
+        viewPosition: 0.5,
+       })
     })
-    console.log('book selected: ' + JSON.stringify(book, null, 2))
   }
 
   _renderSelectedBook(book){
@@ -71,7 +84,7 @@ export default class Bookshelf extends React.Component {
 
   render(){
     const bookshelfId = this.props.navigation.getParam('bookshelfId', 1);
-    // const bookshelfId = `cjmil956x041g0b45loyq2a0e`
+    // const bookshelfId = `cjmmqs07n0cgb0b68h8lnusra`
     const { selectedBook } = this.state
 
     return (
@@ -153,12 +166,12 @@ const styles = StyleSheet.create({
   },
   shelfContainer: {
     flex: 1,
-    marginTop: 20,
+    marginTop: 50,
   },
   selectedBookContainer: {
     flex: 1,
     alignItems: 'stretch',
-    padding: 20,
+    padding: 20
   },
   selectedBookTitle: {
     alignSelf: 'center',
@@ -170,6 +183,8 @@ const styles = StyleSheet.create({
     fontFamily: OXYGEN_REGULAR,
     fontSize: 14,
     margin: 5,
+    lineHeight: 22,
+    alignSelf: 'center'
   }
 })
 
@@ -185,3 +200,5 @@ const BOOKSHELF_QUERY = gql`
     }
   }
 `
+
+// getItemLayout={(data, index) => ({length: Dimensions.get('window').width / 5, offset: Dimensions.get('window').width / 5 * index, index})}

@@ -6,15 +6,15 @@ export default class Book extends React.Component {
     super(props)
     this._onPress = this._onPress.bind(this)
   }
+
   _onPress(){
-    console.log('pressed book fuck yeah')
-    this.props.onPressItem(this.props.item);
+    this.props.onPressItem(this.props.item, this.props.index);
   }
 
   render(){
     return (
         <TouchableHighlight onPress={this._onPress}>
-          <View style={styles.book}>
+          <View style={this.props.isSelected ? styles.selectedBook : styles.book }>
             <Text style={styles.bookTitle}>{`${this.props.item.title}`}</Text>
             <Text style={styles.bookAuthor}>{`${this.props.item.author}`}</Text>
             <Text style={styles.bookIsbn}>{`${this.props.item.isbn}`}</Text>
@@ -23,7 +23,7 @@ export default class Book extends React.Component {
     )
   }
 }
-
+const SELECTED_SCALER = 1.5
 const styles = StyleSheet.create({
   bookTitle: {
     flexWrap: 'wrap',
@@ -44,6 +44,15 @@ const styles = StyleSheet.create({
   book: {
     height: 250,
     width: 150,
+    backgroundColor: '#22556E',
+    padding: 20,
+    marginHorizontal: 10,
+    marginVertical: 10,
+    borderRadius: 5,
+  },
+  selectedBook: {
+    height: Math.floor(250 * 1.5 /* 375 */),
+    width: Math.floor(150 * 1.5 /* 300 */),
     backgroundColor: '#22556E',
     padding: 20,
     marginHorizontal: 10,

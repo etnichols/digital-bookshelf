@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     marginBottom: -10,
     backgroundColor: '#A86355',
     alignSelf: 'stretch',
-    height: 20,
+    height: 15,
     borderRadius: 3,
   },
   supportsContainer: {
