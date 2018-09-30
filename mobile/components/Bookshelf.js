@@ -12,8 +12,8 @@ export default class Bookshelf extends React.Component {
   constructor(props){
     super(props)
 
-    // const bookshelfId = this.props.navigation.getParam('bookshelfId', 1);
-    this._bookshelfId = `cjmmqs07n0cgb0b68h8lnusra`
+    // This default value is a hack to always load 'p' user shelf for testing.
+    this._bookshelfId = props.navigation.getParam('bookshelfId', 'cjmmqs07n0cgb0b68h8lnusra');
 
     this._hideModal = this._hideModal.bind(this)
     this._handleBookSelected = this._handleBookSelected.bind(this)
@@ -111,12 +111,10 @@ export default class Bookshelf extends React.Component {
     }
 
   render(){
-    // const bookshelfId = this.props.navigation.getParam('bookshelfId', 1);
-    const bookshelfId = `cjmmqs07n0cgb0b68h8lnusra`
     const { selectedBook } = this.state
 
     return (
-      <Query query={BOOKSHELF_QUERY} variables={{id: bookshelfId}}>
+      <Query query={BOOKSHELF_QUERY} variables={{id: this._bookshelfId}}>
         { ( { data, loading, error, refetch } ) => {
           if(loading){
             return (
@@ -143,7 +141,7 @@ export default class Bookshelf extends React.Component {
               </View>
               <BookshelfLedge />
               <AddBookModal
-                bookshelfId={bookshelfId}
+                bookshelfId={this._bookshelfId}
                 modalVisible={this.state.modalVisible}
                 callback={() => {
                   this.setState({
