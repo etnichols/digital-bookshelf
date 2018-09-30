@@ -17,6 +17,14 @@ const CommonStyles = StyleSheet.create({
       alignItems: 'stretch',
       padding: 20,
     },
+    smallCancelButton: {
+      borderRadius: 30,
+      borderColor: '#008B8B',
+      borderWidth: 2,
+      paddingHorizontal: 60,
+      paddingVertical: 5,
+      margin: 10,
+    },
     cancelButton: {
       borderRadius: 30,
       borderColor: '#008B8B',

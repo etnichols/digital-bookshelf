@@ -1,6 +1,6 @@
 import  gql from 'graphql-tag'
 import React from 'react'
-import { Query } from 'react-apollo'
+import { Query, Mutation } from 'react-apollo'
 import { AsyncStorage, Dimensions, FlatList, ScrollView, StyleSheet, Text, TouchableHighlight, View } from 'react-native'
 
 import AddBookModal from './AddBookModal'
@@ -9,8 +9,11 @@ import BookshelfLedge from './BookshelfLedge'
 import { CommonStyles, OXYGEN_BOLD, OXYGEN_REGULAR, OXYGEN_MONO_REGULAR } from './CommonStyles'
 
 export default class Bookshelf extends React.Component {
-  constructor(){
-    super()
+  constructor(props){
+    super(props)
+
+    // const bookshelfId = this.props.navigation.getParam('bookshelfId', 1);
+    this._bookshelfId = `cjmmqs07n0cgb0b68h8lnusra`
 
     this._hideModal = this._hideModal.bind(this)
     this._handleBookSelected = this._handleBookSelected.bind(this)
@@ -60,13 +63,38 @@ export default class Bookshelf extends React.Component {
     })
   }
 
-  _renderSelectedBook(book){
+  _renderSelectedBook(book, refetch){
     if(book){
       return (
-        <View style={styles.selectedBookContainer}>
-          <Text style={styles.selectedBookTitle}>{book.title}</Text>
-          <Text style={styles.selectedBookDescription}>{book.description}</Text>
-        </View>
+        <Mutation mutation={REMOVE_BOOK_MUTATION} >
+        { (removeBookMutation, {data, loading, error}) => {
+          return (
+            <View style={styles.selectedBookContainer}>
+              <Text style={styles.selectedBookTitle}>{book.title}</Text>
+              <Text style={styles.selectedBookDescription}>{book.description}</Text>
+              <TouchableHighlight style={styles.deleteButton} onPress={ async e => {
+                try {
+                  const response = await removeBookMutation({
+                    variables: {
+                      bookshelfId: this._bookshelfId,
+                      isbn: book.isbn
+                    }
+                  })
+                  console.log('remove book success, refetching...')
+                  this.setState({
+                    selectedBook: null,
+                    index: null
+                  }, refetch)
+                  // Do some stuff to respond to the deletion
+                } catch(e){
+                  console.log('error removing book from shelf: ' + e)
+                }
+              }}>
+              <Text style={styles.deleteButtonText}>Delete Book</Text>
+              </TouchableHighlight>
+            </View> )
+          }}
+        </Mutation>
       )
     }
   }
@@ -83,8 +111,8 @@ export default class Bookshelf extends React.Component {
     }
 
   render(){
-    const bookshelfId = this.props.navigation.getParam('bookshelfId', 1);
-    // const bookshelfId = `cjmmqs07n0cgb0b68h8lnusra`
+    // const bookshelfId = this.props.navigation.getParam('bookshelfId', 1);
+    const bookshelfId = `cjmmqs07n0cgb0b68h8lnusra`
     const { selectedBook } = this.state
 
     return (
@@ -126,7 +154,7 @@ export default class Bookshelf extends React.Component {
                 }}
                 />
 
-              {this._renderSelectedBook(selectedBook)}
+              {this._renderSelectedBook(selectedBook, refetch)}
 
               <TouchableHighlight
                 style={CommonStyles.button}
@@ -166,7 +194,7 @@ const styles = StyleSheet.create({
   },
   shelfContainer: {
     flex: 1,
-    marginTop: 50,
+    marginTop: 20,
   },
   selectedBookContainer: {
     flex: 1,
@@ -185,8 +213,37 @@ const styles = StyleSheet.create({
     margin: 5,
     lineHeight: 22,
     alignSelf: 'center'
-  }
+  },
+  deleteButtonText: {
+    fontFamily: OXYGEN_REGULAR,
+    fontSize: 14,
+    padding: 5,
+    color: 'red',
+    alignSelf: 'center',
+    justifyContent: 'center',
+  },
+  deleteButton: {
+    width: 200,
+    borderRadius: 30,
+    borderColor: 'red',
+    borderWidth: 1,
+    paddingHorizontal: 40,
+    paddingVertical: 6,
+    alignSelf: 'center',
+    marginTop: 10
+  },
 })
+
+const REMOVE_BOOK_MUTATION = gql`
+  mutation RemoveBookFromShelfMutation(
+    $bookshelfId: ID!,
+    $isbn: String! ) {
+      removeBookFromShelf(
+        bookshelfId: $bookshelfId,
+        isbn: $isbn ) {
+          id
+        }
+    }`
 
 const BOOKSHELF_QUERY = gql`
   query BookshelfQuery($id: ID!) {
@@ -200,5 +257,3 @@ const BOOKSHELF_QUERY = gql`
     }
   }
 `
-
-// getItemLayout={(data, index) => ({length: Dimensions.get('window').width / 5, offset: Dimensions.get('window').width / 5 * index, index})}

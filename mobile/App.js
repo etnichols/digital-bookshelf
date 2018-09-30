@@ -113,7 +113,7 @@ export default class App extends React.Component {
       return (
         <ApolloProvider client={this.client}>
         { this.state.fontLoaded ?
-          ( <RootStack /> ) :
+          ( <Bookshelf /> ) :
           ( <Text>Loading!!!...</Text> )
         }
         </ApolloProvider>
