@@ -43,6 +43,7 @@ export default class Bookshelf extends React.Component {
     this.setState({
       index: index,
       selectedBook: book,
+      modalVisible: false,
     }, () => {
       this.flatList.scrollToIndex({
         index: index,
@@ -89,24 +90,18 @@ export default class Bookshelf extends React.Component {
   }
 
   _createBookshelf(books){
-    if(!books.length){
-      return (
-        <Text style={styles.emptyShelfText}>
-          {`Your shelf is empty. Add some books!`}
-        </Text> )
-    }
-
-    // Always concat the add book button to the end of the data.
-
-    // Let's get sneaky with flatList rendering:
-    // append some shit data at end of books:
-
     const booksWithAddButton = books.concat([{
       isButton: true,
       isbn: 'notABookAButton'
     }])
 
-    const selectedIndex = this.state.index
+    // if(!books.length){
+    //   return (
+    //     <Text style={styles.emptyShelfText}>
+    //       {`Your shelf is empty. Add some books!`}
+    //     </Text> )
+    // }
+
     return(
       <FlatList
         horizontal
@@ -115,7 +110,7 @@ export default class Bookshelf extends React.Component {
         keyExtractor={(item, index) => item.isbn}
         extraData={this.state}
         renderItem={ ({ item, index }) => {
-          if(item.isButton){
+          if(item.isButton === true){
             console.log('rendering addbooks button')
             return ( <AddBookButton onPressItem={this._displayModal}/> )
           }

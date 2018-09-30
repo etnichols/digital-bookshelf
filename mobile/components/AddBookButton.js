@@ -17,7 +17,7 @@ export default class AddBookButton extends React.Component {
     return (
         <TouchableHighlight onPress={this._onPress}>
           <View style={styles.book}>
-            <Text style={styles.addText}>{`Add a new Book`}</Text>
+            <Text style={styles.addText}>{`Add one or many Books`}</Text>
             <Text style={styles.addIcon}>{`+`}</Text>
           </View>
         </TouchableHighlight>
