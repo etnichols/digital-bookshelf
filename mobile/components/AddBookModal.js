@@ -182,6 +182,8 @@ export default class AddBookModal extends React.Component {
       })
       const json = await response.json()
 
+      console.log('response from books api: ' + JSON.stringify(json, null, 2))
+
       if(json.totalItems < 1){
         this._displayError(ISBN_NOT_RECOGNIZED_ERROR_MESSAGE)
           return null
@@ -191,11 +193,15 @@ export default class AddBookModal extends React.Component {
         const title = volume.volumeInfo.title
         // TODO: Support multiple authors.
         const author = volume.volumeInfo.authors[0]
+        const description = volume.volumeInfo.description
+
+        console.log('book desc: ' + description)
 
         return {
           author: author,
           title: title,
-          isbn: isbn
+          isbn: isbn,
+          description: description
         }
       } catch(e) {
       console.log('e: ' + e)
@@ -211,8 +217,6 @@ export default class AddBookModal extends React.Component {
       scannedBooks,
       scannerDisabled
      } = this.state
-
-     console.log('scanned books! -> ' + scannedBooks)
 
      const { bookshelfId } = this.props
 

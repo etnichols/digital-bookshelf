@@ -30,6 +30,7 @@ const resolvers = {
             author
             title
             isbn
+            description
           }
         }
         `)
@@ -57,8 +58,6 @@ const resolvers = {
       let createBooks = []
       let connectBooks = []
 
-      console.log('books.books.length: ' + books.books.length)
-
       // An async forEach implementation.
       const asyncForEach = async (array, callback) => {
         for(let i = 0; i < array.length; i++){
@@ -69,25 +68,22 @@ const resolvers = {
       const processBooks = async books => {
         await asyncForEach(books, async book => {
           if(await ctx.db.exists.Book({ isbn: book.isbn })) {
-            console.log('connecting book ' + JSON.stringify(book))
             connectBooks.push({
               isbn: book.isbn
             })
           } else {
-            console.log('creating book ' + JSON.stringify(book))
             createBooks.push({
               isbn: book.isbn,
               title: book.title,
               author: book.author,
+              description: book.description
             })
           }
         })
-        console.log('\n\ncreateBooks: ' + createBooks)
-        console.log('connectBooks: ' + connectBooks)
       }
 
       await processBooks(books.books)
-      
+
       return ctx.db.mutation.updateBookshelf({
           data: {
             books: {
@@ -111,6 +107,20 @@ const resolvers = {
           title
         }
       }`)
+    },
+    async removeBookFromShelf(parent, { bookshelfId, isbn }, ctx, info){
+      console.log('removing book from shelf')
+      // updating the bookshelf.
+      return ctx.db.mutation.updateBookshelf({
+        data: {
+          books: {
+            disconnect: [{ isbn: isbn }]
+          }
+        },
+        where: {
+          id: bookshelfId
+        }
+      }, info)
     },
     async createAccount(parent, { firstName, lastName, email, password }, ctx, info) {
       const hashedPassword = await bcrypt.hash(password, 10)
@@ -170,8 +180,6 @@ const resolvers = {
       if(!bookshelves.length){
         throw new Error('No bookshelf for user')
       }
-
-      console.log('num bookshelf for this user: ' + bookshelves.length)
 
       return {
         token: jwt.sign({ userId: user.id }, APP_SECRET),

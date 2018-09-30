@@ -6,15 +6,16 @@ import { HttpLink, createHttpLink } from 'apollo-link-http'
 import { Font } from 'expo'
 import React from 'react'
 import { ApolloProvider, withApollo } from 'react-apollo'
-import { createStackNavigator } from 'react-navigation'
+import { createStackNavigator, createSwitchNavigator } from 'react-navigation'
 import { AppRegistry, AsyncStorage, StyleSheet, Text, View } from 'react-native'
 
 import { CommonStyles } from './components/CommonStyles'
 
+import AuthLoadingScreen from './components/AuthLoadingScreen'
 import Bookshelf from './components/Bookshelf'
 import CreateAccount from './components/CreateAccount'
 import Launch from './components/Launch'
-import Login from './components/Login'
+import LoginForm from './components/LoginForm'
 import Profile from './components/Profile'
 
 const LOCAL_HOST = `http://192.168.0.4:4000`
@@ -57,24 +58,24 @@ const getApolloClient = () => {
   return client
 }
 
-const RootStack = createStackNavigator({
+const AuthStack = createStackNavigator({
+  Launch: {
+    screen: Launch
+  },
+  CreateAccount: {
+    screen: CreateAccount
+  }
+})
+
+const AppStack = createStackNavigator({
   Bookshelf: {
     screen: Bookshelf
   },
-  Launch: {
-    screen: Launch
-   },
-  Login: {
-    screen: Login
-   },
-  CreateAccount: {
-    screen: CreateAccount
-   },
   Profile: {
     screen: Profile
   }
 },{
-  initialRouteName: 'Launch',
+  initialRouteName: 'Bookshelf',
   headerMode: 'screen',
   navigationOptions: {
     headerStyle: {
@@ -87,23 +88,30 @@ const RootStack = createStackNavigator({
   },
 })
 
+const RootStack = createSwitchNavigator({
+  App: { screen: AppStack },
+  Auth: { screen: AuthStack },
+  AuthLoading: { screen: AuthLoadingScreen }
+}, {
+  initialRouteName: 'AuthLoading'
+})
+
 export default class App extends React.Component {
   constructor() {
     super()
+    this._apolloClient = getApolloClient()
     this.state = {
       fontLoaded: false,
     }
-    this.client = getApolloClient()
   }
 
- async componentWillMount() {
+  async componentWillMount() {
     await Font.loadAsync({
         'Oxygen-Bold': require('./assets/fonts/Oxygen-Bold.ttf'),
         'Oxygen-Light': require('./assets/fonts/Oxygen-Light.ttf'),
         'Oxygen-Regular': require('./assets/fonts/Oxygen-Regular.ttf'),
         'OxygenMono-Regular': require('./assets/fonts/OxygenMono-Regular.ttf')
       })
-
       this.setState({
         fontLoaded: true
       })
@@ -111,7 +119,7 @@ export default class App extends React.Component {
 
   render() {
       return (
-        <ApolloProvider client={this.client}>
+        <ApolloProvider client={this._apolloClient}>
         { this.state.fontLoaded ?
           ( <RootStack /> ) :
           ( <Text>Loading...</Text> )

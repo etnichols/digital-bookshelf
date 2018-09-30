@@ -9,10 +9,8 @@ export default class ScannedBook extends React.Component {
     // Truncate the Title if needed
     let cleanTitle
     if(title.length > 35){
-      console.log('title > 35: ' + title.length)
       cleanTitle = title.split('').slice(0,30).concat(['.','.','.']).join('')
     } else {
-      console.log('title < 35: ' + title.length)
       cleanTitle = title
     }
     return cleanTitle

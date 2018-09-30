@@ -1,5 +1,5 @@
 # source: https://eu1.prisma.sh/public-junglepig-932/digital-bookshelf/dev
-# timestamp: Fri Sep 21 2018 02:55:48 GMT-0400 (EDT)
+# timestamp: Fri Sep 28 2018 20:56:26 GMT-0400 (EDT)
 
 type AggregateBook {
   count: Int!
@@ -27,6 +27,7 @@ type Book implements Node {
   isbn: String!
   title: String!
   author: String!
+  description: String!
 }
 
 """A connection to a list of items."""
@@ -43,6 +44,7 @@ input BookCreateInput {
   isbn: String!
   title: String!
   author: String!
+  description: String!
 }
 
 input BookCreateManyInput {
@@ -73,6 +75,8 @@ enum BookOrderByInput {
   title_DESC
   author_ASC
   author_DESC
+  description_ASC
+  description_DESC
   updatedAt_ASC
   updatedAt_DESC
   createdAt_ASC
@@ -84,12 +88,13 @@ type BookPreviousValues {
   isbn: String!
   title: String!
   author: String!
+  description: String!
 }
 
 type BookReview implements Node {
   id: ID!
-  author(where: UserWhereInput): User!
-  book(where: BookWhereInput): Book!
+  author: User!
+  book: Book!
   review: String!
 }
 
@@ -278,7 +283,7 @@ input BookReviewWhereUniqueInput {
 
 type Bookshelf implements Node {
   id: ID!
-  owner(where: UserWhereInput): User!
+  owner: User!
   books(where: BookWhereInput, orderBy: BookOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Book!]
 }
 
@@ -465,12 +470,14 @@ input BookUpdateDataInput {
   isbn: String
   title: String
   author: String
+  description: String
 }
 
 input BookUpdateInput {
   isbn: String
   title: String
   author: String
+  description: String
 }
 
 input BookUpdateManyInput {
@@ -674,6 +681,46 @@ input BookWhereInput {
 
   """All values not ending with the given string."""
   author_not_ends_with: String
+  description: String
+
+  """All values that are not equal to given value."""
+  description_not: String
+
+  """All values that are contained in given list."""
+  description_in: [String!]
+
+  """All values that are not contained in given list."""
+  description_not_in: [String!]
+
+  """All values less than the given value."""
+  description_lt: String
+
+  """All values less than or equal the given value."""
+  description_lte: String
+
+  """All values greater than the given value."""
+  description_gt: String
+
+  """All values greater than or equal the given value."""
+  description_gte: String
+
+  """All values containing the given string."""
+  description_contains: String
+
+  """All values not containing the given string."""
+  description_not_contains: String
+
+  """All values starting with the given string."""
+  description_starts_with: String
+
+  """All values not starting with the given string."""
+  description_not_starts_with: String
+
+  """All values ending with the given string."""
+  description_ends_with: String
+
+  """All values not ending with the given string."""
+  description_not_ends_with: String
 }
 
 input BookWhereUniqueInput {
