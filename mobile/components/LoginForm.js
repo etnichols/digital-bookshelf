@@ -4,7 +4,7 @@ import  gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
 import { StyleSheet, Text, View, TouchableHighlight, AsyncStorage, ScrollView } from 'react-native';
 import t from 'tcomb-form-native';
-import { CommonStyles } from './CommonStyles'
+import { CommonStyles, BLUE_HEX } from './CommonStyles'
 
 let Form = t.form.Form
 
@@ -20,7 +20,7 @@ let options = {
   }
 }
 
-class Login extends React.Component {
+export default class LoginForm extends React.Component {
 
   static navigationOptions = {
       title: 'Login'
@@ -36,12 +36,15 @@ class Login extends React.Component {
             password: ''
           },
           hasError: false,
-          errorMessage: ''
+          errorMessage: null
         }
   }
 
   onChange(value){
-    this.setState({value: value, hasError: false})
+    this.setState({
+      value: value,
+      hasError: false,
+      errorMessage: null})
   }
 
   render(){
@@ -51,7 +54,7 @@ class Login extends React.Component {
       <Mutation mutation={LOGIN_MUTATION}>
       { (loginMutation, { data, loading, error }) => {
         return (
-          <ScrollView contentContainerStyle={CommonStyles.formContainer}>
+          <View style={styles.loginContainer}>
             <Form
               ref="form"
               type={User}
@@ -83,13 +86,20 @@ class Login extends React.Component {
               <Text style={CommonStyles.buttonText}>Login</Text>
             </TouchableHighlight>
             {hasError && <Text style={CommonStyles.errorText}>{errorMessage}</Text>}
-          </ScrollView>
+          </View>
         )
       }}
       </Mutation>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  loginContainer: {
+    padding: 10,
+    margin: 10,
+  },
+})
 
 const LOGIN_MUTATION = gql`
   mutation LoginMutation(
@@ -106,5 +116,3 @@ const LOGIN_MUTATION = gql`
         }
   }
 `
-
-export default Login

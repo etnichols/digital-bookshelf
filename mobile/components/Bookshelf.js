@@ -3,6 +3,7 @@ import React from 'react'
 import { Query, Mutation } from 'react-apollo'
 import { AsyncStorage, Dimensions, FlatList, ScrollView, StyleSheet, Text, TouchableHighlight, View } from 'react-native'
 
+import AddBookButton from './AddBookButton'
 import AddBookModal from './AddBookModal'
 import Book from './Book'
 import BookshelfLedge from './BookshelfLedge'
@@ -16,6 +17,7 @@ export default class Bookshelf extends React.Component {
     this._bookshelfId = props.navigation.getParam('bookshelfId', 'cjmmqs07n0cgb0b68h8lnusra');
 
     this._hideModal = this._hideModal.bind(this)
+    this._displayModal = this._displayModal.bind(this)
     this._handleBookSelected = this._handleBookSelected.bind(this)
 
     this.state = {
@@ -25,29 +27,16 @@ export default class Bookshelf extends React.Component {
     }
   }
 
-  _createBookshelf(books){
-    if(!books.length){
-      return (
-        <Text style={styles.emptyShelfText}>
-          {`Your shelf is empty. Add some books!`}
-        </Text> )
-    }
-    const selectedIndex = this.state.index
-    return(
-      <FlatList
-        horizontal
-        ref={ref => this.flatList = ref}
-        data={books}
-        keyExtractor={(item, index) => item.isbn}
-        extraData={this.state}
-        renderItem={ ({ item, index }) =>
-          <Book
-            item={item}
-            index={index}
-            isSelected={false}
-            onPressItem={this._handleBookSelected}
-            /> }
-      /> )
+  _hideModal() {
+    this.setState({
+      modalVisible: false,
+    })
+  }
+
+  _displayModal(){
+    this.setState({
+      modalVisible: true,
+    })
   }
 
   _handleBookSelected(book, index){
@@ -99,16 +88,50 @@ export default class Bookshelf extends React.Component {
     }
   }
 
-  _hideModal() {
-    this.setState({
-      modalVisible: false,
-    })
+  _createBookshelf(books){
+    if(!books.length){
+      return (
+        <Text style={styles.emptyShelfText}>
+          {`Your shelf is empty. Add some books!`}
+        </Text> )
+    }
+
+    // Always concat the add book button to the end of the data.
+
+    // Let's get sneaky with flatList rendering:
+    // append some shit data at end of books:
+
+    const booksWithAddButton = books.concat([{
+      isButton: true,
+      isbn: 'notABookAButton'
+    }])
+
+    const selectedIndex = this.state.index
+    return(
+      <FlatList
+        horizontal
+        ref={ref => this.flatList = ref}
+        data={booksWithAddButton}
+        keyExtractor={(item, index) => item.isbn}
+        extraData={this.state}
+        renderItem={ ({ item, index }) => {
+          if(item.isButton){
+            console.log('rendering addbooks button')
+            return ( <AddBookButton onPressItem={this._displayModal}/> )
+          }
+          return ( <Book
+            item={item}
+            index={index}
+            isSelected={false}
+            onPressItem={this._handleBookSelected}
+            /> )
+          }}
+      />)
   }
 
   static navigationOptions = {
-      title: 'Your Bookshelf',
-      headerLeft: null
-    }
+    title: 'Your Bookshelf'
+  }
 
   render(){
     const { selectedBook } = this.state
