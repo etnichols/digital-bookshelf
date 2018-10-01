@@ -13,9 +13,7 @@ export default class Bookshelf extends React.Component {
   constructor(props){
     super(props)
 
-    // This default value is a hack to always load 'p' user shelf for testing.
-    this._bookshelfId = props.navigation.getParam('bookshelfId', 'cjmmqs07n0cgb0b68h8lnusra');
-
+    this._bookshelfId = props.navigation.getParam('bookshelfId', 1);
     this._hideModal = this._hideModal.bind(this)
     this._displayModal = this._displayModal.bind(this)
     this._handleBookSelected = this._handleBookSelected.bind(this)
@@ -95,13 +93,6 @@ export default class Bookshelf extends React.Component {
       isbn: 'notABookAButton'
     }])
 
-    // if(!books.length){
-    //   return (
-    //     <Text style={styles.emptyShelfText}>
-    //       {`Your shelf is empty. Add some books!`}
-    //     </Text> )
-    // }
-
     return(
       <FlatList
         horizontal
@@ -125,7 +116,15 @@ export default class Bookshelf extends React.Component {
   }
 
   static navigationOptions = {
-    title: 'Your Bookshelf'
+    title: 'Your Bookshelf',
+    drawerLabel: 'Bookshelf',
+    headerStyle: {
+      backgroundColor: '#008B8B',
+    },
+    headerTintColor: '#fff',
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    }
   }
 
   render(){
@@ -154,6 +153,7 @@ export default class Bookshelf extends React.Component {
 
           return (
             <ScrollView contentContainerstyle={CommonStyles.container}>
+            <Text style={CommonStyles.screenTitle}>Your Bookshelf</Text>
               <View style={styles.shelfContainer}>
                 {this._createBookshelf(data.bookshelf.books)}
               </View>
@@ -169,27 +169,7 @@ export default class Bookshelf extends React.Component {
                   })
                 }}
                 />
-
               {this._renderSelectedBook(selectedBook, refetch)}
-
-              <TouchableHighlight
-                style={CommonStyles.button}
-                onPress={ () => {
-                  this.setState({
-                    modalVisible: true
-                  })
-                }} >
-                <Text style={CommonStyles.buttonText}>{'Add Books'}</Text>
-              </TouchableHighlight>
-
-              <TouchableHighlight
-                style={CommonStyles.button}
-                onPress={ async () => {
-                  await AsyncStorage.removeItem('dbtoken')
-                  this.props.navigation.navigate('Launch')
-                }} >
-                <Text style={CommonStyles.buttonText}>{'Logout'}</Text>
-              </TouchableHighlight>
             </ScrollView> )
         }
       }

@@ -16,7 +16,9 @@ let User = t.struct({
 let options = {
   fields: {
     email: { autoCapitalize: 'none' },
-    password: { secureTextEntry: true }
+    password: {
+      secureTextEntry: true,
+     }
   }
 }
 
@@ -60,12 +62,14 @@ export default class LoginForm extends React.Component {
               type={User}
               value={this.state.value}
               onChange={this.onChange}
-              options={options}/>
+              options={options}
+            />
+            { hasError &&
+              <Text style={CommonStyles.errorText}>{errorMessage}</Text> }
             <TouchableHighlight
               style={CommonStyles.button}
               onPress={async e => {
                 const formData = this.state.value
-                console.log('formData: ' + JSON.stringify(formData, null, 2))
                 try {
                   const response = await loginMutation({variables: formData})
                   const token = response.data.login.token
@@ -76,7 +80,7 @@ export default class LoginForm extends React.Component {
                     })
                   }
                 } catch(e){
-                  console.log('Error: ' + JSON.stringify(e, null, 2))
+                  console.log('Login error: ' + JSON.stringify(e, null, 2))
                   this.setState({
                     hasError: true,
                     errorMessage: e.message
@@ -85,7 +89,6 @@ export default class LoginForm extends React.Component {
             }}>
               <Text style={CommonStyles.buttonText}>Login</Text>
             </TouchableHighlight>
-            {hasError && <Text style={CommonStyles.errorText}>{errorMessage}</Text>}
           </View>
         )
       }}

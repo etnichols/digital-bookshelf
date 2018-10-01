@@ -1,100 +1,13 @@
-import ApolloClient from 'apollo-client'
-import { ApolloLink } from 'apollo-link'
-import { setContext } from 'apollo-link-context'
-import { InMemoryCache } from 'apollo-cache-inmemory'
-import { HttpLink, createHttpLink } from 'apollo-link-http'
 import { Font } from 'expo'
 import React from 'react'
 import { ApolloProvider, withApollo } from 'react-apollo'
 import { createStackNavigator, createSwitchNavigator } from 'react-navigation'
 import { AppRegistry, AsyncStorage, StyleSheet, Text, View } from 'react-native'
 
+import RootStack from './components/RootStack'
+import { getApolloClient } from './utils/getApolloClient'
+
 import { CommonStyles } from './components/CommonStyles'
-
-import AuthLoadingScreen from './components/AuthLoadingScreen'
-import Bookshelf from './components/Bookshelf'
-import CreateAccount from './components/CreateAccount'
-import Launch from './components/Launch'
-import LoginForm from './components/LoginForm'
-import Profile from './components/Profile'
-
-const LOCAL_HOST = `http://192.168.0.4:4000`
-// const LOCAL_HOST = `http://localhost:4000`
-
-const httpLink = createHttpLink({
-  uri: LOCAL_HOST
-})
-
-const asyncAuthLink = setContext( async (_, { headers } ) => {
-  try {
-    const token = await AsyncStorage.getItem('dbtoken')
-
-    if(headers){
-      return {
-        headers: {
-          ...headers,
-          Authorization: token ? `Bearer ${token}` : '',
-        }
-      }
-    } else {
-      return {
-        headers: {
-          Authorization: token ? `Bearer ${token}` : ''
-        }
-      }
-    }
-  }
-  catch(e){
-    console.log('error fetching token from AsyncStorage: ' + e)
-  }
-})
-
-
-const getApolloClient = () => {
-  const client = new ApolloClient({
-    link: asyncAuthLink.concat(httpLink),
-    cache: new InMemoryCache()
-  })
-  return client
-}
-
-const AuthStack = createStackNavigator({
-  Launch: {
-    screen: Launch
-  },
-  CreateAccount: {
-    screen: CreateAccount
-  }
-})
-
-const AppStack = createStackNavigator({
-  Bookshelf: {
-    screen: Bookshelf
-  },
-  Profile: {
-    screen: Profile
-  }
-},{
-  initialRouteName: 'Bookshelf',
-  headerMode: 'screen',
-  navigationOptions: {
-    headerStyle: {
-      backgroundColor: '#008B8B',
-    },
-    headerTintColor: '#fff',
-    headerTitleStyle: {
-      fontWeight: 'bold',
-    }
-  },
-})
-
-const RootStack = createSwitchNavigator({
-  App: { screen: AppStack },
-  Auth: { screen: AuthStack },
-  AuthLoading: { screen: AuthLoadingScreen }
-}, {
-  initialRouteName: 'AuthLoading'
-})
 
 export default class App extends React.Component {
   constructor() {
@@ -106,6 +19,9 @@ export default class App extends React.Component {
   }
 
   async componentWillMount() {
+    // Testing: uncomment to reset hardware storage
+    await AsyncStorage.removeItem('dbtoken')
+
     await Font.loadAsync({
         'Oxygen-Bold': require('./assets/fonts/Oxygen-Bold.ttf'),
         'Oxygen-Light': require('./assets/fonts/Oxygen-Light.ttf'),

@@ -29,8 +29,7 @@ export default class Launch extends React.Component {
 
 const styles = StyleSheet.create({
   header: {
-    paddingTop: 25,
-    paddingBottom: 100,
+    paddingVertical: 80,
     fontFamily: OXYGEN_MONO_REGULAR,
     fontSize: 32,
     alignSelf: 'center',
@@ -38,8 +37,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'stretch',
-    marginTop: 50,
-    padding: 10,
+    paddingTop: 50,
+    paddingHorizontal: 10,
+    backgroundColor: '#fff'
   },
   createAccountButtonText: {
     fontFamily: OXYGEN_REGULAR,
@@ -50,10 +50,3 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 })
-
-// <TouchableHighlight
-//   style={CommonStyles.button}
-//   title="Login"
-//   onPress={() => this.props.navigation.navigate('Login')}>
-//   <Text style={CommonStyles.buttonText}>Login</Text>
-// </TouchableHighlight>

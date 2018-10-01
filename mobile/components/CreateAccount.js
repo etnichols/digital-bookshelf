@@ -17,8 +17,14 @@ let User = t.struct({
 
 let options = {
   fields: {
-    password: { secureTextEntry: true },
-    email: { autoCapitalize: 'none' }
+    password: {
+      secureTextEntry: true,
+      help: 'Must be at least 8 characters in length.'
+    },
+    email: {
+      autoCapitalize: 'none',
+      error: 'Insert a valid email.' 
+   }
   }
 }
 
