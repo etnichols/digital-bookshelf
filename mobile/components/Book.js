@@ -49,14 +49,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     marginVertical: 10,
     borderRadius: 5,
-  },
-  selectedBook: {
-    height: Math.floor(250 * 1.5 /* 375 */),
-    width: Math.floor(150 * 1.5 /* 300 */),
-    backgroundColor: '#22556E',
-    padding: 20,
-    marginHorizontal: 10,
-    marginVertical: 10,
-    borderRadius: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 1, height: 1},
+    shadowOpacity: 0.2,
   }
 })

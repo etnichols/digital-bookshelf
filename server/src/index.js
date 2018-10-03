@@ -9,6 +9,10 @@ const resolvers = {
     user(parent, { id }, ctx, info) {
       return ctx.db.query.user({ where: { id: id } }, info)
     },
+    me(parent, args, ctx, info) {
+      const userId = getUserId(ctx)
+      return ctx.db.query.user({ where: { id: userId } }, info)
+    },
     users(parent, args, ctx, info) {
       return ctx.db.query.users()
     },

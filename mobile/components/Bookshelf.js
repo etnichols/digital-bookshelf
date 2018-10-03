@@ -102,7 +102,6 @@ export default class Bookshelf extends React.Component {
         extraData={this.state}
         renderItem={ ({ item, index }) => {
           if(item.isButton === true){
-            console.log('rendering addbooks button')
             return ( <AddBookButton onPressItem={this._displayModal}/> )
           }
           return ( <Book

@@ -1,4 +1,4 @@
-import  gql from 'graphql-tag'
+import gql from 'graphql-tag'
 import React from 'react'
 import { Mutation } from 'react-apollo'
 import { AsyncStorage, ScrollView, StyleSheet, Text, TouchableHighlight, View  } from 'react-native'
@@ -8,22 +8,36 @@ import { CommonStyles } from './CommonStyles'
 
 let Form = t.form.Form
 
-let User = t.struct({
-  firstName: t.String,
-  lastName: t.String,
-  email: t.String,
-  password: t.String
+const Email = t.refinement(t.String, email => {
+  const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  return re.test(String(email).toLowerCase())
 })
 
-let options = {
+const Name = t.refinement(t.String, name => name.length > 1)
+const Password = t.refinement(t.String, password => password.length > 7)
+
+let User = t.struct({
+  firstName: Name,
+  lastName: Name,
+  email: Email,
+  password: Password
+})
+
+const options = {
   fields: {
-    password: {
-      secureTextEntry: true,
-      help: 'Must be at least 8 characters in length.'
+    firstName: {
+      error: 'Name must be at least 2 characters long.'
+    },
+    lastName: {
+      error: 'Name must be at least 2 characters long.'
     },
     email: {
       autoCapitalize: 'none',
-      error: 'Insert a valid email.' 
+      error: 'Invalid email.'
+   },
+   password: {
+     secureTextEntry: true,
+     help: 'Must be at least 8 characters long.',
    }
   }
 }
@@ -63,30 +77,33 @@ export default class CreateAccount extends React.Component {
         return (
           <ScrollView contentContainerStyle={CommonStyles.formContainer}>
             <Form
-              ref="form"
+              ref={ref => this.form = ref}
               type={User}
               value={this.state.value}
               onChange={this.onChange}
-              options={options}/>
+              options={options}
+            />
             <TouchableHighlight
               style={CommonStyles.button}
               onPress={async e => {
-                const formData = this.state.value
-                try {
-                  const response = await createUserAndBookshelf({variables: formData})
-                  const token = response.data.createAccount.token
-                  if(token){
-                    await AsyncStorage.setItem('dbtoken', token)
-                    this.props.navigation.navigate('Bookshelf', {
-                      bookshelfId: response.data.createAccount.bookshelf.id
+                const formData = this.form.getValue()
+                if(formData){
+                  try {
+                    const response = await createUserAndBookshelf({variables: formData})
+                    const token = response.data.createAccount.token
+                    if(token){
+                      await AsyncStorage.setItem('dbtoken', token)
+                      this.props.navigation.navigate('Bookshelf', {
+                        bookshelfId: response.data.createAccount.bookshelf.id
+                      })
+                    }
+                  } catch(e){
+                    console.log('Error: ' + JSON.stringify(e, null, 2))
+                    this.setState({
+                      hasError: true,
+                      errorMessage: e.message
                     })
                   }
-                } catch(e){
-                  console.log('Error: ' + JSON.stringify(e, null, 2))
-                  this.setState({
-                    hasError: true,
-                    errorMessage: e.message
-                  })
                 }
               }}>
               <Text style={CommonStyles.buttonText}>Create Account</Text>

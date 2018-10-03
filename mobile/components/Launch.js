@@ -20,7 +20,7 @@ export default class Launch extends React.Component {
         <TouchableHighlight
           title="Create an Account"
           onPress={() => this.props.navigation.navigate('CreateAccount')}>
-          <Text style={styles.createAccountButtonText}>Create an Account</Text>
+          <Text style={CommonStyles.callToActionText}>Create an Account</Text>
         </TouchableHighlight>
       </View>
     )

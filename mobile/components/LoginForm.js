@@ -8,14 +8,22 @@ import { CommonStyles, BLUE_HEX } from './CommonStyles'
 
 let Form = t.form.Form
 
+const Email = t.refinement(t.String, email => {
+  const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  return re.test(String(email).toLowerCase())
+})
+
 let User = t.struct({
-  email: t.String,
+  email: Email,
   password: t.String
 })
 
 let options = {
   fields: {
-    email: { autoCapitalize: 'none' },
+    email: {
+      autoCapitalize: 'none',
+      error: 'Please enter a valid email.'
+    },
     password: {
       secureTextEntry: true,
      }

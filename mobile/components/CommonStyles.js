@@ -10,7 +10,6 @@ const CommonStyles = StyleSheet.create({
     container: {
       flex: 1,
       alignItems: 'stretch',
-      paddingTop: 100,
     },
     formContainer: {
       backgroundColor: '#fff',
@@ -101,11 +100,19 @@ const CommonStyles = StyleSheet.create({
       alignSelf: 'center'
     },
     screenTitle: {
-      paddingTop: 80,
+      paddingTop: 60,
       fontFamily: OXYGEN_MONO_REGULAR,
       fontSize: 24,
       alignSelf: 'center',
-    }
+    },
+    callToActionText: {
+      fontFamily: OXYGEN_REGULAR,
+      fontSize: 16,
+      padding: 10,
+      color: BLUE_HEX,
+      alignSelf: 'center',
+      justifyContent: 'center',
+    },
 })
 
 module.exports = {
