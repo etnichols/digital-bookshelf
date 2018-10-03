@@ -82,6 +82,7 @@ export default class LoginForm extends React.Component {
                   const response = await loginMutation({variables: formData})
                   const token = response.data.login.token
                   if(token){
+                    console.log(token)
                     await AsyncStorage.setItem('dbtoken', token)
                     this.props.navigation.navigate('Bookshelf', {
                       bookshelfId: response.data.login.bookshelfId

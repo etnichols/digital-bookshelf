@@ -5,6 +5,7 @@ const OXYGEN_REGULAR = 'Oxygen-Regular'
 const OXYGEN_BOLD = 'Oxygen-Bold'
 const BLUE_HEX = '#008B8B'
 const BOOK_COLOR_HEX = '#22556E'
+const LIGHT_GREEN_HEX = '#50CF88'
 
 const CommonStyles = StyleSheet.create({
     container: {
@@ -103,7 +104,7 @@ const CommonStyles = StyleSheet.create({
       paddingTop: 60,
       fontFamily: OXYGEN_MONO_REGULAR,
       fontSize: 24,
-      alignSelf: 'center',
+      marginLeft: 20,
     },
     callToActionText: {
       fontFamily: OXYGEN_REGULAR,
@@ -120,5 +121,6 @@ module.exports = {
    OXYGEN_REGULAR: OXYGEN_REGULAR,
    OXYGEN_BOLD: OXYGEN_BOLD,
    BLUE_HEX: BLUE_HEX,
+   LIGHT_GREEN_HEX: LIGHT_GREEN_HEX,
    CommonStyles: CommonStyles
 }

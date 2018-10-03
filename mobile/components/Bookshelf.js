@@ -1,11 +1,12 @@
 import  gql from 'graphql-tag'
 import React from 'react'
-import { Query, Mutation } from 'react-apollo'
+import { Query } from 'react-apollo'
 import { AsyncStorage, Dimensions, FlatList, ScrollView, StyleSheet, Text, TouchableHighlight, View } from 'react-native'
 
 import AddBookButton from './AddBookButton'
 import AddBookModal from './AddBookModal'
 import Book from './Book'
+import SelectedBook from './SelectedBook'
 import BookshelfLedge from './BookshelfLedge'
 import { CommonStyles, OXYGEN_BOLD, OXYGEN_REGULAR, OXYGEN_MONO_REGULAR } from './CommonStyles'
 
@@ -13,7 +14,8 @@ export default class Bookshelf extends React.Component {
   constructor(props){
     super(props)
 
-    this._bookshelfId = props.navigation.getParam('bookshelfId', 1);
+    // this._bookshelfId = props.navigation.getParam('bookshelfId', 1);
+    this._bookshelfId = `cjmsh4r0k1o3y0b38n4q9degd`
     this._hideModal = this._hideModal.bind(this)
     this._displayModal = this._displayModal.bind(this)
     this._handleBookSelected = this._handleBookSelected.bind(this)
@@ -168,7 +170,16 @@ export default class Bookshelf extends React.Component {
                   })
                 }}
                 />
-              {this._renderSelectedBook(selectedBook, refetch)}
+                <SelectedBook
+                  book={selectedBook}
+                  bookshelfId={this._bookshelfId}
+                  onDeleteCallback={() => {
+                    this.setState({
+                      selectedBook: null,
+                      index: null
+                    }, refetch)
+                  }}
+                />
             </ScrollView> )
         }
       }
@@ -228,17 +239,6 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
 })
-
-const REMOVE_BOOK_MUTATION = gql`
-  mutation RemoveBookFromShelfMutation(
-    $bookshelfId: ID!,
-    $isbn: String! ) {
-      removeBookFromShelf(
-        bookshelfId: $bookshelfId,
-        isbn: $isbn ) {
-          id
-        }
-    }`
 
 const BOOKSHELF_QUERY = gql`
   query BookshelfQuery($id: ID!) {
