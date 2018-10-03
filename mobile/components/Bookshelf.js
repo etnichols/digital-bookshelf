@@ -117,8 +117,8 @@ export default class Bookshelf extends React.Component {
   }
 
   static navigationOptions = {
-    title: 'Your Bookshelf',
-    drawerLabel: 'Bookshelf',
+    title: 'Bookshelves',
+    drawerLabel: 'Bookshelves',
     headerStyle: {
       backgroundColor: '#008B8B',
     },
@@ -154,7 +154,7 @@ export default class Bookshelf extends React.Component {
 
           return (
             <ScrollView contentContainerstyle={CommonStyles.container}>
-            <Text style={CommonStyles.screenTitle}>Your Bookshelf</Text>
+            <Text style={CommonStyles.screenTitle}>Bookshelves</Text>
               <View style={styles.shelfContainer}>
                 {this._createBookshelf(data.bookshelf.books)}
               </View>
@@ -201,43 +201,7 @@ const styles = StyleSheet.create({
   shelfContainer: {
     flex: 1,
     marginTop: 20,
-  },
-  selectedBookContainer: {
-    flex: 1,
-    alignItems: 'stretch',
-    padding: 20
-  },
-  selectedBookTitle: {
-    alignSelf: 'center',
-    fontFamily: OXYGEN_BOLD,
-    fontSize: 18,
-    margin: 5,
-  },
-  selectedBookDescription: {
-    fontFamily: OXYGEN_REGULAR,
-    fontSize: 14,
-    margin: 5,
-    lineHeight: 22,
-    alignSelf: 'center'
-  },
-  deleteButtonText: {
-    fontFamily: OXYGEN_REGULAR,
-    fontSize: 14,
-    padding: 5,
-    color: 'red',
-    alignSelf: 'center',
-    justifyContent: 'center',
-  },
-  deleteButton: {
-    width: 200,
-    borderRadius: 30,
-    borderColor: 'red',
-    borderWidth: 1,
-    paddingHorizontal: 40,
-    paddingVertical: 6,
-    alignSelf: 'center',
-    marginTop: 10
-  },
+  }
 })
 
 const BOOKSHELF_QUERY = gql`

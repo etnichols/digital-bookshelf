@@ -5,22 +5,15 @@ import { AsyncStorage, StyleSheet, Text, TouchableHighlight, View } from 'react-
 
 import { CommonStyles, BLUE_HEX, OXYGEN_BOLD, OXYGEN_REGULAR, OXYGEN_MONO_REGULAR } from './CommonStyles'
 
-export default class Profile extends React.Component {
+export default class Inbox extends React.Component {
   static navigationOptions = {
-    title: 'Profile',
-    drawerLabel: 'Profile',
+    drawerLabel: 'Inbooks',
   }
 
-  renderProfile(user){
+  renderInbox(user){
     return (
       <View style={styles.profileContainer}>
       <View style={styles.profilePicture}></View>
-        <Text style={styles.profileTitle}>
-          {`${user.firstName} ${user.lastName}`}
-        </Text>
-        <Text style={styles.profileBody}>
-          {`${user.email}`}
-        </Text>
       </View>
     )
   }
@@ -50,9 +43,9 @@ export default class Profile extends React.Component {
         }
 
         return(
-          <View style={styles.container}>
-          <Text style={CommonStyles.screenTitle}>Your Profile</Text>
-          { this.renderProfile(data.me) }
+          <View style={CommonStyles.container}>
+          <Text style={CommonStyles.screenTitle}>Inbox</Text>
+          { this.renderInbox(data.me) }
             <TouchableHighlight
               style={CommonStyles.button}
               onPress={ async () => {
@@ -70,11 +63,6 @@ export default class Profile extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignSelf: 'stretch',
-    justifyContent: 'space-between',
-  },
   profilePicture: {
     alignSelf: 'center',
     padding: 20,

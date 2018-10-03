@@ -24,7 +24,7 @@ export default class SelectedBook extends React.Component {
           <View style={styles.bookContainer}>
             <Text style={styles.bookTitle}>{book.title}</Text>
             <View style={styles.statusContainer}>
-              <Text style={styles.statusText}>{`Status: Completed`}</Text>
+              <Text style={styles.statusText}>{`Completed`}</Text>
             </View>
             <Text style={styles.bookDescription}>{book.description}</Text>
             <TouchableHighlight style={styles.shareButton} onPress={ async e => {
@@ -67,27 +67,26 @@ const styles = StyleSheet.create({
     margin: 5,
   },
   statusContainer: {
-    backgroundColor: BLUE_HEX,
+    backgroundColor: LIGHT_GREEN_HEX,
     width: 200,
-    height: 25,
+    borderRadius: 6,
   },
   statusText: {
-    padding: 5,
     fontFamily: OXYGEN_BOLD,
     fontSize: 14,
-    color: '#fff'
+    color: '#fff',
+    padding: 6
   },
   bookDescription: {
     fontFamily: OXYGEN_REGULAR,
     fontSize: 14,
     margin: 5,
     lineHeight: 22,
-    alignSelf: 'center'
   },
   deleteButtonText: {
     fontFamily: OXYGEN_REGULAR,
     fontSize: 14,
-    padding: 5,
+    padding: 8,
     color: 'red',
     alignSelf: 'center',
     justifyContent: 'center',
@@ -98,14 +97,13 @@ const styles = StyleSheet.create({
     borderColor: 'red',
     borderWidth: 1,
     paddingHorizontal: 30,
-    paddingVertical: 6,
     marginTop: 10,
     alignSelf: 'center',
   },
   shareButtonText: {
     fontFamily: OXYGEN_REGULAR,
     fontSize: 14,
-    padding: 5,
+    padding: 8,
     color: LIGHT_GREEN_HEX,
     alignSelf: 'center',
     justifyContent: 'center',
@@ -116,7 +114,6 @@ const styles = StyleSheet.create({
     borderColor: LIGHT_GREEN_HEX,
     borderWidth: 1,
     paddingHorizontal: 30,
-    paddingVertical: 6,
     marginTop: 10,
     alignSelf: 'center',
   },
