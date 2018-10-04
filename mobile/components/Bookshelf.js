@@ -14,8 +14,8 @@ export default class Bookshelf extends React.Component {
   constructor(props){
     super(props)
 
-    // this._bookshelfId = props.navigation.getParam('bookshelfId', 1);
-    this._bookshelfId = `cjmsh4r0k1o3y0b38n4q9degd`
+    this._bookshelfId = props.navigation.getParam('bookshelfId', 1);
+    // this._bookshelfId = `cjmsh4r0k1o3y0b38n4q9degd`
     this._hideModal = this._hideModal.bind(this)
     this._displayModal = this._displayModal.bind(this)
     this._handleBookSelected = this._handleBookSelected.bind(this)
@@ -208,10 +208,13 @@ const BOOKSHELF_QUERY = gql`
   query BookshelfQuery($id: ID!) {
     bookshelf(id: $id) {
       books {
-        author
-        title
-        isbn
-        description
+        status
+        book {
+          author
+          title
+          isbn
+          description
+        }
       }
     }
   }

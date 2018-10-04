@@ -1,5 +1,4 @@
 # import Post from "./generated/prisma.graphql"
-
 type Query {
   me: User
   users: [User!]!
@@ -44,6 +43,10 @@ input BookInput {
   isbn: String!
   title: String!
   description: String!
+}
+
+input DecoratedBooksInput {
+  status:
 }
 
 input BooksInput {

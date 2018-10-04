@@ -4,7 +4,7 @@ type User {
   lastName: String!
   email: String! @unique
   password: String!
-  confirmationCode: String!
+  confirmationCode: String
 }
 
 type Book {
@@ -18,12 +18,11 @@ type Book {
 type Bookshelf {
   id: ID! @unique
   owner: User!
-  books: [Book!]!
+  books: [UserDecoratedBook!]!
 }
 
-type UserBookProgress {
+type UserDecoratedBook {
   id: ID! @unique
-  user: User!
   book: Book!
   status: BookStatus!
 }

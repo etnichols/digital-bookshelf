@@ -277,7 +277,7 @@ export default class AddBookModal extends React.Component {
                           this.props.callback()
                         } catch(e) {
                           // TODO: Meaningful error handling.
-                          console.log('addBooksMutation error: ' + e)
+                          console.log('addBooksMutation error: ' + JSON.stringify(e, null, 2))
                         }
                       }}>
                     <Text style={CommonStyles.buttonText}>

@@ -1,5 +1,5 @@
 # source: https://eu1.prisma.sh/public-junglepig-932/digital-bookshelf/dev
-# timestamp: Fri Sep 28 2018 20:56:26 GMT-0400 (EDT)
+# timestamp: Wed Oct 03 2018 22:28:30 GMT-0400 (EDT)
 
 type AggregateBook {
   count: Int!
@@ -14,6 +14,10 @@ type AggregateBookshelf {
 }
 
 type AggregateUser {
+  count: Int!
+}
+
+type AggregateUserDecoratedBook {
   count: Int!
 }
 
@@ -45,11 +49,6 @@ input BookCreateInput {
   title: String!
   author: String!
   description: String!
-}
-
-input BookCreateManyInput {
-  create: [BookCreateInput!]
-  connect: [BookWhereUniqueInput!]
 }
 
 input BookCreateOneInput {
@@ -284,7 +283,7 @@ input BookReviewWhereUniqueInput {
 type Bookshelf implements Node {
   id: ID!
   owner: User!
-  books(where: BookWhereInput, orderBy: BookOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Book!]
+  books(where: UserDecoratedBookWhereInput, orderBy: UserDecoratedBookOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [UserDecoratedBook!]
 }
 
 """A connection to a list of items."""
@@ -299,7 +298,7 @@ type BookshelfConnection {
 
 input BookshelfCreateInput {
   owner: UserCreateOneInput!
-  books: BookCreateManyInput
+  books: UserDecoratedBookCreateManyInput
 }
 
 """An edge in a connection."""
@@ -365,7 +364,7 @@ input BookshelfSubscriptionWhereInput {
 
 input BookshelfUpdateInput {
   owner: UserUpdateOneRequiredInput
-  books: BookUpdateManyInput
+  books: UserDecoratedBookUpdateManyInput
 }
 
 input BookshelfWhereInput {
@@ -418,13 +417,20 @@ input BookshelfWhereInput {
   """All values not ending with the given string."""
   id_not_ends_with: ID
   owner: UserWhereInput
-  books_every: BookWhereInput
-  books_some: BookWhereInput
-  books_none: BookWhereInput
+  books_every: UserDecoratedBookWhereInput
+  books_some: UserDecoratedBookWhereInput
+  books_none: UserDecoratedBookWhereInput
 }
 
 input BookshelfWhereUniqueInput {
   id: ID
+}
+
+enum BookStatus {
+  UNKNOWN
+  COMPLETED
+  IN_PROGRESS
+  NOT_STARTED
 }
 
 type BookSubscriptionPayload {
@@ -480,15 +486,6 @@ input BookUpdateInput {
   description: String
 }
 
-input BookUpdateManyInput {
-  create: [BookCreateInput!]
-  connect: [BookWhereUniqueInput!]
-  disconnect: [BookWhereUniqueInput!]
-  delete: [BookWhereUniqueInput!]
-  update: [BookUpdateWithWhereUniqueNestedInput!]
-  upsert: [BookUpsertWithWhereUniqueNestedInput!]
-}
-
 input BookUpdateOneRequiredInput {
   create: BookCreateInput
   connect: BookWhereUniqueInput
@@ -496,18 +493,7 @@ input BookUpdateOneRequiredInput {
   upsert: BookUpsertNestedInput
 }
 
-input BookUpdateWithWhereUniqueNestedInput {
-  where: BookWhereUniqueInput!
-  data: BookUpdateDataInput!
-}
-
 input BookUpsertNestedInput {
-  update: BookUpdateDataInput!
-  create: BookCreateInput!
-}
-
-input BookUpsertWithWhereUniqueNestedInput {
-  where: BookWhereUniqueInput!
   update: BookUpdateDataInput!
   create: BookCreateInput!
 }
@@ -735,30 +721,36 @@ Long can represent values between -(2^63) and 2^63 - 1.
 scalar Long
 
 type Mutation {
-  createBookReview(data: BookReviewCreateInput!): BookReview!
   createBookshelf(data: BookshelfCreateInput!): Bookshelf!
-  createUser(data: UserCreateInput!): User!
+  createBookReview(data: BookReviewCreateInput!): BookReview!
   createBook(data: BookCreateInput!): Book!
-  updateBookReview(data: BookReviewUpdateInput!, where: BookReviewWhereUniqueInput!): BookReview
+  createUser(data: UserCreateInput!): User!
+  createUserDecoratedBook(data: UserDecoratedBookCreateInput!): UserDecoratedBook!
   updateBookshelf(data: BookshelfUpdateInput!, where: BookshelfWhereUniqueInput!): Bookshelf
-  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+  updateBookReview(data: BookReviewUpdateInput!, where: BookReviewWhereUniqueInput!): BookReview
   updateBook(data: BookUpdateInput!, where: BookWhereUniqueInput!): Book
-  deleteBookReview(where: BookReviewWhereUniqueInput!): BookReview
+  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+  updateUserDecoratedBook(data: UserDecoratedBookUpdateInput!, where: UserDecoratedBookWhereUniqueInput!): UserDecoratedBook
   deleteBookshelf(where: BookshelfWhereUniqueInput!): Bookshelf
-  deleteUser(where: UserWhereUniqueInput!): User
+  deleteBookReview(where: BookReviewWhereUniqueInput!): BookReview
   deleteBook(where: BookWhereUniqueInput!): Book
-  upsertBookReview(where: BookReviewWhereUniqueInput!, create: BookReviewCreateInput!, update: BookReviewUpdateInput!): BookReview!
+  deleteUser(where: UserWhereUniqueInput!): User
+  deleteUserDecoratedBook(where: UserDecoratedBookWhereUniqueInput!): UserDecoratedBook
   upsertBookshelf(where: BookshelfWhereUniqueInput!, create: BookshelfCreateInput!, update: BookshelfUpdateInput!): Bookshelf!
-  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
+  upsertBookReview(where: BookReviewWhereUniqueInput!, create: BookReviewCreateInput!, update: BookReviewUpdateInput!): BookReview!
   upsertBook(where: BookWhereUniqueInput!, create: BookCreateInput!, update: BookUpdateInput!): Book!
-  updateManyBookReviews(data: BookReviewUpdateInput!, where: BookReviewWhereInput): BatchPayload!
+  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
+  upsertUserDecoratedBook(where: UserDecoratedBookWhereUniqueInput!, create: UserDecoratedBookCreateInput!, update: UserDecoratedBookUpdateInput!): UserDecoratedBook!
   updateManyBookshelves(data: BookshelfUpdateInput!, where: BookshelfWhereInput): BatchPayload!
-  updateManyUsers(data: UserUpdateInput!, where: UserWhereInput): BatchPayload!
+  updateManyBookReviews(data: BookReviewUpdateInput!, where: BookReviewWhereInput): BatchPayload!
   updateManyBooks(data: BookUpdateInput!, where: BookWhereInput): BatchPayload!
-  deleteManyBookReviews(where: BookReviewWhereInput): BatchPayload!
+  updateManyUsers(data: UserUpdateInput!, where: UserWhereInput): BatchPayload!
+  updateManyUserDecoratedBooks(data: UserDecoratedBookUpdateInput!, where: UserDecoratedBookWhereInput): BatchPayload!
   deleteManyBookshelves(where: BookshelfWhereInput): BatchPayload!
-  deleteManyUsers(where: UserWhereInput): BatchPayload!
+  deleteManyBookReviews(where: BookReviewWhereInput): BatchPayload!
   deleteManyBooks(where: BookWhereInput): BatchPayload!
+  deleteManyUsers(where: UserWhereInput): BatchPayload!
+  deleteManyUserDecoratedBooks(where: UserDecoratedBookWhereInput): BatchPayload!
 }
 
 enum MutationType {
@@ -789,18 +781,21 @@ type PageInfo {
 }
 
 type Query {
-  bookReviews(where: BookReviewWhereInput, orderBy: BookReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [BookReview]!
   bookshelves(where: BookshelfWhereInput, orderBy: BookshelfOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Bookshelf]!
-  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
+  bookReviews(where: BookReviewWhereInput, orderBy: BookReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [BookReview]!
   books(where: BookWhereInput, orderBy: BookOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Book]!
-  bookReview(where: BookReviewWhereUniqueInput!): BookReview
+  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
+  userDecoratedBooks(where: UserDecoratedBookWhereInput, orderBy: UserDecoratedBookOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [UserDecoratedBook]!
   bookshelf(where: BookshelfWhereUniqueInput!): Bookshelf
-  user(where: UserWhereUniqueInput!): User
+  bookReview(where: BookReviewWhereUniqueInput!): BookReview
   book(where: BookWhereUniqueInput!): Book
-  bookReviewsConnection(where: BookReviewWhereInput, orderBy: BookReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BookReviewConnection!
+  user(where: UserWhereUniqueInput!): User
+  userDecoratedBook(where: UserDecoratedBookWhereUniqueInput!): UserDecoratedBook
   bookshelvesConnection(where: BookshelfWhereInput, orderBy: BookshelfOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BookshelfConnection!
-  usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
+  bookReviewsConnection(where: BookReviewWhereInput, orderBy: BookReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BookReviewConnection!
   booksConnection(where: BookWhereInput, orderBy: BookOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BookConnection!
+  usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
+  userDecoratedBooksConnection(where: UserDecoratedBookWhereInput, orderBy: UserDecoratedBookOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserDecoratedBookConnection!
 
   """Fetches an object given its ID"""
   node(
@@ -810,10 +805,11 @@ type Query {
 }
 
 type Subscription {
-  bookReview(where: BookReviewSubscriptionWhereInput): BookReviewSubscriptionPayload
   bookshelf(where: BookshelfSubscriptionWhereInput): BookshelfSubscriptionPayload
-  user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
+  bookReview(where: BookReviewSubscriptionWhereInput): BookReviewSubscriptionPayload
   book(where: BookSubscriptionWhereInput): BookSubscriptionPayload
+  user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
+  userDecoratedBook(where: UserDecoratedBookSubscriptionWhereInput): UserDecoratedBookSubscriptionPayload
 }
 
 type User implements Node {
@@ -822,6 +818,7 @@ type User implements Node {
   lastName: String!
   email: String!
   password: String!
+  confirmationCode: String
 }
 
 """A connection to a list of items."""
@@ -839,11 +836,198 @@ input UserCreateInput {
   lastName: String!
   email: String!
   password: String!
+  confirmationCode: String
 }
 
 input UserCreateOneInput {
   create: UserCreateInput
   connect: UserWhereUniqueInput
+}
+
+type UserDecoratedBook implements Node {
+  id: ID!
+  book: Book!
+  status: BookStatus!
+}
+
+"""A connection to a list of items."""
+type UserDecoratedBookConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [UserDecoratedBookEdge]!
+  aggregate: AggregateUserDecoratedBook!
+}
+
+input UserDecoratedBookCreateInput {
+  status: BookStatus!
+  book: BookCreateOneInput!
+}
+
+input UserDecoratedBookCreateManyInput {
+  create: [UserDecoratedBookCreateInput!]
+  connect: [UserDecoratedBookWhereUniqueInput!]
+}
+
+"""An edge in a connection."""
+type UserDecoratedBookEdge {
+  """The item at the end of the edge."""
+  node: UserDecoratedBook!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum UserDecoratedBookOrderByInput {
+  id_ASC
+  id_DESC
+  status_ASC
+  status_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type UserDecoratedBookPreviousValues {
+  id: ID!
+  status: BookStatus!
+}
+
+type UserDecoratedBookSubscriptionPayload {
+  mutation: MutationType!
+  node: UserDecoratedBook
+  updatedFields: [String!]
+  previousValues: UserDecoratedBookPreviousValues
+}
+
+input UserDecoratedBookSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [UserDecoratedBookSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [UserDecoratedBookSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [UserDecoratedBookSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: UserDecoratedBookWhereInput
+}
+
+input UserDecoratedBookUpdateDataInput {
+  status: BookStatus
+  book: BookUpdateOneRequiredInput
+}
+
+input UserDecoratedBookUpdateInput {
+  status: BookStatus
+  book: BookUpdateOneRequiredInput
+}
+
+input UserDecoratedBookUpdateManyInput {
+  create: [UserDecoratedBookCreateInput!]
+  connect: [UserDecoratedBookWhereUniqueInput!]
+  disconnect: [UserDecoratedBookWhereUniqueInput!]
+  delete: [UserDecoratedBookWhereUniqueInput!]
+  update: [UserDecoratedBookUpdateWithWhereUniqueNestedInput!]
+  upsert: [UserDecoratedBookUpsertWithWhereUniqueNestedInput!]
+}
+
+input UserDecoratedBookUpdateWithWhereUniqueNestedInput {
+  where: UserDecoratedBookWhereUniqueInput!
+  data: UserDecoratedBookUpdateDataInput!
+}
+
+input UserDecoratedBookUpsertWithWhereUniqueNestedInput {
+  where: UserDecoratedBookWhereUniqueInput!
+  update: UserDecoratedBookUpdateDataInput!
+  create: UserDecoratedBookCreateInput!
+}
+
+input UserDecoratedBookWhereInput {
+  """Logical AND on all given filters."""
+  AND: [UserDecoratedBookWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [UserDecoratedBookWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [UserDecoratedBookWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  status: BookStatus
+
+  """All values that are not equal to given value."""
+  status_not: BookStatus
+
+  """All values that are contained in given list."""
+  status_in: [BookStatus!]
+
+  """All values that are not contained in given list."""
+  status_not_in: [BookStatus!]
+  book: BookWhereInput
+}
+
+input UserDecoratedBookWhereUniqueInput {
+  id: ID
 }
 
 """An edge in a connection."""
@@ -866,6 +1050,8 @@ enum UserOrderByInput {
   email_DESC
   password_ASC
   password_DESC
+  confirmationCode_ASC
+  confirmationCode_DESC
   updatedAt_ASC
   updatedAt_DESC
   createdAt_ASC
@@ -878,6 +1064,7 @@ type UserPreviousValues {
   lastName: String!
   email: String!
   password: String!
+  confirmationCode: String
 }
 
 type UserSubscriptionPayload {
@@ -924,6 +1111,7 @@ input UserUpdateDataInput {
   lastName: String
   email: String
   password: String
+  confirmationCode: String
 }
 
 input UserUpdateInput {
@@ -931,6 +1119,7 @@ input UserUpdateInput {
   lastName: String
   email: String
   password: String
+  confirmationCode: String
 }
 
 input UserUpdateOneRequiredInput {
@@ -1154,6 +1343,46 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   password_not_ends_with: String
+  confirmationCode: String
+
+  """All values that are not equal to given value."""
+  confirmationCode_not: String
+
+  """All values that are contained in given list."""
+  confirmationCode_in: [String!]
+
+  """All values that are not contained in given list."""
+  confirmationCode_not_in: [String!]
+
+  """All values less than the given value."""
+  confirmationCode_lt: String
+
+  """All values less than or equal the given value."""
+  confirmationCode_lte: String
+
+  """All values greater than the given value."""
+  confirmationCode_gt: String
+
+  """All values greater than or equal the given value."""
+  confirmationCode_gte: String
+
+  """All values containing the given string."""
+  confirmationCode_contains: String
+
+  """All values not containing the given string."""
+  confirmationCode_not_contains: String
+
+  """All values starting with the given string."""
+  confirmationCode_starts_with: String
+
+  """All values not starting with the given string."""
+  confirmationCode_not_starts_with: String
+
+  """All values ending with the given string."""
+  confirmationCode_ends_with: String
+
+  """All values not ending with the given string."""
+  confirmationCode_not_ends_with: String
 }
 
 input UserWhereUniqueInput {

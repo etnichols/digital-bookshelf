@@ -23,21 +23,24 @@ const resolvers = {
       return ctx.db.query.books()
     },
     async bookshelf(parent, { id }, ctx, info) {
-      const bookshelf = await ctx.db.query.bookshelf({ where: { id: id } }, `
-        {
+      const bookshelf = await ctx.db.query.bookshelf({
+        where: { id: id } },
+        `{
           id
           owner {
             id
           }
           books {
-            id
-            author
-            title
-            isbn
-            description
+            status
+            book {
+              id
+              author
+              title
+              isbn
+              description
+            }
           }
-        }
-        `)
+        }`)
 
       console.log('bookshelf: ' + JSON.stringify(bookshelf))
 
@@ -58,10 +61,6 @@ const resolvers = {
   },
   Mutation: {
     async addBooksToShelf(parent, { books, bookshelfId }, ctx, info){
-      // Split into create and connect.
-      let createBooks = []
-      let connectBooks = []
-
       // An async forEach implementation.
       const asyncForEach = async (array, callback) => {
         for(let i = 0; i < array.length; i++){
@@ -69,48 +68,61 @@ const resolvers = {
         }
       }
 
-      const processBooks = async books => {
-        await asyncForEach(books, async book => {
-          if(await ctx.db.exists.Book({ isbn: book.isbn })) {
-            connectBooks.push({
-              isbn: book.isbn
-            })
-          } else {
-            createBooks.push({
-              isbn: book.isbn,
-              title: book.title,
-              author: book.author,
-              description: book.description
-            })
-          }
-        })
-      }
-
-      await processBooks(books.books)
-
-      return ctx.db.mutation.updateBookshelf({
-          data: {
-            books: {
-              create: createBooks,
-              connect: connectBooks
-            }
-          },
-          where: {
-            id: bookshelfId
-          }
-        }, `{
-        id
-        owner {
-          id
-          email
-        }
-        books {
-          author
-          id
-          isbn
-          title
-        }
-      }`)
+      // let booksToAdd = []
+      // const processBooks = async books => {
+      //   await asyncForEach(books, async book => {
+      //     if( await ctx.db.exists.Book( { isbn: book.isbn } ) ) {
+      //       booksToAdd.push({
+      //         status: NOT_STARTED,
+      //         book: {
+      //           connect: {
+      //             isbn: book.isbn
+      //           }
+      //         }
+      //       })
+      //     } else {
+      //       booksToAdd.push({
+      //         status: NOT_STARTED,
+      //         book: {
+      //           create: {
+      //             isbn: book.isbn,
+      //             title: book.title,
+      //             author: book.author,
+      //             description: book.description
+      //           }
+      //         }
+      //       })
+      //     }
+      //   })
+      // }
+      //
+      // await processBooks(books.books)
+      //
+      // return ctx.db.mutation.updateBookshelf({
+      //     data: {
+      //       books: {
+      //         create: booksToAdd,
+      //       }
+      //     },
+      //     where: {
+      //       id: bookshelfId
+      //     }
+      //   }, `{
+      //   id
+      //   owner {
+      //     id
+      //     email
+      //   }
+      //   books {
+      //     status
+      //     book {
+      //       author
+      //       id
+      //       isbn
+      //       title
+      //     }
+      //   }
+      // }`)
     },
     async removeBookFromShelf(parent, { bookshelfId, isbn }, ctx, info){
       console.log('removing book from shelf')
@@ -149,12 +161,6 @@ const resolvers = {
           id
           email
         }
-        books {
-          author
-          id
-          isbn
-          title
-        }
       }`)
 
       return {
@@ -180,7 +186,6 @@ const resolvers = {
 
       const bookshelves = await
         ctx.db.query.bookshelves({ where: { owner: {id: user.id} }})
-
       if(!bookshelves.length){
         throw new Error('No bookshelf for user')
       }
