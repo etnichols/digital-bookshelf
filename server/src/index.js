@@ -139,7 +139,8 @@ const resolvers = {
               firstName: firstName,
               lastName: lastName,
               email: email,
-              password: hashedPassword
+              password: hashedPassword,
+              confirmationCode: 'sup'
             }
           }
         }
@@ -196,6 +197,7 @@ const resolvers = {
 
 const PRISMA = 'https://eu1.prisma.sh/public-junglepig-932/digital-bookshelf/dev'
 
+// TODO: Understand this server construction better.
 const server = new GraphQLServer({
   typeDefs: './src/schema.graphql',
   resolvers,
