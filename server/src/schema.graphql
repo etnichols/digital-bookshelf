@@ -1,4 +1,4 @@
-# import Post from "./generated/prisma.graphql"
+# import Book from "./generated/prisma.graphql"
 
 type Query {
   me: User
@@ -12,22 +12,26 @@ type Query {
 
 type Mutation {
   addBooksToShelf(books: BooksInput!, bookshelfId: ID!): Bookshelf!
-  removeBookFromShelf(bookshelfId: ID!, isbn: String!): Bookshelf!
-  createAccount(firstName: String!, lastName: String!, email: String!, password: String!): AuthPayload!
+  createAccount(firstName: String!, lastName: String!, phoneNumber: String!, password: String!): CreateAccountPayload!
+  confirmAccount(confirmationCode: String!): ConfirmAccountPayload!
   deleteUser(id: ID!): User
   login(email: String!, password: String!): LoginPayload!
+  removeBookFromShelf(bookshelfId: ID!, isbn: String!): Bookshelf!
 }
 
-type AuthPayload {
+type CreateAccountPayload {
   token: String!
+}
+
+type ConfirmAccountPayload {
   user: User!
-  bookshelf: Bookshelf!
+  bookshelfIds: [ID!]!
 }
 
 type LoginPayload {
   token: String!
   user: User!
-  bookshelfId: ID!
+  bookshelfIds: [ID!]!
 }
 
 # The `User` type is a reduced version ("mask") of the `User` type from the data model (and database schema).

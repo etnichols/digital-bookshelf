@@ -6,10 +6,13 @@ import { DrawerItems, SafeAreaView, createBottomTabNavigator, createDrawerNaviga
 import AuthLoadingScreen from './AuthLoadingScreen'
 import Bookshelf from './Bookshelf'
 import CreateAccount from './CreateAccount'
+import ConfirmAccount from './ConfirmAccount'
 import Inbox from './Inbox'
 import Launch from './Launch'
 import LoginForm from './LoginForm'
 import Profile from './Profile'
+
+import { LIGHT_GREEN_HEX } from './CommonStyles'
 
 const AuthStack = createStackNavigator({
   Launch: {
@@ -17,6 +20,9 @@ const AuthStack = createStackNavigator({
   },
   CreateAccount: {
     screen: CreateAccount
+  },
+  ConfirmAccount: {
+    screen: ConfirmAccount
   }
 },
 {
@@ -45,6 +51,10 @@ const AppTabNavigator = createBottomTabNavigator({
   },
 },{
   initialRouteName: 'Bookshelf',
+  tabBarOptions: {
+    showLabel: false,
+    activeBackgroundColor: LIGHT_GREEN_HEX,
+  }
 })
 
 const RootStack = createSwitchNavigator({

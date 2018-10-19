@@ -1,5 +1,5 @@
 # source: https://eu1.prisma.sh/public-junglepig-932/digital-bookshelf/dev
-# timestamp: Thu Oct 04 2018 00:08:24 GMT-0400 (EDT)
+# timestamp: Thu Oct 18 2018 22:09:48 GMT-0400 (EDT)
 
 type AggregateBook {
   count: Int!
@@ -841,9 +841,11 @@ type User implements Node {
   id: ID!
   firstName: String!
   lastName: String!
-  email: String!
+  email: String
+  phoneNumber: String!
   password: String!
   confirmationCode: String!
+  isConfirmed: Boolean!
 }
 
 type UserBookProgress implements Node {
@@ -1019,9 +1021,11 @@ type UserConnection {
 input UserCreateInput {
   firstName: String!
   lastName: String!
-  email: String!
+  email: String
+  phoneNumber: String!
   password: String!
   confirmationCode: String!
+  isConfirmed: Boolean!
 }
 
 input UserCreateOneInput {
@@ -1047,10 +1051,14 @@ enum UserOrderByInput {
   lastName_DESC
   email_ASC
   email_DESC
+  phoneNumber_ASC
+  phoneNumber_DESC
   password_ASC
   password_DESC
   confirmationCode_ASC
   confirmationCode_DESC
+  isConfirmed_ASC
+  isConfirmed_DESC
   updatedAt_ASC
   updatedAt_DESC
   createdAt_ASC
@@ -1061,9 +1069,11 @@ type UserPreviousValues {
   id: ID!
   firstName: String!
   lastName: String!
-  email: String!
+  email: String
+  phoneNumber: String!
   password: String!
   confirmationCode: String!
+  isConfirmed: Boolean!
 }
 
 type UserSubscriptionPayload {
@@ -1109,16 +1119,20 @@ input UserUpdateDataInput {
   firstName: String
   lastName: String
   email: String
+  phoneNumber: String
   password: String
   confirmationCode: String
+  isConfirmed: Boolean
 }
 
 input UserUpdateInput {
   firstName: String
   lastName: String
   email: String
+  phoneNumber: String
   password: String
   confirmationCode: String
+  isConfirmed: Boolean
 }
 
 input UserUpdateOneRequiredInput {
@@ -1302,6 +1316,46 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   email_not_ends_with: String
+  phoneNumber: String
+
+  """All values that are not equal to given value."""
+  phoneNumber_not: String
+
+  """All values that are contained in given list."""
+  phoneNumber_in: [String!]
+
+  """All values that are not contained in given list."""
+  phoneNumber_not_in: [String!]
+
+  """All values less than the given value."""
+  phoneNumber_lt: String
+
+  """All values less than or equal the given value."""
+  phoneNumber_lte: String
+
+  """All values greater than the given value."""
+  phoneNumber_gt: String
+
+  """All values greater than or equal the given value."""
+  phoneNumber_gte: String
+
+  """All values containing the given string."""
+  phoneNumber_contains: String
+
+  """All values not containing the given string."""
+  phoneNumber_not_contains: String
+
+  """All values starting with the given string."""
+  phoneNumber_starts_with: String
+
+  """All values not starting with the given string."""
+  phoneNumber_not_starts_with: String
+
+  """All values ending with the given string."""
+  phoneNumber_ends_with: String
+
+  """All values not ending with the given string."""
+  phoneNumber_not_ends_with: String
   password: String
 
   """All values that are not equal to given value."""
@@ -1382,9 +1436,14 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   confirmationCode_not_ends_with: String
+  isConfirmed: Boolean
+
+  """All values that are not equal to given value."""
+  isConfirmed_not: Boolean
 }
 
 input UserWhereUniqueInput {
   id: ID
   email: String
+  phoneNumber: String
 }

@@ -126,21 +126,34 @@ const resolvers = {
         }
       }, info)
     },
-    async createAccount(parent, { firstName, lastName, email, password }, ctx, info) {
-      const hashedPassword = await bcrypt.hash(password, 10)
 
-      // Pass in the fields to query on the returned shelf, by default it will
-      // only be scalar. So we need to explicitly tell the mutation which
-      // fields we're interested in to the "info" argument.
+    async confirmAccount(parent, { confirmationCode }, ctx, info) {
+      const userId = getUserId(ctx)
+      console.log('\n\n\nuserId: ' + userId+ '\n\n\n\n')
+
+      // You provided an invalid selector...
+      const user = await ctx.db.query.user({ where: { id: userId } }, `{
+        id
+        confirmationCode
+      }`)
+
+      if(!user){
+        throw new Error('Bad token, no user found.')
+      }
+
+      console.log('conf code real: ' + user.confirmationCode)
+      console.log('conf code submitted: ' + confirmationCode)
+
+      if(confirmationCode !== user.confirmationCode){
+        throw new Error('Wrong confirmation code.')
+      }
+
+      // Make user's first shelf.
       const bookshelf = await ctx.db.mutation.createBookshelf({
         data: {
           owner: {
-            create: {
-              firstName: firstName,
-              lastName: lastName,
-              email: email,
-              password: hashedPassword,
-              confirmationCode: 'sup'
+            connect: {
+              id: user.id
             }
           }
         }
@@ -158,10 +171,41 @@ const resolvers = {
         }
       }`)
 
+      // And update their account.
+      await ctx.db.mutation.updateUser({
+        data: {
+          isConfirmed: true,
+        },
+        where: {
+          id: userId
+        }
+      }, info)
+
+      // Return a login payload.
       return {
-        token: jwt.sign({ userId: bookshelf.owner.id }, APP_SECRET),
-        user: bookshelf.owner,
-        bookshelf: bookshelf
+        user: user,
+        bookshelfIds: [bookshelf.id]
+      }
+    },
+    async createAccount(parent, { firstName, lastName, phoneNumber, password }, ctx, info) {
+      const hashedPassword = await bcrypt.hash(password, 10)
+      const user = await ctx.db.mutation.createUser({
+        data: {
+          firstName: firstName,
+          lastName: lastName,
+          phoneNumber: phoneNumber,
+          password: hashedPassword,
+          confirmationCode: '1234',
+          isConfirmed: false,
+        }
+      }, `{
+        id
+      }`)
+
+      console.log('created Account user: ' + JSON.stringify(user))
+
+      return {
+        token: jwt.sign({ userId: user.id }, APP_SECRET)
       }
     },
     deleteUser(parent, { id }, ctx, info) {
@@ -172,6 +216,11 @@ const resolvers = {
       const user = await ctx.db.query.user({ where: { email: email } } );
       if(!user){
         throw new Error(`No user found for email: ${email}`)
+      }
+
+      // TODO: Add check for isConfirmed, throw error if so.
+      if(!user.isConfirmed){
+        throw new Error(`Account not yet activated.`)
       }
 
       const valid = await bcrypt.compare(password, user.password)
@@ -186,10 +235,11 @@ const resolvers = {
         throw new Error('No bookshelf for user')
       }
 
+      // TODO: Return ALL the users shelf IDs. Not just one.
       return {
         token: jwt.sign({ userId: user.id }, APP_SECRET),
         user: user,
-        bookshelfId: bookshelves[0].id
+        bookshelfId: [bookshelves[0].id]
       }
     },
   },

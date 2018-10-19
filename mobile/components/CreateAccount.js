@@ -15,11 +15,12 @@ const Email = t.refinement(t.String, email => {
 
 const Name = t.refinement(t.String, name => name.length > 1)
 const Password = t.refinement(t.String, password => password.length > 7)
+const PhoneNumber = t.refinement(t.String, number => number.length > 7)
 
 let User = t.struct({
   firstName: Name,
   lastName: Name,
-  email: Email,
+  phoneNumber: PhoneNumber,
   password: Password
 })
 
@@ -31,9 +32,10 @@ const options = {
     lastName: {
       error: 'Name must be at least 2 characters long.'
     },
-    email: {
+    phoneNumber: {
+      placeholder: 'XXX-XXX-XXXX',
       autoCapitalize: 'none',
-      error: 'Invalid email.'
+      error: 'Invalid phone number.'
    },
    password: {
      secureTextEntry: true,
@@ -57,7 +59,7 @@ export default class CreateAccount extends React.Component {
             firstName: '',
             lastName: '',
             email: '',
-            password: ''
+            phoneNumber: ''
           },
           hasError: false,
           errorMessage: ''
@@ -92,10 +94,9 @@ export default class CreateAccount extends React.Component {
                     const response = await createUserAndBookshelf({variables: formData})
                     const token = response.data.createAccount.token
                     if(token){
+                      console.log('create account token: ' + token)
                       await AsyncStorage.setItem('dbtoken', token)
-                      this.props.navigation.navigate('Bookshelf', {
-                        bookshelfId: response.data.createAccount.bookshelf.id
-                      })
+                      this.props.navigation.navigate('ConfirmAccount')
                     }
                   } catch(e){
                     console.log('Error: ' + JSON.stringify(e, null, 2))
@@ -121,20 +122,14 @@ const CREATE_ACCOUNT_MUTATION = gql`
   mutation CreateAccountMutation1(
     $firstName: String!,
     $lastName: String!,
-    $email: String!,
+    $phoneNumber: String!,
     $password: String! ) {
       createAccount(
         firstName: $firstName,
         lastName: $lastName,
-        email: $email,
+        phoneNumber: $phoneNumber,
         password: $password ) {
           token
-          user {
-            id
-          }
-          bookshelf {
-            id
-          }
         }
   }
 `

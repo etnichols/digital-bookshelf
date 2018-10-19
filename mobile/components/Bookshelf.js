@@ -6,16 +6,17 @@ import { AsyncStorage, Dimensions, FlatList, ScrollView, StyleSheet, Text, Touch
 import AddBookButton from './AddBookButton'
 import AddBookModal from './AddBookModal'
 import Book from './Book'
-import SelectedBook from './SelectedBook'
+import BookIcon from './icons/BookshelfIcon'
 import BookshelfLedge from './BookshelfLedge'
+import SelectedBook from './SelectedBook'
 import { CommonStyles, OXYGEN_BOLD, OXYGEN_REGULAR, OXYGEN_MONO_REGULAR } from './CommonStyles'
 
 export default class Bookshelf extends React.Component {
   constructor(props){
     super(props)
 
-    // this._bookshelfId = props.navigation.getParam('bookshelfId', 1);
-    this._bookshelfId = `cjmsh4r0k1o3y0b38n4q9degd`
+    this._bookshelfId = props.navigation.getParam('bookshelfId', 1);
+    // this._bookshelfId = `cjnb3ahzgi18i0b68k7oow0ae`
     this._hideModal = this._hideModal.bind(this)
     this._displayModal = this._displayModal.bind(this)
     this._handleBookSelected = this._handleBookSelected.bind(this)
@@ -117,8 +118,9 @@ export default class Bookshelf extends React.Component {
   }
 
   static navigationOptions = {
-    title: 'Bookshelves',
-    drawerLabel: 'Bookshelves',
+    tabBarIcon: ({focused, horizontal, tintColor }) => {
+      return <BookIcon/>
+    },
     headerStyle: {
       backgroundColor: '#008B8B',
     },

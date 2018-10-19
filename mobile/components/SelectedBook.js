@@ -68,7 +68,6 @@ const styles = StyleSheet.create({
   },
   statusContainer: {
     backgroundColor: LIGHT_GREEN_HEX,
-    width: 200,
     borderRadius: 6,
   },
   statusText: {
