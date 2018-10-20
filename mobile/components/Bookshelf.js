@@ -118,9 +118,7 @@ export default class Bookshelf extends React.Component {
   }
 
   static navigationOptions = {
-    tabBarIcon: ({focused, horizontal, tintColor }) => {
-      return <BookIcon/>
-    },
+    tabBarLabel: 'Bookshelves', 
     headerStyle: {
       backgroundColor: '#008B8B',
     },

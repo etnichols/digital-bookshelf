@@ -6,7 +6,7 @@ const { Context, getUserId, APP_SECRET } = require('./utils')
 
 const resolvers = {
   Query: {
-    user(parent, { id }, ctx, info) {
+    user: (parent, { id }, ctx, info) => {
       return ctx.db.query.user({ where: { id: id } }, info)
     },
     me(parent, args, ctx, info) {
@@ -211,7 +211,11 @@ const resolvers = {
     deleteUser(parent, { id }, ctx, info) {
       return ctx.db.mutation.deleteUser({ where: { id: id } }, info)
     },
-    async login(parent, { email, password }, ctx, info) {
+    async login(parent, { userOrPhone, password }, ctx, info) {
+
+      // TODO: Process the user or phone number.
+
+      // TODO: Match on either or fail.
 
       const user = await ctx.db.query.user({ where: { email: email } } );
       if(!user){

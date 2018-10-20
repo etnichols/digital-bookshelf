@@ -3,7 +3,7 @@
 type Query {
   me: User
   users: [User!]!
-  user: User
+  user(id: ID!): User
   books: [Book!]!
   book(isbn: String!): Book
   bookshelves: [Bookshelf!]
@@ -15,7 +15,7 @@ type Mutation {
   createAccount(firstName: String!, lastName: String!, phoneNumber: String!, password: String!): CreateAccountPayload!
   confirmAccount(confirmationCode: String!): ConfirmAccountPayload!
   deleteUser(id: ID!): User
-  login(email: String!, password: String!): LoginPayload!
+  login(userOrPhone: String!, password: String!): LoginPayload!
   removeBookFromShelf(bookshelfId: ID!, isbn: String!): Bookshelf!
 }
 

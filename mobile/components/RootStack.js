@@ -52,8 +52,7 @@ const AppTabNavigator = createBottomTabNavigator({
 },{
   initialRouteName: 'Bookshelf',
   tabBarOptions: {
-    showLabel: false,
-    activeBackgroundColor: LIGHT_GREEN_HEX,
+    showLabel: true,
   }
 })
 

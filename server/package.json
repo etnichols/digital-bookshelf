@@ -10,7 +10,9 @@
     "bcryptjs": "^2.4.3",
     "graphql-yoga": "1.15.1",
     "jsonwebtoken": "^8.3.0",
-    "prisma-binding": "1.5.19"
+    "nodemailer": "^4.6.8",
+    "prisma-binding": "1.5.19",
+    "react-native-dotenv": "^0.2.0"
   },
   "devDependencies": {
     "graphql-cli": "2.16.5",
