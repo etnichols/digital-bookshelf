@@ -17,6 +17,7 @@ export default class Bookshelf extends React.Component {
     this._hideModal = this._hideModal.bind(this)
     this._displayModal = this._displayModal.bind(this)
     this._handleBookSelected = this._handleBookSelected.bind(this)
+    this._handleBookDeleted = this._handleBookDeleted.bind(this)
     this.state = {
       modalVisible: false,
       selectedBook: null,
@@ -50,41 +51,48 @@ export default class Bookshelf extends React.Component {
     })
   }
 
-  _renderSelectedBook(book, refetch){
-    if(book){
-      return (
-        <Mutation mutation={REMOVE_BOOK_MUTATION} >
-        { (removeBookMutation, {data, loading, error}) => {
-          return (
-            <View style={styles.selectedBookContainer}>
-              <Text style={styles.selectedBookTitle}>{book.title}</Text>
-              <Text style={styles.selectedBookDescription}>{book.description}</Text>
-              <TouchableHighlight style={styles.deleteButton} onPress={ async e => {
-                try {
-                  const response = await removeBookMutation({
-                    variables: {
-                      bookshelfId: this.props.item.id,
-                      isbn: book.isbn
-                    }
-                  })
-                  console.log('remove book success, refetching...')
-                  this.setState({
-                    selectedBook: null,
-                    index: null
-                  }, refetch)
-                  // Do some stuff to respond to the deletion
-                } catch(e){
-                  console.log('error removing book from shelf: ' + e)
-                }
-              }}>
-              <Text style={styles.deleteButtonText}>Delete Book</Text>
-              </TouchableHighlight>
-            </View> )
-          }}
-        </Mutation>
-      )
-    }
+  _handleBookDeleted(){
+    this.setState({
+      selectedBook: null,
+      index: null,
+    })
   }
+
+  // _renderSelectedBook(book, refetch){
+  //   if(book){
+  //     return (
+  //       <Mutation mutation={REMOVE_BOOK_MUTATION} >
+  //       { (removeBookMutation, {data, loading, error}) => {
+  //         return (
+  //           <View style={styles.selectedBookContainer}>
+  //             <Text style={styles.selectedBookTitle}>{book.title}</Text>
+  //             <Text style={styles.selectedBookDescription}>{book.description}</Text>
+  //             <TouchableHighlight style={styles.deleteButton} onPress={ async e => {
+  //               try {
+  //                 const response = await removeBookMutation({
+  //                   variables: {
+  //                     bookshelfId: this.props.item.id,
+  //                     isbn: book.isbn
+  //                   }
+  //                 })
+  //                 console.log('remove book success, refetching...')
+  //                 this.setState({
+  //                   selectedBook: null,
+  //                   index: null
+  //                 }, refetch)
+  //                 // Do some stuff to respond to the deletion
+  //               } catch(e){
+  //                 console.log('error removing book from shelf: ' + e)
+  //               }
+  //             }}>
+  //             <Text style={styles.deleteButtonText}>Delete Book</Text>
+  //             </TouchableHighlight>
+  //           </View> )
+  //         }}
+  //       </Mutation>
+  //     )
+  //   }
+  // }
 
   _createBookshelf(books){
     const booksWithAddButton = books.concat([{
@@ -109,6 +117,7 @@ export default class Bookshelf extends React.Component {
               index={index}
               isSelected={false}
               onPressItem={this._handleBookSelected}
+              onDeleteCallback={this._handleBookDeleted}
             /> )
           }}
       />)
@@ -142,8 +151,6 @@ export default class Bookshelf extends React.Component {
           callback={() => {
             this.setState({
               modalVisible: false,
-            }, () =>{
-              console.log('this is where you need to figure out refetch')
             })
           }}
           />
@@ -154,8 +161,6 @@ export default class Bookshelf extends React.Component {
               this.setState({
                 selectedBook: null,
                 index: null
-              }, () => {
-                console.log('this is where you would refetch')
               })
             }}
           />

@@ -32,6 +32,7 @@ export default class AddBookModal extends React.Component {
     this._removeBook = this._removeBook.bind(this)
     this._renderScannedBook = this._renderScannedBook.bind(this)
     this._requestCameraPermission = this._requestCameraPermission.bind(this)
+    this._updateBookshelfCache = this._updateBookshelfCache.bind(this)
 
     this.state = {
           errorMessage: null,
@@ -208,6 +209,44 @@ export default class AddBookModal extends React.Component {
     }
   }
 
+  _updateBookshelfCache(cache, { data: response }){
+    const {bookshelfId} = this.props
+    const readFragment = cache.readFragment({
+      id: bookshelfId,
+      fragment: gql`
+        fragment myBookFragment on Bookshelf {
+          books {
+            isbn
+            author
+            title
+            description
+          }
+        }`
+    })
+
+    console.log('read fragment from cache: ' + JSON.stringify(readFragment))
+
+    const books = response.addBooksToShelf.books
+    console.log('books response form mutation: ' + books)
+    let updatedFragment = readFragment
+    updatedFragment.books = books
+
+    console.log('updated fragment: ' + JSON.stringify(updatedFragment,null,2))
+    cache.writeFragment({
+      id: bookshelfId,
+      fragment: gql`
+        fragment myBookFragment on Bookshelf {
+          books {
+            isbn
+            author
+            title
+            description
+          }
+        }`,
+      data: updatedFragment
+    })
+  }
+
   render(){
     const {
       errorMessage,
@@ -224,42 +263,7 @@ export default class AddBookModal extends React.Component {
     return (
       <Mutation
         mutation={ADD_BOOKS_MUTATION}
-        update={(cache, { data: response }) => {
-          const readFragment = cache.readFragment({
-            id: bookshelfId,
-            fragment: gql`
-              fragment myBookFragment on Bookshelf {
-                books {
-                  isbn
-                  author
-                  title
-                  description
-                }
-              }`
-          })
-
-          console.log('read fragment from cache: ' + JSON.stringify(readFragment))
-
-          const books = response.addBooksToShelf.books
-          console.log('books response form mutation: ' + books)
-          let updatedFragment = readFragment
-          updatedFragment.books = books
-
-          console.log('updated fragment: ' + JSON.stringify(updatedFragment,null,2))
-          cache.writeFragment({
-            id: bookshelfId,
-            fragment: gql`
-              fragment myBookFragment on Bookshelf {
-                books {
-                  isbn
-                  author
-                  title
-                  description
-                }
-              }`,
-            data: updatedFragment
-          })
-        }}
+        update={this._updateBookshelfCache}
       >
       { (addBooksMutation, { data, loading, error }) => {
         return (

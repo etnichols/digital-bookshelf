@@ -62,7 +62,7 @@ const Mutation = {
     }`)
   },
   removeBookFromShelf: async (parent, { bookshelfId, isbn }, ctx, info) => {
-    return ctx.db.mutation.updateBookshelf({
+    await ctx.db.mutation.updateBookshelf({
       data: {
         books: {
           disconnect: [{ isbn: isbn }]
@@ -72,6 +72,10 @@ const Mutation = {
         id: bookshelfId
       }
     }, info)
+    
+    return {
+      isbn: isbn
+    }
   },
   confirmAccount: async (parent, { confirmationCode }, ctx, info) => {
     const userId = getUserId(ctx)

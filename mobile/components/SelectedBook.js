@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import  gql from 'graphql-tag'
 import React from 'react'
 import { Mutation } from 'react-apollo'
@@ -8,6 +9,43 @@ import { CommonStyles, LIGHT_GREEN_HEX, BLUE_HEX, OXYGEN_BOLD, OXYGEN_REGULAR, O
 export default class SelectedBook extends React.Component {
   constructor(props){
     super(props)
+    this._updateCache = this._updateCache.bind(this)
+  }
+
+  _updateCache(cache, { data: response }){
+    const { bookshelfId, onDeleteCallback } = this.props
+    const readFragment = cache.readFragment({
+      id: bookshelfId,
+      fragment: gql`
+        fragment myBookFragment on Bookshelf {
+          books {
+            isbn
+            author
+            title
+            description
+          }
+        }`
+    })
+
+    // console.log('read fragment from cache: ' + JSON.stringify(readFragment))
+    const removedBookIsbn = response.removeBookFromShelf.isbn
+    _.remove(readFragment.books, {isbn: removedBookIsbn})
+    console.log('updated fragment after remove: ' + JSON.stringify(readFragment,null,2))
+    cache.writeFragment({
+      id: bookshelfId,
+      fragment: gql`
+        fragment myBookFragment on Bookshelf {
+          books {
+            isbn
+            author
+            title
+            description
+          }
+        }`,
+      data: readFragment
+    })
+
+    onDeleteCallback()
   }
 
   render(){
@@ -18,7 +56,10 @@ export default class SelectedBook extends React.Component {
     }
 
     return (
-      <Mutation mutation={REMOVE_BOOK_MUTATION} >
+      <Mutation
+        mutation={REMOVE_BOOK_MUTATION}
+        update={this._updateCache}
+      >
       { (removeBookMutation, {data, loading, error}) => {
         return (
           <View style={styles.bookContainer}>
@@ -28,9 +69,10 @@ export default class SelectedBook extends React.Component {
             </View>
             <Text style={styles.bookDescription}>{book.description}</Text>
             <TouchableHighlight style={styles.shareButton} onPress={ async e => {
+              console.log('You pressed the recommend button')
               // share book logic
             }}>
-            <Text style={styles.shareButtonText}>Recommend</Text>
+              <Text style={styles.shareButtonText}>Recommend</Text>
             </TouchableHighlight>
             <TouchableHighlight style={styles.deleteButton} onPress={ async e => {
               try {
@@ -40,13 +82,11 @@ export default class SelectedBook extends React.Component {
                     isbn: book.isbn
                   }
                 })
-                console.log('remove book success, refetching...')
-                onDeleteCallback();
               } catch(e){
-                console.log('error removing book from shelf: ' + e)
+                console.log('Error removing book from shelf: ' + e)
               }
             }}>
-            <Text style={styles.deleteButtonText}>Delete Book</Text>
+              <Text style={styles.deleteButtonText}>Delete Book</Text>
             </TouchableHighlight>
           </View> )
         }}
@@ -125,6 +165,6 @@ const REMOVE_BOOK_MUTATION = gql`
       removeBookFromShelf(
         bookshelfId: $bookshelfId,
         isbn: $isbn ) {
-          id
+          isbn
         }
     }`
