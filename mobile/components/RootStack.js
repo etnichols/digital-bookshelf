@@ -8,7 +8,7 @@ import Bookshelf from './Bookshelf'
 import Bookshelves from './Bookshelves'
 import CreateAccount from './CreateAccount'
 import ConfirmAccount from './ConfirmAccount'
-import Inbox from './Inbox'
+import Discover from './Discover'
 import Launch from './Launch'
 import LoginForm from './LoginForm'
 import Profile from './Profile'
@@ -40,17 +40,13 @@ const AuthStack = createStackNavigator({
   },
 })
 
-// Bookshelf: {
-//   screen: Bookshelf
-// },
-
 
 const AppTabNavigator = createBottomTabNavigator({
   Bookshelves: {
     screen: Bookshelves,
   },
-  Inbox: {
-    screen: Inbox
+  Discover: {
+    screen: Discover
   },
   Profile: {
     screen: Profile

@@ -13,29 +13,18 @@ import { CommonStyles, OXYGEN_BOLD, OXYGEN_REGULAR, OXYGEN_MONO_REGULAR } from '
 export default class Bookshelves extends React.Component {
   constructor(props){
     super(props)
-    this._userId = props.navigation.getParam('userId', 1);
-    console.log(this._userId +'\n\n\n')
     this.state = {
       bookshelves: null,
     }
   }
 
   static navigationOptions = {
-    tabBarLabel: 'Bookshelves',
-    headerStyle: {
-      backgroundColor: '#008B8B',
-    },
-    headerTintColor: '#fff',
-    headerTitleStyle: {
-      fontWeight: 'bold',
-    }
+    tabBarLabel: 'Your Shelves',
   }
 
   render(){
-    // return (<Text>Test</Text>
-    console.log('this.userId: ' + this._userId)
     return (
-      <Query query={BOOKSHELVES_QUERY} variables={{userId: this._userId}}>
+      <Query query={BOOKSHELVES_QUERY}>
         { ( { data, loading, error, refetch } ) => {
           if(loading){
             return (
@@ -91,8 +80,8 @@ const styles = StyleSheet.create({
 })
 
 const BOOKSHELVES_QUERY = gql`
-  query BookshelvesQuery($userId: ID!) {
-    bookshelvesByUser(userId: $userId) {
+  query BookshelvesQuery {
+    bookshelvesByUser {
       shelves {
           id
           name

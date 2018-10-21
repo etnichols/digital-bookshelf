@@ -29,6 +29,7 @@ export default class Profile extends React.Component {
     return (
       <Query query={PROFILE_QUERY}>
       { ( { data, loading, error, refetch } ) => {
+        console.log('Profile error: ' + JSON.stringify(error, null, 2))
         console.log('Profile data: ' + JSON.stringify(data, null, 2))
 
         if(loading){

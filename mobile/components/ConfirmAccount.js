@@ -7,6 +7,7 @@ import t from 'tcomb-form-native'
 import { CommonStyles } from './CommonStyles'
 
 let Form = t.form.Form
+
 const ConfirmationCode = t.refinement(t.String, code => code.length === 4)
 let Confirmation = t.struct({
   confirmationCode: ConfirmationCode
@@ -14,7 +15,7 @@ let Confirmation = t.struct({
 
 const options = {
   fields: {
-    firstName: {
+    confirmationCode: {
       error: 'Code must be 4 digits long.'
     }
   }
@@ -23,7 +24,8 @@ const options = {
 export default class ConfirmAccount extends React.Component {
 
   static navigationOptions = {
-      title: 'Confirm Account'
+      title: 'Confirm Account',
+      headerLeft: null,
     };
 
   constructor(props){
@@ -61,15 +63,14 @@ export default class ConfirmAccount extends React.Component {
             <TouchableHighlight
               style={CommonStyles.button}
               onPress={async e => {
+                console.log('confirm account button pressed.')
                 const formData = this.form.getValue()
                 if(formData){
                   try {
                     const response = await confirmAccount({variables: formData})
-                    console.log('response!: ' + JSON.stringify(response))
+                    console.log('Confirm account response: ' + JSON.stringify(response))
                     if(response){
-                      this.props.navigation.navigate('Bookshelves', {
-                        userId: response.data.confirmAccount.user.id
-                      })
+                      this.props.navigation.navigate('Bookshelves')
                     }
                   } catch(e){
                     console.log('Error: ' + JSON.stringify(e, null, 2))
@@ -94,8 +95,6 @@ export default class ConfirmAccount extends React.Component {
 const CONFIRM_ACCOUNT_MUTATION = gql`
   mutation ConfirmAccountMutation($confirmationCode: String!) {
       confirmAccount(confirmationCode: $confirmationCode) {
-          user {
-            id
-          }
+        token
       }
   }`

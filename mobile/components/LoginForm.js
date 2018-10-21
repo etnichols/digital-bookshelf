@@ -86,15 +86,21 @@ export default class LoginForm extends React.Component {
                 const formData = this.state.value
                 try {
                   const response = await loginMutation({variables: formData})
+                  console.log('Loginform account response: ' + JSON.stringify(response))
+                  const user = response.data.login.user
                   const token = response.data.login.token
                   if(token){
-                    console.log(token)
                     await AsyncStorage.setItem('dbtoken', token)
-                    this.props.navigation.navigate('Bookshelves', {
-                      userId: response.data.login.user.id
-                    })
+                    if(user){
+                      if(!user.isConfirmed){
+                        this.props.navigation.navigate('ConfirmAccount')
+                      }
+                    } else {
+                      this.props.navigation.navigate('Bookshelves')
+                    }
                   }
                 } catch(e){
+                  // TODO: If incorrect code, show prompt for resending code.
                   console.log('Login error: ' + JSON.stringify(e, null, 2))
                   this.setState({
                     hasError: true,
@@ -128,7 +134,7 @@ const LOGIN_MUTATION = gql`
         password: $password ) {
           token
           user {
-            id
+            isConfirmed
           }
         }
   }

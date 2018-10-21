@@ -6,7 +6,7 @@ type Query {
   user(id: ID!): User
   books: [Book!]!
   book(isbn: String!): Book
-  bookshelvesByUser(userId: ID!): Bookshelves!
+  bookshelvesByUser: Bookshelves!
   bookshelf(id: ID!): Bookshelf
 }
 
@@ -32,17 +32,18 @@ type CreateAccountPayload {
 }
 
 type LoginPayload {
-  token: String!
-  user: User!
+  user: User
+  token: String
 }
 
 # The `User` type is a reduced version ("mask") of the `User` type from the data model (and database schema).
 # It does not expose the `createdAt`, `updatedAt` and `password` fields.
 type User {
+  id: ID!
   firstName: String!
   lastName: String!
-  id: ID!
-  email: String!
+  username: String!
+  isConfirmed: Boolean!
 }
 
 input BookInput {
