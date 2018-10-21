@@ -2,9 +2,12 @@ type User {
   id: ID! @unique
   firstName: String!
   lastName: String!
-  email: String! @unique
+  username: String! @unique
+  email: String @unique
+  phoneNumber: String! @unique
   password: String!
   confirmationCode: String!
+  isConfirmed: Boolean!
 }
 
 type Book {
@@ -17,6 +20,7 @@ type Book {
 
 type Bookshelf {
   id: ID! @unique
+  name: String!
   owner: User!
   books: [Book!]!
 }

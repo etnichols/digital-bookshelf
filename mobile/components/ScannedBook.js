@@ -6,10 +6,15 @@ import { CommonStyles, OXYGEN_BOLD, OXYGEN_REGULAR } from './CommonStyles'
 
 export default class ScannedBook extends React.Component {
   _cleanTitle(title){
-    // Truncate the Title if needed
+    // Truncate the Title if needed.
     let cleanTitle
     if(title.length > 35){
-      cleanTitle = title.split('').slice(0,30).concat(['.','.','.']).join('')
+      cleanTitle = title.split('').slice(0,30)
+      // If we managed to truncate with last character as space, remove it.
+      if(cleanTitle[cleanTitle.length-1] === ' '){
+        cleanTitle.pop()
+      }
+      cleanTitle = cleanTitle.concat(['.','.','.']).join('')
     } else {
       cleanTitle = title
     }

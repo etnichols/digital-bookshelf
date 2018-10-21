@@ -5,9 +5,9 @@ import { AsyncStorage, StyleSheet, Text, TouchableHighlight, View } from 'react-
 
 import { CommonStyles, BLUE_HEX, OXYGEN_BOLD, OXYGEN_REGULAR, OXYGEN_MONO_REGULAR } from './CommonStyles'
 
-export default class Inbox extends React.Component {
+export default class Discover extends React.Component {
   static navigationOptions = {
-    drawerLabel: 'Inbooks',
+    drawerLabel: 'Discover',
   }
 
   renderInbox(user){
@@ -44,7 +44,7 @@ export default class Inbox extends React.Component {
 
         return(
           <View style={CommonStyles.container}>
-          <Text style={CommonStyles.screenTitle}>Inbox</Text>
+          <Text style={CommonStyles.screenTitle}>Discover</Text>
           { this.renderInbox(data.me) }
             <TouchableHighlight
               style={CommonStyles.button}
@@ -94,7 +94,7 @@ const PROFILE_QUERY = gql`
     me {
       firstName
       lastName
-      email
+      username
     }
   }
 `

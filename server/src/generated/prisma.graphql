@@ -1,5 +1,5 @@
 # source: https://eu1.prisma.sh/public-junglepig-932/digital-bookshelf/dev
-# timestamp: Fri Sep 28 2018 20:56:26 GMT-0400 (EDT)
+# timestamp: Sat Oct 20 2018 20:38:55 GMT-0400 (EDT)
 
 type AggregateBook {
   count: Int!
@@ -14,6 +14,10 @@ type AggregateBookshelf {
 }
 
 type AggregateUser {
+  count: Int!
+}
+
+type AggregateUserBookProgress {
   count: Int!
 }
 
@@ -283,6 +287,7 @@ input BookReviewWhereUniqueInput {
 
 type Bookshelf implements Node {
   id: ID!
+  name: String!
   owner: User!
   books(where: BookWhereInput, orderBy: BookOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Book!]
 }
@@ -298,6 +303,7 @@ type BookshelfConnection {
 }
 
 input BookshelfCreateInput {
+  name: String!
   owner: UserCreateOneInput!
   books: BookCreateManyInput
 }
@@ -314,6 +320,8 @@ type BookshelfEdge {
 enum BookshelfOrderByInput {
   id_ASC
   id_DESC
+  name_ASC
+  name_DESC
   updatedAt_ASC
   updatedAt_DESC
   createdAt_ASC
@@ -322,6 +330,7 @@ enum BookshelfOrderByInput {
 
 type BookshelfPreviousValues {
   id: ID!
+  name: String!
 }
 
 type BookshelfSubscriptionPayload {
@@ -364,6 +373,7 @@ input BookshelfSubscriptionWhereInput {
 }
 
 input BookshelfUpdateInput {
+  name: String
   owner: UserUpdateOneRequiredInput
   books: BookUpdateManyInput
 }
@@ -417,6 +427,46 @@ input BookshelfWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
   owner: UserWhereInput
   books_every: BookWhereInput
   books_some: BookWhereInput
@@ -425,6 +475,13 @@ input BookshelfWhereInput {
 
 input BookshelfWhereUniqueInput {
   id: ID
+}
+
+enum BookStatus {
+  UNKNOWN
+  COMPLETED
+  IN_PROGRESS
+  NOT_STARTED
 }
 
 type BookSubscriptionPayload {
@@ -735,28 +792,34 @@ Long can represent values between -(2^63) and 2^63 - 1.
 scalar Long
 
 type Mutation {
-  createBookReview(data: BookReviewCreateInput!): BookReview!
   createBookshelf(data: BookshelfCreateInput!): Bookshelf!
+  createUserBookProgress(data: UserBookProgressCreateInput!): UserBookProgress!
+  createBookReview(data: BookReviewCreateInput!): BookReview!
   createUser(data: UserCreateInput!): User!
   createBook(data: BookCreateInput!): Book!
-  updateBookReview(data: BookReviewUpdateInput!, where: BookReviewWhereUniqueInput!): BookReview
   updateBookshelf(data: BookshelfUpdateInput!, where: BookshelfWhereUniqueInput!): Bookshelf
+  updateUserBookProgress(data: UserBookProgressUpdateInput!, where: UserBookProgressWhereUniqueInput!): UserBookProgress
+  updateBookReview(data: BookReviewUpdateInput!, where: BookReviewWhereUniqueInput!): BookReview
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateBook(data: BookUpdateInput!, where: BookWhereUniqueInput!): Book
-  deleteBookReview(where: BookReviewWhereUniqueInput!): BookReview
   deleteBookshelf(where: BookshelfWhereUniqueInput!): Bookshelf
+  deleteUserBookProgress(where: UserBookProgressWhereUniqueInput!): UserBookProgress
+  deleteBookReview(where: BookReviewWhereUniqueInput!): BookReview
   deleteUser(where: UserWhereUniqueInput!): User
   deleteBook(where: BookWhereUniqueInput!): Book
-  upsertBookReview(where: BookReviewWhereUniqueInput!, create: BookReviewCreateInput!, update: BookReviewUpdateInput!): BookReview!
   upsertBookshelf(where: BookshelfWhereUniqueInput!, create: BookshelfCreateInput!, update: BookshelfUpdateInput!): Bookshelf!
+  upsertUserBookProgress(where: UserBookProgressWhereUniqueInput!, create: UserBookProgressCreateInput!, update: UserBookProgressUpdateInput!): UserBookProgress!
+  upsertBookReview(where: BookReviewWhereUniqueInput!, create: BookReviewCreateInput!, update: BookReviewUpdateInput!): BookReview!
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   upsertBook(where: BookWhereUniqueInput!, create: BookCreateInput!, update: BookUpdateInput!): Book!
-  updateManyBookReviews(data: BookReviewUpdateInput!, where: BookReviewWhereInput): BatchPayload!
   updateManyBookshelves(data: BookshelfUpdateInput!, where: BookshelfWhereInput): BatchPayload!
+  updateManyUserBookProgresses(data: UserBookProgressUpdateInput!, where: UserBookProgressWhereInput): BatchPayload!
+  updateManyBookReviews(data: BookReviewUpdateInput!, where: BookReviewWhereInput): BatchPayload!
   updateManyUsers(data: UserUpdateInput!, where: UserWhereInput): BatchPayload!
   updateManyBooks(data: BookUpdateInput!, where: BookWhereInput): BatchPayload!
-  deleteManyBookReviews(where: BookReviewWhereInput): BatchPayload!
   deleteManyBookshelves(where: BookshelfWhereInput): BatchPayload!
+  deleteManyUserBookProgresses(where: UserBookProgressWhereInput): BatchPayload!
+  deleteManyBookReviews(where: BookReviewWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
   deleteManyBooks(where: BookWhereInput): BatchPayload!
 }
@@ -789,16 +852,19 @@ type PageInfo {
 }
 
 type Query {
-  bookReviews(where: BookReviewWhereInput, orderBy: BookReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [BookReview]!
   bookshelves(where: BookshelfWhereInput, orderBy: BookshelfOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Bookshelf]!
+  userBookProgresses(where: UserBookProgressWhereInput, orderBy: UserBookProgressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [UserBookProgress]!
+  bookReviews(where: BookReviewWhereInput, orderBy: BookReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [BookReview]!
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   books(where: BookWhereInput, orderBy: BookOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Book]!
-  bookReview(where: BookReviewWhereUniqueInput!): BookReview
   bookshelf(where: BookshelfWhereUniqueInput!): Bookshelf
+  userBookProgress(where: UserBookProgressWhereUniqueInput!): UserBookProgress
+  bookReview(where: BookReviewWhereUniqueInput!): BookReview
   user(where: UserWhereUniqueInput!): User
   book(where: BookWhereUniqueInput!): Book
-  bookReviewsConnection(where: BookReviewWhereInput, orderBy: BookReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BookReviewConnection!
   bookshelvesConnection(where: BookshelfWhereInput, orderBy: BookshelfOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BookshelfConnection!
+  userBookProgressesConnection(where: UserBookProgressWhereInput, orderBy: UserBookProgressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserBookProgressConnection!
+  bookReviewsConnection(where: BookReviewWhereInput, orderBy: BookReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BookReviewConnection!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
   booksConnection(where: BookWhereInput, orderBy: BookOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BookConnection!
 
@@ -810,8 +876,9 @@ type Query {
 }
 
 type Subscription {
-  bookReview(where: BookReviewSubscriptionWhereInput): BookReviewSubscriptionPayload
   bookshelf(where: BookshelfSubscriptionWhereInput): BookshelfSubscriptionPayload
+  userBookProgress(where: UserBookProgressSubscriptionWhereInput): UserBookProgressSubscriptionPayload
+  bookReview(where: BookReviewSubscriptionWhereInput): BookReviewSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
   book(where: BookSubscriptionWhereInput): BookSubscriptionPayload
 }
@@ -820,8 +887,172 @@ type User implements Node {
   id: ID!
   firstName: String!
   lastName: String!
-  email: String!
+  username: String!
+  email: String
+  phoneNumber: String!
   password: String!
+  confirmationCode: String!
+  isConfirmed: Boolean!
+}
+
+type UserBookProgress implements Node {
+  id: ID!
+  user: User!
+  book: Book!
+  status: BookStatus!
+}
+
+"""A connection to a list of items."""
+type UserBookProgressConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [UserBookProgressEdge]!
+  aggregate: AggregateUserBookProgress!
+}
+
+input UserBookProgressCreateInput {
+  status: BookStatus!
+  user: UserCreateOneInput!
+  book: BookCreateOneInput!
+}
+
+"""An edge in a connection."""
+type UserBookProgressEdge {
+  """The item at the end of the edge."""
+  node: UserBookProgress!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum UserBookProgressOrderByInput {
+  id_ASC
+  id_DESC
+  status_ASC
+  status_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type UserBookProgressPreviousValues {
+  id: ID!
+  status: BookStatus!
+}
+
+type UserBookProgressSubscriptionPayload {
+  mutation: MutationType!
+  node: UserBookProgress
+  updatedFields: [String!]
+  previousValues: UserBookProgressPreviousValues
+}
+
+input UserBookProgressSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [UserBookProgressSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [UserBookProgressSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [UserBookProgressSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: UserBookProgressWhereInput
+}
+
+input UserBookProgressUpdateInput {
+  status: BookStatus
+  user: UserUpdateOneRequiredInput
+  book: BookUpdateOneRequiredInput
+}
+
+input UserBookProgressWhereInput {
+  """Logical AND on all given filters."""
+  AND: [UserBookProgressWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [UserBookProgressWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [UserBookProgressWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  status: BookStatus
+
+  """All values that are not equal to given value."""
+  status_not: BookStatus
+
+  """All values that are contained in given list."""
+  status_in: [BookStatus!]
+
+  """All values that are not contained in given list."""
+  status_not_in: [BookStatus!]
+  user: UserWhereInput
+  book: BookWhereInput
+}
+
+input UserBookProgressWhereUniqueInput {
+  id: ID
 }
 
 """A connection to a list of items."""
@@ -837,8 +1068,12 @@ type UserConnection {
 input UserCreateInput {
   firstName: String!
   lastName: String!
-  email: String!
+  username: String!
+  email: String
+  phoneNumber: String!
   password: String!
+  confirmationCode: String!
+  isConfirmed: Boolean!
 }
 
 input UserCreateOneInput {
@@ -862,10 +1097,18 @@ enum UserOrderByInput {
   firstName_DESC
   lastName_ASC
   lastName_DESC
+  username_ASC
+  username_DESC
   email_ASC
   email_DESC
+  phoneNumber_ASC
+  phoneNumber_DESC
   password_ASC
   password_DESC
+  confirmationCode_ASC
+  confirmationCode_DESC
+  isConfirmed_ASC
+  isConfirmed_DESC
   updatedAt_ASC
   updatedAt_DESC
   createdAt_ASC
@@ -876,8 +1119,12 @@ type UserPreviousValues {
   id: ID!
   firstName: String!
   lastName: String!
-  email: String!
+  username: String!
+  email: String
+  phoneNumber: String!
   password: String!
+  confirmationCode: String!
+  isConfirmed: Boolean!
 }
 
 type UserSubscriptionPayload {
@@ -922,15 +1169,23 @@ input UserSubscriptionWhereInput {
 input UserUpdateDataInput {
   firstName: String
   lastName: String
+  username: String
   email: String
+  phoneNumber: String
   password: String
+  confirmationCode: String
+  isConfirmed: Boolean
 }
 
 input UserUpdateInput {
   firstName: String
   lastName: String
+  username: String
   email: String
+  phoneNumber: String
   password: String
+  confirmationCode: String
+  isConfirmed: Boolean
 }
 
 input UserUpdateOneRequiredInput {
@@ -1074,6 +1329,46 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   lastName_not_ends_with: String
+  username: String
+
+  """All values that are not equal to given value."""
+  username_not: String
+
+  """All values that are contained in given list."""
+  username_in: [String!]
+
+  """All values that are not contained in given list."""
+  username_not_in: [String!]
+
+  """All values less than the given value."""
+  username_lt: String
+
+  """All values less than or equal the given value."""
+  username_lte: String
+
+  """All values greater than the given value."""
+  username_gt: String
+
+  """All values greater than or equal the given value."""
+  username_gte: String
+
+  """All values containing the given string."""
+  username_contains: String
+
+  """All values not containing the given string."""
+  username_not_contains: String
+
+  """All values starting with the given string."""
+  username_starts_with: String
+
+  """All values not starting with the given string."""
+  username_not_starts_with: String
+
+  """All values ending with the given string."""
+  username_ends_with: String
+
+  """All values not ending with the given string."""
+  username_not_ends_with: String
   email: String
 
   """All values that are not equal to given value."""
@@ -1114,6 +1409,46 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   email_not_ends_with: String
+  phoneNumber: String
+
+  """All values that are not equal to given value."""
+  phoneNumber_not: String
+
+  """All values that are contained in given list."""
+  phoneNumber_in: [String!]
+
+  """All values that are not contained in given list."""
+  phoneNumber_not_in: [String!]
+
+  """All values less than the given value."""
+  phoneNumber_lt: String
+
+  """All values less than or equal the given value."""
+  phoneNumber_lte: String
+
+  """All values greater than the given value."""
+  phoneNumber_gt: String
+
+  """All values greater than or equal the given value."""
+  phoneNumber_gte: String
+
+  """All values containing the given string."""
+  phoneNumber_contains: String
+
+  """All values not containing the given string."""
+  phoneNumber_not_contains: String
+
+  """All values starting with the given string."""
+  phoneNumber_starts_with: String
+
+  """All values not starting with the given string."""
+  phoneNumber_not_starts_with: String
+
+  """All values ending with the given string."""
+  phoneNumber_ends_with: String
+
+  """All values not ending with the given string."""
+  phoneNumber_not_ends_with: String
   password: String
 
   """All values that are not equal to given value."""
@@ -1154,9 +1489,55 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   password_not_ends_with: String
+  confirmationCode: String
+
+  """All values that are not equal to given value."""
+  confirmationCode_not: String
+
+  """All values that are contained in given list."""
+  confirmationCode_in: [String!]
+
+  """All values that are not contained in given list."""
+  confirmationCode_not_in: [String!]
+
+  """All values less than the given value."""
+  confirmationCode_lt: String
+
+  """All values less than or equal the given value."""
+  confirmationCode_lte: String
+
+  """All values greater than the given value."""
+  confirmationCode_gt: String
+
+  """All values greater than or equal the given value."""
+  confirmationCode_gte: String
+
+  """All values containing the given string."""
+  confirmationCode_contains: String
+
+  """All values not containing the given string."""
+  confirmationCode_not_contains: String
+
+  """All values starting with the given string."""
+  confirmationCode_starts_with: String
+
+  """All values not starting with the given string."""
+  confirmationCode_not_starts_with: String
+
+  """All values ending with the given string."""
+  confirmationCode_ends_with: String
+
+  """All values not ending with the given string."""
+  confirmationCode_not_ends_with: String
+  isConfirmed: Boolean
+
+  """All values that are not equal to given value."""
+  isConfirmed_not: Boolean
 }
 
 input UserWhereUniqueInput {
   id: ID
+  username: String
   email: String
+  phoneNumber: String
 }

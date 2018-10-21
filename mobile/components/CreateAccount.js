@@ -1,3 +1,4 @@
+import { SMS } from 'expo'
 import gql from 'graphql-tag'
 import React from 'react'
 import { Mutation } from 'react-apollo'
@@ -13,13 +14,27 @@ const Email = t.refinement(t.String, email => {
   return re.test(String(email).toLowerCase())
 })
 
+/**
+ * Validates a username.
+ *
+ * Valid usernmes: 'jamesbook', 'book.gal', 'bookworm91', '____books____'
+ * Invalid usernames: '....books', 'BIGBOOKS', '.'
+ */
+const Username = t.refinement(t.String, username => {
+  const re = /\w{3,20}/
+  return re.test(String(username))
+})
+
 const Name = t.refinement(t.String, name => name.length > 1)
 const Password = t.refinement(t.String, password => password.length > 7)
+const PhoneNumber = t.refinement(t.String, number => number.length > 7)
 
+// TODO: Confirm password functionality.
 let User = t.struct({
   firstName: Name,
   lastName: Name,
-  email: Email,
+  username: Username,
+  phoneNumber: PhoneNumber,
   password: Password
 })
 
@@ -31,9 +46,15 @@ const options = {
     lastName: {
       error: 'Name must be at least 2 characters long.'
     },
-    email: {
+    username: {
+      error: 'User name must be 2-20 ',
+      autoCapitalize: 'none'
+    },
+    phoneNumber: {
+      placeholder: 'XXX-XXX-XXXX',
       autoCapitalize: 'none',
-      error: 'Invalid email.'
+      keyboardType: 'numeric',
+      error: 'Invalid phone number.'
    },
    password: {
      secureTextEntry: true,
@@ -56,8 +77,10 @@ export default class CreateAccount extends React.Component {
           value: {
             firstName: '',
             lastName: '',
-            email: '',
-            password: ''
+            username: '',
+            phoneNumber: '',
+            password: '',
+
           },
           hasError: false,
           errorMessage: ''
@@ -65,6 +88,7 @@ export default class CreateAccount extends React.Component {
   }
 
   onChange(value){
+    value.username = value.username.toLowerCase()
     this.setState({value: value, hasError: false})
   }
 
@@ -92,10 +116,9 @@ export default class CreateAccount extends React.Component {
                     const response = await createUserAndBookshelf({variables: formData})
                     const token = response.data.createAccount.token
                     if(token){
+                      console.log('create account token: ' + token)
                       await AsyncStorage.setItem('dbtoken', token)
-                      this.props.navigation.navigate('Bookshelf', {
-                        bookshelfId: response.data.createAccount.bookshelf.id
-                      })
+                      this.props.navigation.navigate('ConfirmAccount')
                     }
                   } catch(e){
                     console.log('Error: ' + JSON.stringify(e, null, 2))
@@ -121,20 +144,16 @@ const CREATE_ACCOUNT_MUTATION = gql`
   mutation CreateAccountMutation1(
     $firstName: String!,
     $lastName: String!,
-    $email: String!,
+    $username: String!,
+    $phoneNumber: String!,
     $password: String! ) {
       createAccount(
         firstName: $firstName,
         lastName: $lastName,
-        email: $email,
+        username: $username,
+        phoneNumber: $phoneNumber,
         password: $password ) {
           token
-          user {
-            id
-          }
-          bookshelf {
-            id
-          }
         }
   }
 `

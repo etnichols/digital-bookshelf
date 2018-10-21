@@ -8,21 +8,25 @@ import { CommonStyles, BLUE_HEX } from './CommonStyles'
 
 let Form = t.form.Form
 
-const Email = t.refinement(t.String, email => {
-  const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-  return re.test(String(email).toLowerCase())
+const UserOrPhone = t.refinement(t.String, username => {
+  const reUser = /^[a-z0-9_]([.](?![._])|[a-z0-9]){3,20}[a-z0-9_]$/
+
+  // TODO: User google18n number validator here.
+
+  return re.test(String(username).toLowerCase())
 })
 
-let User = t.struct({
-  email: Email,
+let Login = t.struct({
+  userOrPhone: UserOrPhone,
   password: t.String
 })
 
 let options = {
   fields: {
-    email: {
+    userOrPhone: {
+      label: 'Username or Phone Number',
       autoCapitalize: 'none',
-      error: 'Please enter a valid email.'
+      error: 'Please enter a valid username or phone number.'
     },
     password: {
       secureTextEntry: true,
@@ -42,7 +46,7 @@ export default class LoginForm extends React.Component {
 
     this.state = {
           value: {
-            email: '',
+            userOrPhone: '',
             password: ''
           },
           hasError: false,
@@ -51,10 +55,12 @@ export default class LoginForm extends React.Component {
   }
 
   onChange(value){
+    value.userOrPhone = value.userOrPhone.toLowerCase()
     this.setState({
       value: value,
       hasError: false,
-      errorMessage: null})
+      errorMessage: null
+    })
   }
 
   render(){
@@ -67,7 +73,7 @@ export default class LoginForm extends React.Component {
           <View style={styles.loginContainer}>
             <Form
               ref="form"
-              type={User}
+              type={Login}
               value={this.state.value}
               onChange={this.onChange}
               options={options}
@@ -80,15 +86,21 @@ export default class LoginForm extends React.Component {
                 const formData = this.state.value
                 try {
                   const response = await loginMutation({variables: formData})
+                  console.log('Loginform account response: ' + JSON.stringify(response))
+                  const user = response.data.login.user
                   const token = response.data.login.token
                   if(token){
-                    console.log(token)
                     await AsyncStorage.setItem('dbtoken', token)
-                    this.props.navigation.navigate('Bookshelf', {
-                      bookshelfId: response.data.login.bookshelfId
-                    })
+                    if(user){
+                      if(!user.isConfirmed){
+                        this.props.navigation.navigate('ConfirmAccount')
+                      }
+                    } else {
+                      this.props.navigation.navigate('Bookshelves')
+                    }
                   }
                 } catch(e){
+                  // TODO: If incorrect code, show prompt for resending code.
                   console.log('Login error: ' + JSON.stringify(e, null, 2))
                   this.setState({
                     hasError: true,
@@ -115,16 +127,15 @@ const styles = StyleSheet.create({
 
 const LOGIN_MUTATION = gql`
   mutation LoginMutation(
-    $email: String!,
+    $userOrPhone: String!,
     $password: String! ) {
       login(
-        email: $email,
+        userOrPhone: $userOrPhone,
         password: $password ) {
           token
           user {
-            id
+            isConfirmed
           }
-          bookshelfId
         }
   }
 `

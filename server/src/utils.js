@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 const { Prisma } = require('prisma-binding')
 
+// TODO: Make this an env variable. DO NOT DEPLOY WITH THIS.
 const APP_SECRET = 'secret'
 
 function getUserId(ctx) {
