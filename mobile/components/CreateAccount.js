@@ -144,11 +144,13 @@ const CREATE_ACCOUNT_MUTATION = gql`
   mutation CreateAccountMutation1(
     $firstName: String!,
     $lastName: String!,
+    $username: String!,
     $phoneNumber: String!,
     $password: String! ) {
       createAccount(
         firstName: $firstName,
         lastName: $lastName,
+        username: $username,
         phoneNumber: $phoneNumber,
         password: $password ) {
           token

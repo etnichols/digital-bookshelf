@@ -19,7 +19,7 @@ export default class Profile extends React.Component {
           {`${user.firstName} ${user.lastName}`}
         </Text>
         <Text style={styles.profileBody}>
-          {`${user.email}`}
+          {`${user.username}`}
         </Text>
       </View>
     )
@@ -106,7 +106,7 @@ const PROFILE_QUERY = gql`
     me {
       firstName
       lastName
-      email
+      username
     }
   }
 `

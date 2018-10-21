@@ -2,6 +2,7 @@ type User {
   id: ID! @unique
   firstName: String!
   lastName: String!
+  username: String! @unique
   email: String @unique
   phoneNumber: String! @unique
   password: String!
@@ -19,6 +20,7 @@ type Book {
 
 type Bookshelf {
   id: ID! @unique
+  name: String!
   owner: User!
   books: [Book!]!
 }

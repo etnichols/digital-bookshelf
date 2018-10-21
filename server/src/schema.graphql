@@ -6,13 +6,17 @@ type Query {
   user(id: ID!): User
   books: [Book!]!
   book(isbn: String!): Book
-  bookshelves: [Bookshelf!]
+  bookshelves(id: ID!): [Bookshelf!]
   bookshelf(id: ID!): Bookshelf
 }
 
 type Mutation {
   addBooksToShelf(books: BooksInput!, bookshelfId: ID!): Bookshelf!
-  createAccount(firstName: String!, lastName: String!, phoneNumber: String!, password: String!): CreateAccountPayload!
+  createAccount(firstName: String!,
+                lastName: String!,
+                username: String!,
+                phoneNumber: String!,
+                password: String!): CreateAccountPayload!
   confirmAccount(confirmationCode: String!): ConfirmAccountPayload!
   deleteUser(id: ID!): User
   login(userOrPhone: String!, password: String!): LoginPayload!

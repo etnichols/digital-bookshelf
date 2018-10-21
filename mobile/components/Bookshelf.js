@@ -15,7 +15,7 @@ export default class Bookshelf extends React.Component {
   constructor(props){
     super(props)
 
-    this._bookshelfId = props.navigation.getParam('bookshelfId', 1);
+    // this._userId = props.navigation.getParam('userId', 1);
     // this._bookshelfId = `cjnb3ahzgi18i0b68k7oow0ae`
     this._hideModal = this._hideModal.bind(this)
     this._displayModal = this._displayModal.bind(this)
@@ -118,7 +118,7 @@ export default class Bookshelf extends React.Component {
   }
 
   static navigationOptions = {
-    tabBarLabel: 'Bookshelves', 
+    tabBarLabel: 'Bookshelves',
     headerStyle: {
       backgroundColor: '#008B8B',
     },
@@ -132,7 +132,7 @@ export default class Bookshelf extends React.Component {
     const { selectedBook } = this.state
 
     return (
-      <Query query={BOOKSHELF_QUERY} variables={{id: this._bookshelfId}}>
+      <Query query={BOOKSHELF_QUERY} variables={{id: this._userId}}>
         { ( { data, loading, error, refetch } ) => {
           if(loading){
             return (
@@ -156,7 +156,7 @@ export default class Bookshelf extends React.Component {
             <ScrollView contentContainerstyle={CommonStyles.container}>
             <Text style={CommonStyles.screenTitle}>Bookshelves</Text>
               <View style={styles.shelfContainer}>
-                {this._createBookshelf(data.bookshelf.books)}
+                {this._createBookshelf(this.props.item.books)}
               </View>
               <BookshelfLedge />
               <AddBookModal
@@ -205,8 +205,8 @@ const styles = StyleSheet.create({
 })
 
 const BOOKSHELF_QUERY = gql`
-  query BookshelfQuery($id: ID!) {
-    bookshelf(id: $id) {
+  query BookshelfQuery($userIdid: ID!) {
+    bookshelves(userId: $id) {
       books {
         author
         title

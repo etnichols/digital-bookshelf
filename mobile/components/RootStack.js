@@ -5,6 +5,7 @@ import { DrawerItems, SafeAreaView, createBottomTabNavigator, createDrawerNaviga
 
 import AuthLoadingScreen from './AuthLoadingScreen'
 import Bookshelf from './Bookshelf'
+import Bookshelves from './Bookshelves'
 import CreateAccount from './CreateAccount'
 import ConfirmAccount from './ConfirmAccount'
 import Inbox from './Inbox'
@@ -39,9 +40,14 @@ const AuthStack = createStackNavigator({
   },
 })
 
+// Bookshelf: {
+//   screen: Bookshelf
+// },
+
+
 const AppTabNavigator = createBottomTabNavigator({
-  Bookshelf: {
-    screen: Bookshelf
+  Bookshelves: {
+    screen: Bookshelves,
   },
   Inbox: {
     screen: Inbox
@@ -50,7 +56,7 @@ const AppTabNavigator = createBottomTabNavigator({
     screen: Profile
   },
 },{
-  initialRouteName: 'Bookshelf',
+  initialRouteName: 'Bookshelves',
   tabBarOptions: {
     showLabel: true,
   }

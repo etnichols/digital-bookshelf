@@ -90,8 +90,8 @@ export default class LoginForm extends React.Component {
                   if(token){
                     console.log(token)
                     await AsyncStorage.setItem('dbtoken', token)
-                    this.props.navigation.navigate('Bookshelf', {
-                      bookshelfId: response.data.login.bookshelfId
+                    this.props.navigation.navigate('Bookshelves', {
+                      userId: response.data.login.user.id
                     })
                   }
                 } catch(e){

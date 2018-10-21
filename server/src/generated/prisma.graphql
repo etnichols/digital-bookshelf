@@ -1,5 +1,5 @@
 # source: https://eu1.prisma.sh/public-junglepig-932/digital-bookshelf/dev
-# timestamp: Thu Oct 18 2018 22:09:48 GMT-0400 (EDT)
+# timestamp: Sat Oct 20 2018 20:38:55 GMT-0400 (EDT)
 
 type AggregateBook {
   count: Int!
@@ -287,6 +287,7 @@ input BookReviewWhereUniqueInput {
 
 type Bookshelf implements Node {
   id: ID!
+  name: String!
   owner: User!
   books(where: BookWhereInput, orderBy: BookOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Book!]
 }
@@ -302,6 +303,7 @@ type BookshelfConnection {
 }
 
 input BookshelfCreateInput {
+  name: String!
   owner: UserCreateOneInput!
   books: BookCreateManyInput
 }
@@ -318,6 +320,8 @@ type BookshelfEdge {
 enum BookshelfOrderByInput {
   id_ASC
   id_DESC
+  name_ASC
+  name_DESC
   updatedAt_ASC
   updatedAt_DESC
   createdAt_ASC
@@ -326,6 +330,7 @@ enum BookshelfOrderByInput {
 
 type BookshelfPreviousValues {
   id: ID!
+  name: String!
 }
 
 type BookshelfSubscriptionPayload {
@@ -368,6 +373,7 @@ input BookshelfSubscriptionWhereInput {
 }
 
 input BookshelfUpdateInput {
+  name: String
   owner: UserUpdateOneRequiredInput
   books: BookUpdateManyInput
 }
@@ -421,6 +427,46 @@ input BookshelfWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
   owner: UserWhereInput
   books_every: BookWhereInput
   books_some: BookWhereInput
@@ -841,6 +887,7 @@ type User implements Node {
   id: ID!
   firstName: String!
   lastName: String!
+  username: String!
   email: String
   phoneNumber: String!
   password: String!
@@ -1021,6 +1068,7 @@ type UserConnection {
 input UserCreateInput {
   firstName: String!
   lastName: String!
+  username: String!
   email: String
   phoneNumber: String!
   password: String!
@@ -1049,6 +1097,8 @@ enum UserOrderByInput {
   firstName_DESC
   lastName_ASC
   lastName_DESC
+  username_ASC
+  username_DESC
   email_ASC
   email_DESC
   phoneNumber_ASC
@@ -1069,6 +1119,7 @@ type UserPreviousValues {
   id: ID!
   firstName: String!
   lastName: String!
+  username: String!
   email: String
   phoneNumber: String!
   password: String!
@@ -1118,6 +1169,7 @@ input UserSubscriptionWhereInput {
 input UserUpdateDataInput {
   firstName: String
   lastName: String
+  username: String
   email: String
   phoneNumber: String
   password: String
@@ -1128,6 +1180,7 @@ input UserUpdateDataInput {
 input UserUpdateInput {
   firstName: String
   lastName: String
+  username: String
   email: String
   phoneNumber: String
   password: String
@@ -1276,6 +1329,46 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   lastName_not_ends_with: String
+  username: String
+
+  """All values that are not equal to given value."""
+  username_not: String
+
+  """All values that are contained in given list."""
+  username_in: [String!]
+
+  """All values that are not contained in given list."""
+  username_not_in: [String!]
+
+  """All values less than the given value."""
+  username_lt: String
+
+  """All values less than or equal the given value."""
+  username_lte: String
+
+  """All values greater than the given value."""
+  username_gt: String
+
+  """All values greater than or equal the given value."""
+  username_gte: String
+
+  """All values containing the given string."""
+  username_contains: String
+
+  """All values not containing the given string."""
+  username_not_contains: String
+
+  """All values starting with the given string."""
+  username_starts_with: String
+
+  """All values not starting with the given string."""
+  username_not_starts_with: String
+
+  """All values ending with the given string."""
+  username_ends_with: String
+
+  """All values not ending with the given string."""
+  username_not_ends_with: String
   email: String
 
   """All values that are not equal to given value."""
@@ -1444,6 +1537,7 @@ input UserWhereInput {
 
 input UserWhereUniqueInput {
   id: ID
+  username: String
   email: String
   phoneNumber: String
 }

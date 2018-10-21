@@ -52,9 +52,21 @@ const resolvers = {
        'Invalid permissions, you must be an owner or follower of a bookshelf to access it.',
       )
     },
-    bookshelves(parent, args, ctx, info) {
-      return ctx.db.query.bookshelves()
-    }
+    async bookshelves(parent, { userId }, ctx, info) {
+      console.log('bookshelves id: ' + userId)
+      return ctx.db.query.bookshelves({ where: { owner: { id: userId } } }, `{
+        id
+        title
+        owner {
+          firstName
+          lastName
+        }
+        books {
+          isbn
+          title
+        }
+      }`)
+    },
   },
   Mutation: {
     async addBooksToShelf(parent, { books, bookshelfId }, ctx, info){
@@ -151,6 +163,7 @@ const resolvers = {
       // Make user's first shelf.
       const bookshelf = await ctx.db.mutation.createBookshelf({
         data: {
+          name: 'Your First Shelf',
           owner: {
             connect: {
               id: user.id
@@ -187,12 +200,19 @@ const resolvers = {
         bookshelfIds: [bookshelf.id]
       }
     },
-    async createAccount(parent, { firstName, lastName, phoneNumber, password }, ctx, info) {
+    async createAccount(parent,
+      { firstName,
+        lastName,
+        username,
+        phoneNumber,
+        password },
+        ctx, info) {
       const hashedPassword = await bcrypt.hash(password, 10)
       const user = await ctx.db.mutation.createUser({
         data: {
           firstName: firstName,
           lastName: lastName,
+          username: username,
           phoneNumber: phoneNumber,
           password: hashedPassword,
           confirmationCode: '1234',
@@ -212,28 +232,44 @@ const resolvers = {
       return ctx.db.mutation.deleteUser({ where: { id: id } }, info)
     },
     async login(parent, { userOrPhone, password }, ctx, info) {
+      let user
 
-      // TODO: Process the user or phone number.
+      let userInfo = `{
+        password
+        phoneNumber
+        id
+        isConfirmed
+      }`
 
-      // TODO: Match on either or fail.
-
-      const user = await ctx.db.query.user({ where: { email: email } } );
-      if(!user){
-        throw new Error(`No user found for email: ${email}`)
+      if(isNaN(userOrPhone)){
+        // It's a username.
+        user = await ctx.db.query.user({ where: { username: userOrPhone} } , userInfo)
+      } else {
+        // It's a phone number.
+        // TODO: Validate it's a valid phone number.
+        user = await ctx.db.query.user({ where: { phoneNumber: userOrPhone } }, userInfo )
       }
 
-      // TODO: Add check for isConfirmed, throw error if so.
+      console.log('User: ' + JSON.stringify(user))
+
+      if(!user){
+        throw new Error(`No user found for ${userOrPhone}.`)
+      }
+
       if(!user.isConfirmed){
         throw new Error(`Account not yet activated.`)
       }
 
       const valid = await bcrypt.compare(password, user.password)
+
       if(!valid){
         throw new Error('Invalid password')
       }
 
       const bookshelves = await
-        ctx.db.query.bookshelves({ where: { owner: {id: user.id} }})
+        ctx.db.query.bookshelves({ where: { owner: {id: user.id } } },`{
+          id
+        }`)
 
       if(!bookshelves.length){
         throw new Error('No bookshelf for user')
@@ -243,7 +279,7 @@ const resolvers = {
       return {
         token: jwt.sign({ userId: user.id }, APP_SECRET),
         user: user,
-        bookshelfId: [bookshelves[0].id]
+        bookshelfIds: []
       }
     },
   },

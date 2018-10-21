@@ -67,8 +67,8 @@ export default class ConfirmAccount extends React.Component {
                     const response = await confirmAccount({variables: formData})
                     console.log('response!: ' + JSON.stringify(response))
                     if(response){
-                      this.props.navigation.navigate('Bookshelf', {
-                        bookshelfId: response.data.confirmAccount.bookshelfIds[0]
+                      this.props.navigation.navigate('Bookshelves', {
+                        userId: response.data.confirmAccount.user.id
                       })
                     }
                   } catch(e){
