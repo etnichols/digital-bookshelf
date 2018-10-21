@@ -52,20 +52,28 @@ const resolvers = {
        'Invalid permissions, you must be an owner or follower of a bookshelf to access it.',
       )
     },
-    async bookshelves(parent, { userId }, ctx, info) {
-      console.log('bookshelves id: ' + userId)
-      return ctx.db.query.bookshelves({ where: { owner: { id: userId } } }, `{
+    async bookshelvesByUser(parent, { userId }, ctx, info) {
+      console.log('\n\n\n\nbookshelves id: ' + userId)
+      const shelves = await ctx.db.query.bookshelves({ where: { owner: { id: userId } } }, `{
         id
-        title
+        name
         owner {
           firstName
           lastName
         }
         books {
+          author
           isbn
           title
+          description
         }
       }`)
+
+      console.log(JSON.stringify(shelves,null,2))
+
+      return {
+        shelves: shelves
+      }
     },
   },
   Mutation: {
@@ -250,7 +258,7 @@ const resolvers = {
         user = await ctx.db.query.user({ where: { phoneNumber: userOrPhone } }, userInfo )
       }
 
-      console.log('User: ' + JSON.stringify(user))
+      console.log('LOGIN MUTATION User: ' + JSON.stringify(user))
 
       if(!user){
         throw new Error(`No user found for ${userOrPhone}.`)
@@ -267,19 +275,21 @@ const resolvers = {
       }
 
       const bookshelves = await
-        ctx.db.query.bookshelves({ where: { owner: {id: user.id } } },`{
-          id
-        }`)
+        ctx.db.query.bookshelves({ where: { owner: {id: user.id } } },`{ id }`)
+
+        console.log('typeof bookshelves: ' + typeof(bookshelves))
+        console.log(' bookshelves: ' + JSON.stringify(bookshelves))
 
       if(!bookshelves.length){
         throw new Error('No bookshelf for user')
       }
 
+      console.log('passed error')
+
       // TODO: Return ALL the users shelf IDs. Not just one.
       return {
         token: jwt.sign({ userId: user.id }, APP_SECRET),
-        user: user,
-        bookshelfIds: []
+        user: user
       }
     },
   },

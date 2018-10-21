@@ -94,7 +94,7 @@ const PROFILE_QUERY = gql`
     me {
       firstName
       lastName
-      email
+      username
     }
   }
 `

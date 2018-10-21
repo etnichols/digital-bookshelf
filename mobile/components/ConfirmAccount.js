@@ -97,6 +97,5 @@ const CONFIRM_ACCOUNT_MUTATION = gql`
           user {
             id
           }
-          bookshelfIds
       }
   }`

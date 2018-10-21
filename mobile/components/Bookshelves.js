@@ -4,9 +4,6 @@ import React from 'react'
 import { Query } from 'react-apollo'
 import { AsyncStorage, Dimensions, FlatList, ScrollView, StyleSheet, Text, TouchableHighlight, View } from 'react-native'
 
-import AddBookButton from './AddBookButton'
-import AddBookModal from './AddBookModal'
-import Book from './Book'
 import Bookshelf from './Bookshelf'
 import BookIcon from './icons/BookshelfIcon'
 import BookshelfLedge from './BookshelfLedge'
@@ -17,6 +14,7 @@ export default class Bookshelves extends React.Component {
   constructor(props){
     super(props)
     this._userId = props.navigation.getParam('userId', 1);
+    console.log(this._userId +'\n\n\n')
     this.state = {
       bookshelves: null,
     }
@@ -34,50 +32,45 @@ export default class Bookshelves extends React.Component {
   }
 
   render(){
-    return (<Text>Test</Text>)
-    // return (
-    //   <Query query={BOOKSHELVES_QUERY} variables={{id: this._userId}}>
-    //     { ( { data, loading, error, refetch } ) => {
-    //       console.log('error!!!: ' + error)
-    //       if(loading){
-    //         return (
-    //           <View style={CommonStyles.container}>
-    //             <Text style={CommonStyles.loadingText}>
-    //               Loading...
-    //             </Text>
-    //           </View> )
-    //       }
-    //
-    //       if(error){
-    //         return (
-    //         <View style={CommonStyles.container}>
-    //           <Text style={CommonStyles.loadingText}>
-    //             {`${error}`}
-    //           </Text>
-    //         </View> )
-    //       }
-    //
-    //       return (
-    //         <ScrollView contentContainerstyle={CommonStyles.container}>
-    //           <FlatList
-    //             horizontal
-    //             ref={ref => this.flatList = ref}
-    //             data={booksWithAddButton}
-    //             keyExtractor={(item, index) => item.id}
-    //             extraData={this.state}
-    //             renderItem={ ({ item, index }) => {
-    //                 return (<Bookshelf
-    //                         item={item}
-    //                         index={index}
-    //                         isSelected={false}
-    //                         onPressItem={this._handleBookSelected}
-    //                         />)
-    //                       }
-    //                     }
-    //              />
-    //           </ScrollView>)
-    //         }}
-    //     </Query>)
+    // return (<Text>Test</Text>
+    console.log('this.userId: ' + this._userId)
+    return (
+      <Query query={BOOKSHELVES_QUERY} variables={{userId: this._userId}}>
+        { ( { data, loading, error, refetch } ) => {
+          if(loading){
+            return (
+              <View style={CommonStyles.container}>
+                <Text style={CommonStyles.loadingText}>
+                  Loading...
+                </Text>
+              </View> )
+          }
+
+          if(error){
+            return (
+            <View style={CommonStyles.container}>
+              <Text style={CommonStyles.loadingText}>
+                {`${error}`}
+              </Text>
+            </View> )
+          }
+          const bookshelves = data.bookshelvesByUser.shelves
+          console.log('bookshelves: ' + JSON.stringify(bookshelves))
+          return (
+            <ScrollView contentContainerstyle={CommonStyles.container}>
+              <FlatList
+                ref={ref => this.flatList = ref}
+                data={bookshelves}
+                keyExtractor={(item, index) => item.id}
+                renderItem={ ({ item, index }) => {
+                    return (<Bookshelf item={item} index={index}/>)
+                          }
+                        }
+                 />
+              </ScrollView>)
+            }
+          }
+        </Query>)
       }
 }
 
@@ -98,15 +91,17 @@ const styles = StyleSheet.create({
 })
 
 const BOOKSHELVES_QUERY = gql`
-  query BookshelfQuery($userId: String!) {
-    bookshelves(userId: $userId) {
-      id
-      name
-      books {
-        author
-        title
-        isbn
-        description
+  query BookshelvesQuery($userId: ID!) {
+    bookshelvesByUser(userId: $userId) {
+      shelves {
+          id
+          name
+          books {
+            author
+            title
+            isbn
+            description
+          }
       }
     }
   }`

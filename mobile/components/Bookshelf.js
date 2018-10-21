@@ -14,13 +14,9 @@ import { CommonStyles, OXYGEN_BOLD, OXYGEN_REGULAR, OXYGEN_MONO_REGULAR } from '
 export default class Bookshelf extends React.Component {
   constructor(props){
     super(props)
-
-    // this._userId = props.navigation.getParam('userId', 1);
-    // this._bookshelfId = `cjnb3ahzgi18i0b68k7oow0ae`
     this._hideModal = this._hideModal.bind(this)
     this._displayModal = this._displayModal.bind(this)
     this._handleBookSelected = this._handleBookSelected.bind(this)
-
     this.state = {
       modalVisible: false,
       selectedBook: null,
@@ -67,7 +63,7 @@ export default class Bookshelf extends React.Component {
                 try {
                   const response = await removeBookMutation({
                     variables: {
-                      bookshelfId: this._bookshelfId,
+                      bookshelfId: this.props.item.id,
                       isbn: book.isbn
                     }
                   })
@@ -107,11 +103,12 @@ export default class Bookshelf extends React.Component {
           if(item.isButton === true){
             return ( <AddBookButton onPressItem={this._displayModal}/> )
           }
-          return ( <Book
-            item={item}
-            index={index}
-            isSelected={false}
-            onPressItem={this._handleBookSelected}
+          return (
+            <Book
+              item={item}
+              index={index}
+              isSelected={false}
+              onPressItem={this._handleBookSelected}
             /> )
           }}
       />)
@@ -130,61 +127,40 @@ export default class Bookshelf extends React.Component {
 
   render(){
     const { selectedBook } = this.state
-
+    const books = this.props.item.books
+    const bookshelfId = this.props.item.id
+    console.log('BOOKSHELF RENDER: books: ' + books)
     return (
-      <Query query={BOOKSHELF_QUERY} variables={{id: this._userId}}>
-        { ( { data, loading, error, refetch } ) => {
-          if(loading){
-            return (
-              <View style={CommonStyles.container}>
-                <Text style={CommonStyles.loadingText}>
-                  Loading...
-                </Text>
-              </View> )
-          }
-
-          if(error){
-            return (
-            <View style={CommonStyles.container}>
-              <Text style={CommonStyles.loadingText}>
-                {`${error}`}
-              </Text>
-            </View> )
-          }
-
-          return (
-            <ScrollView contentContainerstyle={CommonStyles.container}>
-            <Text style={CommonStyles.screenTitle}>Bookshelves</Text>
-              <View style={styles.shelfContainer}>
-                {this._createBookshelf(this.props.item.books)}
-              </View>
-              <BookshelfLedge />
-              <AddBookModal
-                bookshelfId={this._bookshelfId}
-                modalVisible={this.state.modalVisible}
-                callback={() => {
-                  this.setState({
-                    modalVisible: false,
-                  }, () =>{
-                    refetch()
-                  })
-                }}
-                />
-                <SelectedBook
-                  book={selectedBook}
-                  bookshelfId={this._bookshelfId}
-                  onDeleteCallback={() => {
-                    this.setState({
-                      selectedBook: null,
-                      index: null
-                    }, refetch)
-                  }}
-                />
-            </ScrollView> )
-        }
-      }
-      </Query>
-    )
+      <View style={CommonStyles.container}>
+      <Text style={CommonStyles.screenTitle}>{this.props.item.name}</Text>
+        <View style={styles.shelfContainer}>
+          {this._createBookshelf(this.props.item.books)}
+        </View>
+        <BookshelfLedge />
+        <AddBookModal
+          bookshelfId={bookshelfId}
+          modalVisible={this.state.modalVisible}
+          callback={() => {
+            this.setState({
+              modalVisible: false,
+            }, () =>{
+              console.log('this is where you need to figure out refetch')
+            })
+          }}
+          />
+          <SelectedBook
+            book={selectedBook}
+            bookshelfId={bookshelfId}
+            onDeleteCallback={() => {
+              this.setState({
+                selectedBook: null,
+                index: null
+              }, () => {
+                console.log('this is where you would refetch')
+              })
+            }}
+          />
+      </View> )
   }
 }
 
@@ -200,19 +176,20 @@ const styles = StyleSheet.create({
   },
   shelfContainer: {
     flex: 1,
+    alignSelf: 'stretch',
     marginTop: 20,
   }
 })
 
-const BOOKSHELF_QUERY = gql`
-  query BookshelfQuery($userIdid: ID!) {
-    bookshelves(userId: $id) {
-      books {
-        author
-        title
-        isbn
-        description
-      }
-    }
-  }
-`
+// const BOOKSHELF_QUERY = gql`
+//   query BookshelfQuery($userIdid: ID!) {
+//     bookshelves(userId: $id) {
+//       books {
+//         author
+//         title
+//         isbn
+//         description
+//       }
+//     }
+//   }
+// `

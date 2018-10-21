@@ -11,6 +11,7 @@ const CommonStyles = StyleSheet.create({
     container: {
       flex: 1,
       alignItems: 'stretch',
+      alignSelf:'stretch',
     },
     formContainer: {
       backgroundColor: '#fff',
