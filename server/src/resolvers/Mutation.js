@@ -34,6 +34,8 @@ const Mutation = {
 
     await processBooks(books.books)
 
+    //TODO: This function should only return the books that were added, as opposed to the entire shelf.
+    // Why? Because the cache can handle updating on client side, we don't need all the booksagain.
     return ctx.db.mutation.updateBookshelf({
         data: {
           books: {
@@ -55,6 +57,7 @@ const Mutation = {
         id
         isbn
         title
+        description
       }
     }`)
   },

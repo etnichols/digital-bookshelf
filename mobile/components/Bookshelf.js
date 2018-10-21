@@ -129,7 +129,6 @@ export default class Bookshelf extends React.Component {
     const { selectedBook } = this.state
     const books = this.props.item.books
     const bookshelfId = this.props.item.id
-    console.log('BOOKSHELF RENDER: books: ' + books)
     return (
       <View style={CommonStyles.container}>
       <Text style={CommonStyles.screenTitle}>{this.props.item.name}</Text>
@@ -180,16 +179,3 @@ const styles = StyleSheet.create({
     marginTop: 20,
   }
 })
-
-// const BOOKSHELF_QUERY = gql`
-//   query BookshelfQuery($userIdid: ID!) {
-//     bookshelves(userId: $id) {
-//       books {
-//         author
-//         title
-//         isbn
-//         description
-//       }
-//     }
-//   }
-// `

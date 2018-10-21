@@ -22,17 +22,21 @@ export default class ScannedBook extends React.Component {
   }
 
   render(){
+    const { item } = this.props
+    console.log('Scanned book item!: ' + JSON.stringify(item))
     return (
       <View style={styles.scannedBookContainer}>
-        <View style={styles.scannedBook}>
+
+        <View style={styles.scannedBookInfo}>
           <Text style={styles.scannedBookTitle}>
-            {this._cleanTitle(this.props.item.title)}
+            {this._cleanTitle(item.title)}
           </Text>
           <Text style={styles.scannedBookAuthor}>
-            {this.props.item.author}
+            {item.author}
           </Text>
         </View>
-        <View style={styles.scannedBookRemoveIcon}>
+
+        <View>
           <TouchableHighlight
             onPress={ e =>  this.props.removeBook(this.props.item.isbn) }
           >
@@ -46,6 +50,7 @@ export default class ScannedBook extends React.Component {
           </Svg>
           </TouchableHighlight>
         </View>
+
       </View>
     )
   }
@@ -53,17 +58,15 @@ export default class ScannedBook extends React.Component {
 
 const styles = StyleSheet.create({
   scannedBookContainer: {
-    flex: 1,
-    alignSelf: 'stretch',
     flexDirection: 'row',
     padding: 10,
     margin: 5,
     borderColor: '#008B8B',
     borderWidth: 2,
     borderRadius: 5,
-    justifyContent: 'space-between'
   },
-  scannedBook: {
+  scannedBookInfo: {
+    flex: 1,
   },
   scannedBookTitle: {
     fontFamily: OXYGEN_BOLD,
@@ -71,8 +74,6 @@ const styles = StyleSheet.create({
   },
   scannedBookAuthor: {
     fontFamily: OXYGEN_REGULAR,
-    fontSize: 14
-  },
-  scannedBookRemoveIcon: {
+    fontSize: 14,
   }
 })
