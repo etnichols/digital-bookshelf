@@ -51,7 +51,7 @@ export default class Profile extends React.Component {
         }
 
         return(
-          <View style={styles.container}>
+          <View style={CommonStyles.container}>
           <Text style={CommonStyles.screenTitle}>Your Profile</Text>
           { this.renderProfile(data.me) }
             <TouchableHighlight

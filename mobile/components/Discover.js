@@ -5,6 +5,7 @@ import { AsyncStorage, StyleSheet, Text, TouchableHighlight, View } from 'react-
 
 import { CommonStyles, BLUE_HEX, OXYGEN_BOLD, OXYGEN_REGULAR, OXYGEN_MONO_REGULAR } from './CommonStyles'
 
+// TODO: Actually make this a Discover Page.
 export default class Discover extends React.Component {
   static navigationOptions = {
     drawerLabel: 'Discover',
@@ -46,14 +47,6 @@ export default class Discover extends React.Component {
           <View style={CommonStyles.container}>
           <Text style={CommonStyles.screenTitle}>Discover</Text>
           { this.renderInbox(data.me) }
-            <TouchableHighlight
-              style={CommonStyles.button}
-              onPress={ async () => {
-                await AsyncStorage.removeItem('dbtoken')
-                this.props.navigation.navigate('Launch')
-              }} >
-              <Text style={CommonStyles.buttonText}>Logout</Text>
-            </TouchableHighlight>
           </View>
         )
       }}

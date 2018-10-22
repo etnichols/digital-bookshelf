@@ -181,6 +181,6 @@ const styles = StyleSheet.create({
   shelfContainer: {
     flex: 1,
     alignSelf: 'stretch',
-    marginTop: 20,
+    marginTop: 10,
   }
 })

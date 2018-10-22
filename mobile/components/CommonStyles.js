@@ -12,6 +12,7 @@ const CommonStyles = StyleSheet.create({
       flex: 1,
       alignItems: 'stretch',
       alignSelf:'stretch',
+      marginTop: 20,
     },
     formContainer: {
       backgroundColor: '#fff',
@@ -102,7 +103,7 @@ const CommonStyles = StyleSheet.create({
       alignSelf: 'center'
     },
     screenTitle: {
-      paddingTop: 60,
+      paddingTop: 20,
       fontFamily: OXYGEN_MONO_REGULAR,
       fontSize: 24,
       marginLeft: 20,
