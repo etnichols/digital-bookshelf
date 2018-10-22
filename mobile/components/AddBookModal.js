@@ -224,14 +224,11 @@ export default class AddBookModal extends React.Component {
         }`
     })
 
-    console.log('read fragment from cache: ' + JSON.stringify(readFragment))
-
-    const books = response.addBooksToShelf.books
-    console.log('books response form mutation: ' + books)
+    // TODO: This should be current books concat with new books, once
+    // The AddBooksMutation is updated.
     let updatedFragment = readFragment
-    updatedFragment.books = books
+    updatedFragment.books = response.addBooksToShelf.books
 
-    console.log('updated fragment: ' + JSON.stringify(updatedFragment,null,2))
     cache.writeFragment({
       id: bookshelfId,
       fragment: gql`
@@ -363,7 +360,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#fff',
     borderRadius: 3,
-    height: 800,
+    height: 600,
   },
   modalTitleContainer: {
     alignSelf: 'stretch',
@@ -381,19 +378,6 @@ const styles = StyleSheet.create({
     height: 200,
   },
 })
-
-const BOOKSHELF_QUERY = gql`
-  query BookshelfQuery($id: ID!){
-    bookshelf(id: $id){
-      books {
-        author
-        title
-        isbn
-        description
-      }
-    }
-  }
-`
 
 const ADD_BOOKS_MUTATION = gql`
   mutation AddBooksToShelfMutation(

@@ -4,6 +4,19 @@ const jwt = require('jsonwebtoken')
 const { Context, getUserId, APP_SECRET } = require('../utils')
 
 const Mutation = {
+  createBookshelf: async(parent, {name}, ctx, info) => {
+    const userId = getUserId(ctx)
+    return ctx.db.mutation.createBookshelf({
+      data: {
+        name: name,
+        owner: {
+          connect: {
+            id: userId
+          }
+        }
+      }
+    }, info)
+  },
   addBooksToShelf: async (parent, { books, bookshelfId }, ctx, info) => {
     let createBooks = []
     let connectBooks = []
@@ -72,7 +85,7 @@ const Mutation = {
         id: bookshelfId
       }
     }, info)
-    
+
     return {
       isbn: isbn
     }
@@ -80,7 +93,6 @@ const Mutation = {
   confirmAccount: async (parent, { confirmationCode }, ctx, info) => {
     const userId = getUserId(ctx)
     const user = await ctx.db.query.user({ where: { id: userId } }, `{
-      id
       confirmationCode
     }`)
 
@@ -98,7 +110,7 @@ const Mutation = {
         name: 'Your First Shelf',
         owner: {
           connect: {
-            id: user.id
+            id: userId
           }
         }
       }
