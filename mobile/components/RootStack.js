@@ -5,7 +5,7 @@ import { DrawerItems, SafeAreaView, createBottomTabNavigator, createDrawerNaviga
 
 import AuthLoadingScreen from './AuthLoadingScreen'
 import Bookshelf from './Bookshelf'
-import Bookshelves from './Bookshelves'
+import { Bookshelves } from './Bookshelves'
 import CreateAccount from './CreateAccount'
 import ConfirmAccount from './ConfirmAccount'
 import Discover from './Discover'

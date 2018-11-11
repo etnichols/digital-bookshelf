@@ -6,6 +6,7 @@ import { Mutation } from 'react-apollo'
 import { Alert, AsyncStorage, FlatList, Modal, ScrollView, StyleSheet, Text, TouchableHighlight, View  } from 'react-native'
 import t from 'tcomb-form-native'
 
+import { BOOKSHELVES_BY_USER_QUERY } from './Bookshelves'
 import ScannedBook from './ScannedBook'
 import { CommonStyles, OXYGEN_BOLD, OXYGEN_REGULAR } from './CommonStyles'
 
@@ -27,7 +28,6 @@ const options = {
 export default class CreateBookshelfModal extends React.Component {
   constructor(props){
     super(props)
-    this._updateCache = this._updateCache.bind(this)
     this._onChange = this._onChange.bind(this)
     this.state = {
           value: {
@@ -59,42 +59,6 @@ export default class CreateBookshelfModal extends React.Component {
     })
   }
 
-  // TODO: Figure out caching for this. Might have to do a query for users shelves.
-  _updateCache(cache, { data: response }){
-    // const {bookshelfId} = this.props
-    // const readFragment = cache.readFragment({
-    //   id: bookshelfId,
-    //   fragment: gql`
-    //     fragment myBookFragment on Bookshelf {
-    //       books {
-    //         isbn
-    //         author
-    //         title
-    //         description
-    //       }
-    //     }`
-    // })
-    //
-    // // TODO: This should be current books concat with new books, once
-    // // The AddBooksMutation is updated.
-    // let updatedFragment = readFragment
-    // updatedFragment.books = response.addBooksToShelf.books
-    //
-    // cache.writeFragment({
-    //   id: bookshelfId,
-    //   fragment: gql`
-    //     fragment myBookFragment on Bookshelf {
-    //       books {
-    //         isbn
-    //         author
-    //         title
-    //         description
-    //       }
-    //     }`,
-    //   data: updatedFragment
-    // })
-  }
-
   _onChange(value){
     this.setState({value: value, hasError: false})
   }
@@ -110,10 +74,9 @@ export default class CreateBookshelfModal extends React.Component {
     return (
       <Mutation
         mutation={ADD_BOOKSHELF_MUTATION}
-        update={this._updateCache}
+        refetchQueries={[{query: BOOKSHELVES_BY_USER_QUERY}]}
       >
       { (addBookshelfMutation, { data, loading, error }) => {
-        console.log('Add BookshelfMutation error: ' + JSON.stringify(error,null,2))
         return (
           <View style={styles.modalBackground}>
             <View style={styles.modal}>
@@ -225,7 +188,17 @@ const styles = StyleSheet.create({
 const ADD_BOOKSHELF_MUTATION = gql`
   mutation AddBookshelfMutation( $name: String! ) {
       createBookshelf( name: $name ) {
+          owner {
+            id
+          }
           id
           name
+          books {
+            id
+            author
+            title
+            isbn
+            description
+          }
         }
       }`

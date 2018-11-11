@@ -253,8 +253,6 @@ export default class AddBookModal extends React.Component {
       scannedBooks,
       scannerDisabled
      } = this.state
-
-     console.log('scannedBooks: ' + scannedBooks)
      const { bookshelfId } = this.props
 
     return (
