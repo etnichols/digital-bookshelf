@@ -11,6 +11,7 @@ type Query {
 }
 
 type Mutation {
+  createBookshelf(name: String!): Bookshelf!
   addBooksToShelf(books: BooksInput!, bookshelfId: ID!): Bookshelf!
   createAccount(firstName: String!,
                 lastName: String!,
@@ -20,7 +21,7 @@ type Mutation {
   confirmAccount(confirmationCode: String!): LoginPayload!
   deleteUser(id: ID!): User
   login(userOrPhone: String!, password: String!): LoginPayload!
-  removeBookFromShelf(bookshelfId: ID!, isbn: String!): Bookshelf!
+  removeBookFromShelf(bookshelfId: ID!, isbn: String!): Book!
 }
 
 type Bookshelves {

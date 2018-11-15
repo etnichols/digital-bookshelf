@@ -90,12 +90,13 @@ export default class LoginForm extends React.Component {
                   const user = response.data.login.user
                   const token = response.data.login.token
                   if(token){
+                    console.log('set token')
                     await AsyncStorage.setItem('dbtoken', token)
-                    if(user){
-                      if(!user.isConfirmed){
+                    if(!user.isConfirmed){
+                        console.log('user not confirmed')
                         this.props.navigation.navigate('ConfirmAccount')
-                      }
                     } else {
+                      console.log('navigating to bookshelves')
                       this.props.navigation.navigate('Bookshelves')
                     }
                   }

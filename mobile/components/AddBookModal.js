@@ -32,6 +32,7 @@ export default class AddBookModal extends React.Component {
     this._removeBook = this._removeBook.bind(this)
     this._renderScannedBook = this._renderScannedBook.bind(this)
     this._requestCameraPermission = this._requestCameraPermission.bind(this)
+    this._updateBookshelfCache = this._updateBookshelfCache.bind(this)
 
     this.state = {
           errorMessage: null,
@@ -195,17 +196,52 @@ export default class AddBookModal extends React.Component {
         const author = volume.volumeInfo.authors[0]
         const description = volume.volumeInfo.description
 
-        console.log('book desc: ' + description)
-
-        return {
+        const constructedBook = {
           author: author,
           title: title,
           isbn: isbn,
           description: description
         }
+        console.log('constructed book: ' + JSON.stringify(constructedBook))
+        return constructedBook
       } catch(e) {
       console.log('e: ' + e)
     }
+  }
+
+  _updateBookshelfCache(cache, { data: response }){
+    const {bookshelfId} = this.props
+    const readFragment = cache.readFragment({
+      id: bookshelfId,
+      fragment: gql`
+        fragment myBookFragment on Bookshelf {
+          books {
+            isbn
+            author
+            title
+            description
+          }
+        }`
+    })
+
+    // TODO: This should be current books concat with new books, once
+    // The AddBooksMutation is updated.
+    let updatedFragment = readFragment
+    updatedFragment.books = response.addBooksToShelf.books
+
+    cache.writeFragment({
+      id: bookshelfId,
+      fragment: gql`
+        fragment myBookFragment on Bookshelf {
+          books {
+            isbn
+            author
+            title
+            description
+          }
+        }`,
+      data: updatedFragment
+    })
   }
 
   render(){
@@ -217,11 +253,13 @@ export default class AddBookModal extends React.Component {
       scannedBooks,
       scannerDisabled
      } = this.state
-
      const { bookshelfId } = this.props
 
     return (
-      <Mutation mutation={ADD_BOOKS_MUTATION} >
+      <Mutation
+        mutation={ADD_BOOKS_MUTATION}
+        update={this._updateBookshelfCache}
+      >
       { (addBooksMutation, { data, loading, error }) => {
         return (
           <View style={styles.modalBackground}>
@@ -255,10 +293,8 @@ export default class AddBookModal extends React.Component {
                       onContentSizeChange={() => this.flatList.scrollToEnd({animated: true})}
                       extraData={this.state}
                       renderItem={ ({ item }) =>
-                        <ScannedBook
-                          item={item}
-                          removeBook={this._removeBook}
-                        /> }
+                        <ScannedBook item={item} removeBook={this._removeBook}/>
+                      }
                     />
 
                   <TouchableHighlight
@@ -339,29 +375,6 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     height: 200,
   },
-  scannedBookContainer: {
-    flex: 1,
-    alignSelf: 'stretch',
-    flexDirection: 'row',
-    padding: 10,
-    margin: 5,
-    borderColor: '#008B8B',
-    borderWidth: 2,
-    borderRadius: 5,
-    justifyContent: 'space-between'
-  },
-  scannedBook: {
-  },
-  scannedBookTitle: {
-    fontFamily: OXYGEN_BOLD,
-    fontSize: 14
-  },
-  scannedBookAuthor: {
-    fontFamily: OXYGEN_REGULAR,
-    fontSize: 14
-  },
-  scannedBookRemoveIcon: {
-  }
 })
 
 const ADD_BOOKS_MUTATION = gql`
@@ -371,11 +384,11 @@ const ADD_BOOKS_MUTATION = gql`
       addBooksToShelf(
         books: $books,
         bookshelfId: $bookshelfId ) {
-          id
           books {
             author
             title
             isbn
+            description
           }
         }
       }`

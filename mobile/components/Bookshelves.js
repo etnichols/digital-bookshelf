@@ -7,15 +7,24 @@ import { AsyncStorage, Dimensions, FlatList, ScrollView, StyleSheet, Text, Touch
 import Bookshelf from './Bookshelf'
 import BookIcon from './icons/BookshelfIcon'
 import BookshelfLedge from './BookshelfLedge'
+import CreateBookshelfModal from './CreateBookshelfModal'
 import SelectedBook from './SelectedBook'
 import { CommonStyles, OXYGEN_BOLD, OXYGEN_REGULAR, OXYGEN_MONO_REGULAR } from './CommonStyles'
 
-export default class Bookshelves extends React.Component {
+export class Bookshelves extends React.Component {
   constructor(props){
     super(props)
+    this._displayModal = this._displayModal.bind(this)
     this.state = {
+      modalVisible: false,
       bookshelves: null,
     }
+  }
+
+  _displayModal(){
+    this.setState({
+      modalVisible: true,
+    })
   }
 
   static navigationOptions = {
@@ -24,7 +33,7 @@ export default class Bookshelves extends React.Component {
 
   render(){
     return (
-      <Query query={BOOKSHELVES_QUERY}>
+      <Query query={BOOKSHELVES_BY_USER_QUERY}>
         { ( { data, loading, error, refetch } ) => {
           if(loading){
             return (
@@ -44,53 +53,49 @@ export default class Bookshelves extends React.Component {
             </View> )
           }
           const bookshelves = data.bookshelvesByUser.shelves
-          console.log('bookshelves: ' + JSON.stringify(bookshelves))
           return (
-            <ScrollView contentContainerstyle={CommonStyles.container}>
+            // TODO: Make bookshelves collapsible.
+            <View style={CommonStyles.container}>
               <FlatList
                 ref={ref => this.flatList = ref}
                 data={bookshelves}
                 keyExtractor={(item, index) => item.id}
                 renderItem={ ({ item, index }) => {
-                    return (<Bookshelf item={item} index={index}/>)
-                          }
-                        }
-                 />
-              </ScrollView>)
+                  return (<Bookshelf item={item} index={index}/>)
+                }}
+              />
+              <CreateBookshelfModal
+                modalVisible={this.state.modalVisible}
+                callback={ () => { this.setState({ modalVisible: false }) }}
+              />
+              <TouchableHighlight
+                style={CommonStyles.button}
+                onPress={this._displayModal}>
+                <Text style={CommonStyles.buttonText}>Create new Bookshelf</Text>
+              </TouchableHighlight>
+            </View>)
             }
           }
-        </Query>)
-      }
+      </Query>)
+    }
 }
 
-const styles = StyleSheet.create({
-  emptyShelfText: {
-    flex: 1,
-    paddingVertical: 50,
-    paddingHorizontal: 20,
-    fontSize: 18,
-    fontFamily: OXYGEN_MONO_REGULAR,
-    alignSelf: 'center',
-    justifyContent: 'center',
-  },
-  shelfContainer: {
-    flex: 1,
-    marginTop: 20,
-  }
-})
-
-const BOOKSHELVES_QUERY = gql`
+export const BOOKSHELVES_BY_USER_QUERY = gql`
   query BookshelvesQuery {
     bookshelvesByUser {
       shelves {
+        id
+        name
+        owner {
           id
-          name
-          books {
-            author
-            title
-            isbn
-            description
-          }
+        }
+        books {
+          id
+          author
+          title
+          isbn
+          description
+        }
       }
     }
   }`

@@ -4,6 +4,19 @@ const jwt = require('jsonwebtoken')
 const { Context, getUserId, APP_SECRET } = require('../utils')
 
 const Mutation = {
+  createBookshelf: async(parent, {name}, ctx, info) => {
+    const userId = getUserId(ctx)
+    return ctx.db.mutation.createBookshelf({
+      data: {
+        name: name,
+        owner: {
+          connect: {
+            id: userId
+          }
+        }
+      }
+    }, info)
+  },
   addBooksToShelf: async (parent, { books, bookshelfId }, ctx, info) => {
     let createBooks = []
     let connectBooks = []
@@ -34,6 +47,8 @@ const Mutation = {
 
     await processBooks(books.books)
 
+    //TODO: This function should only return the books that were added, as opposed to the entire shelf.
+    // Why? Because the cache can handle updating on client side, we don't need all the booksagain.
     return ctx.db.mutation.updateBookshelf({
         data: {
           books: {
@@ -55,11 +70,12 @@ const Mutation = {
         id
         isbn
         title
+        description
       }
     }`)
   },
   removeBookFromShelf: async (parent, { bookshelfId, isbn }, ctx, info) => {
-    return ctx.db.mutation.updateBookshelf({
+    await ctx.db.mutation.updateBookshelf({
       data: {
         books: {
           disconnect: [{ isbn: isbn }]
@@ -69,11 +85,14 @@ const Mutation = {
         id: bookshelfId
       }
     }, info)
+
+    return {
+      isbn: isbn
+    }
   },
   confirmAccount: async (parent, { confirmationCode }, ctx, info) => {
     const userId = getUserId(ctx)
     const user = await ctx.db.query.user({ where: { id: userId } }, `{
-      id
       confirmationCode
     }`)
 
@@ -91,7 +110,7 @@ const Mutation = {
         name: 'Your First Shelf',
         owner: {
           connect: {
-            id: user.id
+            id: userId
           }
         }
       }

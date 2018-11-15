@@ -15,7 +15,6 @@ const httpLink = createHttpLink({
 const asyncAuthLink = setContext( async (_, { headers } ) => {
   try {
     const token = await AsyncStorage.getItem('dbtoken')
-    console.log('token: ' + token)
 
     if(headers){
       return {
@@ -39,8 +38,12 @@ const asyncAuthLink = setContext( async (_, { headers } ) => {
 
 exports.getApolloClient = () => {
   const client = new ApolloClient({
+    addTypename: true,
     link: asyncAuthLink.concat(httpLink),
-    cache: new InMemoryCache()
+    // https://www.apollographql.com/docs/react/advanced/caching.html#normalization
+    cache: new InMemoryCache({
+      dataIdFromObject: object => object.id || null
+    })
   })
   return client
 }

@@ -51,6 +51,7 @@ const Query = {
       id
       name
       owner {
+        id
         firstName
         lastName
       }
