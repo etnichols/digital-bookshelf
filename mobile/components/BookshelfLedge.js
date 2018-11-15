@@ -25,10 +25,9 @@ const styles = StyleSheet.create({
   },
   top: {
     marginHorizontal: 10,
-    marginBottom: -10,
     backgroundColor: '#A86355',
     alignSelf: 'stretch',
-    height: 15,
+    height: 10,
     borderRadius: 3,
   },
   supportsContainer: {
@@ -37,8 +36,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   support: {
-    height: 50,
+    height: 40,
     marginHorizontal: 40,
+    marginTop: -10,
     backgroundColor: '#A86355',
     width: 10,
     borderRadius: 3,

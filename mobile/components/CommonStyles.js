@@ -12,7 +12,7 @@ const CommonStyles = StyleSheet.create({
       flex: 1,
       alignItems: 'stretch',
       alignSelf:'stretch',
-      marginTop: 20,
+      marginTop: 50,
     },
     formContainer: {
       backgroundColor: '#fff',

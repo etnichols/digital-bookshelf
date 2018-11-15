@@ -14,7 +14,7 @@ export default class Profile extends React.Component {
   renderProfile(user){
     return (
       <View style={styles.profileContainer}>
-      <View style={styles.profilePicture}></View>
+        <View style={styles.profilePicture}></View>
         <Text style={styles.profileTitle}>
           {`${user.firstName} ${user.lastName}`}
         </Text>

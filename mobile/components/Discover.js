@@ -14,7 +14,8 @@ export default class Discover extends React.Component {
   renderInbox(user){
     return (
       <View style={styles.profileContainer}>
-      <View style={styles.profilePicture}></View>
+        <View style={CommonStyles.topSpacer}></View>
+        <View style={styles.profilePicture}></View>
       </View>
     )
   }

@@ -58,42 +58,6 @@ export default class Bookshelf extends React.Component {
     })
   }
 
-  // _renderSelectedBook(book, refetch){
-  //   if(book){
-  //     return (
-  //       <Mutation mutation={REMOVE_BOOK_MUTATION} >
-  //       { (removeBookMutation, {data, loading, error}) => {
-  //         return (
-  //           <View style={styles.selectedBookContainer}>
-  //             <Text style={styles.selectedBookTitle}>{book.title}</Text>
-  //             <Text style={styles.selectedBookDescription}>{book.description}</Text>
-  //             <TouchableHighlight style={styles.deleteButton} onPress={ async e => {
-  //               try {
-  //                 const response = await removeBookMutation({
-  //                   variables: {
-  //                     bookshelfId: this.props.item.id,
-  //                     isbn: book.isbn
-  //                   }
-  //                 })
-  //                 console.log('remove book success, refetching...')
-  //                 this.setState({
-  //                   selectedBook: null,
-  //                   index: null
-  //                 }, refetch)
-  //                 // Do some stuff to respond to the deletion
-  //               } catch(e){
-  //                 console.log('error removing book from shelf: ' + e)
-  //               }
-  //             }}>
-  //             <Text style={styles.deleteButtonText}>Delete Book</Text>
-  //             </TouchableHighlight>
-  //           </View> )
-  //         }}
-  //       </Mutation>
-  //     )
-  //   }
-  // }
-
   _createBookshelf(books){
     const booksWithAddButton = books.concat([{
       isButton: true,
@@ -139,7 +103,7 @@ export default class Bookshelf extends React.Component {
     const books = this.props.item.books
     const bookshelfId = this.props.item.id
     return (
-      <View style={CommonStyles.container}>
+      <View>
       <Text style={CommonStyles.screenTitle}>{this.props.item.name}</Text>
         <View style={styles.shelfContainer}>
           {this._createBookshelf(this.props.item.books)}
@@ -171,7 +135,7 @@ export default class Bookshelf extends React.Component {
 const styles = StyleSheet.create({
   emptyShelfText: {
     flex: 1,
-    paddingVertical: 50,
+    paddingVertical: 20,
     paddingHorizontal: 20,
     fontSize: 18,
     fontFamily: OXYGEN_MONO_REGULAR,
@@ -181,6 +145,5 @@ const styles = StyleSheet.create({
   shelfContainer: {
     flex: 1,
     alignSelf: 'stretch',
-    marginTop: 10,
   }
 })

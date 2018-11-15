@@ -15,7 +15,6 @@ const httpLink = createHttpLink({
 const asyncAuthLink = setContext( async (_, { headers } ) => {
   try {
     const token = await AsyncStorage.getItem('dbtoken')
-    console.log('token: ' + token)
 
     if(headers){
       return {

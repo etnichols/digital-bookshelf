@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   modalContainer: {
     backgroundColor: '#fff',
     alignItems: 'stretch',
-    marginTop: 50,
+    marginTop: 200,
     marginHorizontal: 8,
     shadowColor: '#000',
     shadowOffset: { width: 2, height: 2},

@@ -54,7 +54,8 @@ export class Bookshelves extends React.Component {
           }
           const bookshelves = data.bookshelvesByUser.shelves
           return (
-            <ScrollView contentContainerstyle={CommonStyles.container}>
+            // TODO: Make bookshelves collapsible.
+            <View style={CommonStyles.container}>
               <FlatList
                 ref={ref => this.flatList = ref}
                 data={bookshelves}
@@ -65,30 +66,19 @@ export class Bookshelves extends React.Component {
               />
               <CreateBookshelfModal
                 modalVisible={this.state.modalVisible}
-                callback={() => {
-                  this.setState({
-                    modalVisible: false,
-                  })
-                }}
+                callback={ () => { this.setState({ modalVisible: false }) }}
               />
-                 <TouchableHighlight
-                   style={CommonStyles.button}
-                   onPress={this._displayModal}>
-                   <Text style={CommonStyles.buttonText}>Create new Bookshelf</Text>
-                 </TouchableHighlight>
-              </ScrollView>)
+              <TouchableHighlight
+                style={CommonStyles.button}
+                onPress={this._displayModal}>
+                <Text style={CommonStyles.buttonText}>Create new Bookshelf</Text>
+              </TouchableHighlight>
+            </View>)
             }
           }
-        </Query>)
-      }
+      </Query>)
+    }
 }
-
-const styles = StyleSheet.create({
-  shelfContainer: {
-    flex: 1,
-    marginTop: 20,
-  },
-})
 
 export const BOOKSHELVES_BY_USER_QUERY = gql`
   query BookshelvesQuery {
