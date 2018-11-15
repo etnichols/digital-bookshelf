@@ -56,6 +56,7 @@ export class Bookshelves extends React.Component {
           return (
             // TODO: Make bookshelves collapsible.
             <View style={CommonStyles.container}>
+              <Text style={CommonStyles.screenTitle}>Your Bookshelves</Text>
               <FlatList
                 ref={ref => this.flatList = ref}
                 data={bookshelves}
@@ -64,15 +65,15 @@ export class Bookshelves extends React.Component {
                   return (<Bookshelf item={item} index={index}/>)
                 }}
               />
-              <CreateBookshelfModal
-                modalVisible={this.state.modalVisible}
-                callback={ () => { this.setState({ modalVisible: false }) }}
-              />
               <TouchableHighlight
                 style={CommonStyles.button}
                 onPress={this._displayModal}>
                 <Text style={CommonStyles.buttonText}>Create new Bookshelf</Text>
               </TouchableHighlight>
+              <CreateBookshelfModal
+                modalVisible={this.state.modalVisible}
+                callback={ () => { this.setState({ modalVisible: false }) }}
+              />
             </View>)
             }
           }

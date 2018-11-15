@@ -22,6 +22,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 1, height: 1},
     shadowOpacity: 0.2,
+    marginBottom: 5,
   },
   top: {
     marginHorizontal: 10,

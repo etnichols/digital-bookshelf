@@ -6,6 +6,7 @@ const OXYGEN_BOLD = 'Oxygen-Bold'
 const BLUE_HEX = '#008B8B'
 const BOOK_COLOR_HEX = '#22556E'
 const LIGHT_GREEN_HEX = '#50CF88'
+const WHITE = '#fff'
 
 const CommonStyles = StyleSheet.create({
     container: {
@@ -15,7 +16,7 @@ const CommonStyles = StyleSheet.create({
       marginTop: 50,
     },
     formContainer: {
-      backgroundColor: '#fff',
+      backgroundColor: WHITE,
       flex: 1,
       alignItems: 'stretch',
       padding: 20,
@@ -55,7 +56,7 @@ const CommonStyles = StyleSheet.create({
     },
     buttonText: {
       fontFamily: OXYGEN_REGULAR,
-      color: '#fff',
+      color: WHITE,
       fontSize: 18,
       alignSelf: 'center',
     },

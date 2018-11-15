@@ -9,7 +9,7 @@ import Book from './Book'
 import BookIcon from './icons/BookshelfIcon'
 import BookshelfLedge from './BookshelfLedge'
 import SelectedBook from './SelectedBook'
-import { CommonStyles, OXYGEN_BOLD, OXYGEN_REGULAR, OXYGEN_MONO_REGULAR } from './CommonStyles'
+import { CommonStyles, OXYGEN_BOLD, OXYGEN_REGULAR, OXYGEN_MONO_REGULAR, BLUE_HEX } from './CommonStyles'
 
 export default class Bookshelf extends React.Component {
   constructor(props){
@@ -18,7 +18,9 @@ export default class Bookshelf extends React.Component {
     this._displayModal = this._displayModal.bind(this)
     this._handleBookSelected = this._handleBookSelected.bind(this)
     this._handleBookDeleted = this._handleBookDeleted.bind(this)
+    this._toggleShelfVisibility = this._toggleShelfVisibility.bind(this)
     this.state = {
+      shelfVisible: false,
       modalVisible: false,
       selectedBook: null,
       index: null,
@@ -58,13 +60,20 @@ export default class Bookshelf extends React.Component {
     })
   }
 
+  _toggleShelfVisibility(){
+    let curVis = this.state.shelfVisible
+    this.setState({
+      shelfVisible: !curVis
+    })
+  }
+
   _createBookshelf(books){
     const booksWithAddButton = books.concat([{
       isButton: true,
       isbn: 'notABookAButton'
     }])
 
-    return(
+    return (
       <FlatList
         horizontal
         ref={ref => this.flatList = ref}
@@ -99,24 +108,33 @@ export default class Bookshelf extends React.Component {
   }
 
   render(){
-    const { selectedBook } = this.state
+    const { selectedBook, shelfVisible } = this.state
     const books = this.props.item.books
     const bookshelfId = this.props.item.id
     return (
       <View>
-      <Text style={CommonStyles.screenTitle}>{this.props.item.name}</Text>
-        <View style={styles.shelfContainer}>
-          {this._createBookshelf(this.props.item.books)}
+        <View style={styles.titleAndToggle}>
+          <Text style={styles.shelfName}>{this.props.item.name}</Text>
+          <TouchableHighlight
+            style={styles.toggleButton}
+            onPress={this._toggleShelfVisibility}>
+            <Text style={styles.buttonText}>Toggle</Text>
+          </TouchableHighlight>
         </View>
-        <BookshelfLedge />
-        <AddBookModal
-          bookshelfId={bookshelfId}
-          modalVisible={this.state.modalVisible}
-          callback={() => {
-            this.setState({
-              modalVisible: false,
-            })
-          }}
+        { shelfVisible &&
+          <View>
+          <View style={styles.shelfContainer}>
+            {this._createBookshelf(this.props.item.books)}
+          </View>
+          <BookshelfLedge />
+          <AddBookModal
+            bookshelfId={bookshelfId}
+            modalVisible={this.state.modalVisible}
+            callback={() => {
+              this.setState({
+                modalVisible: false,
+              })
+            }}
           />
           <SelectedBook
             book={selectedBook}
@@ -125,10 +143,11 @@ export default class Bookshelf extends React.Component {
               this.setState({
                 selectedBook: null,
                 index: null
-              })
-            }}
+              }) }}
           />
-      </View> )
+          </View>
+        }
+      </View>)
   }
 }
 
@@ -145,5 +164,31 @@ const styles = StyleSheet.create({
   shelfContainer: {
     flex: 1,
     alignSelf: 'stretch',
-  }
+  },
+  titleAndToggle: {
+    padding: 5,
+    flexDirection: 'row',
+    backgroundColor: BLUE_HEX,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  shelfName: {
+    fontFamily: OXYGEN_MONO_REGULAR,
+    fontSize: 24,
+    marginLeft: 20,
+    color: '#fff',
+  },
+  toggleButton: {
+    alignSelf: 'flex-end',
+    borderRadius: 30,
+    paddingHorizontal: 5,
+    paddingVertical: 5,
+    margin: 5,
+  },
+  buttonText: {
+    fontFamily: OXYGEN_REGULAR,
+    color: '#fff',
+    fontSize: 12,
+    alignSelf: 'center',
+  },
 })

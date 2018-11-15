@@ -78,11 +78,10 @@ export default class CreateBookshelfModal extends React.Component {
       >
       { (addBookshelfMutation, { data, loading, error }) => {
         return (
-          <View style={styles.modalBackground}>
-            <View style={styles.modal}>
+          <View style={[styles.modalBackground, this.state.modalVisible ? styles.modalHidden : {}]}>
               <Modal
                 animationType="slide"
-                transparent={true}
+                transparent={false}
                 visible={this.state.modalVisible}
               >
               <View style={styles.modalContainer}>
@@ -135,7 +134,6 @@ export default class CreateBookshelfModal extends React.Component {
                   </TouchableHighlight>
                 </View>
               </Modal>
-            </View>
           </View>
         )}}
       </Mutation> )
@@ -150,6 +148,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'rgba(0,0,0,0.8)',
     alignItems: 'center'
+  },
+  modalHidden: {
+    opacity: 0,
   },
   formContainer: {
     alignItems: 'stretch',
