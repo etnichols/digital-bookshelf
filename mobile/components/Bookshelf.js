@@ -168,15 +168,14 @@ const styles = StyleSheet.create({
   titleAndToggle: {
     padding: 5,
     flexDirection: 'row',
-    backgroundColor: BLUE_HEX,
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   shelfName: {
-    fontFamily: OXYGEN_MONO_REGULAR,
+    fontFamily: OXYGEN_BOLD,
     fontSize: 24,
     marginLeft: 20,
-    color: '#fff',
+    color: BLUE_HEX,
   },
   toggleButton: {
     alignSelf: 'flex-end',
@@ -187,7 +186,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontFamily: OXYGEN_REGULAR,
-    color: '#fff',
+    color: BLUE_HEX,
     fontSize: 12,
     alignSelf: 'center',
   },

@@ -23,8 +23,12 @@ export default class Book extends React.Component {
     )
   }
 }
-const SELECTED_SCALER = 1.5
+
 const styles = StyleSheet.create({
+  scale: {
+    height: Math.floor(250/1.5),
+    width: Math.floor(150/1.5)
+  },
   bookTitle: {
     flexWrap: 'wrap',
     fontFamily: 'Oxygen-Bold',
@@ -42,8 +46,8 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   book: {
-    height: 250,
-    width: 150,
+    height: 20,
+    width: 50,
     backgroundColor: '#22556E',
     padding: 20,
     marginHorizontal: 10,

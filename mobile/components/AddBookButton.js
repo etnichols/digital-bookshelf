@@ -17,7 +17,7 @@ export default class AddBookButton extends React.Component {
   render(){
     return (
         <TouchableHighlight onPress={this._onPress}>
-          <View style={styles.book}>
+          <View style={[CommonStyles.book, styles.scale]}>
             <Text style={styles.addText}>{`Add more Books`}</Text>
             <View style={styles.plusIcon}>
               <Svg height="50" width="50" viewBox="0 0 25 25">
@@ -38,29 +38,19 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     fontFamily: OXYGEN_MONO_REGULAR,
     color: '#fff',
-    fontSize: 36,
+    fontSize: 18,
     paddingBottom: 5,
   },
   addText: {
     fontFamily: OXYGEN_BOLD,
     color: '#fff',
-    fontSize: 18,
-    paddingBottom: 20,
+    fontSize: 14,
+    paddingBottom: 10,
     textAlign: 'center',
   },
-  book: {
-    height: 250,
-    width: 150,
-    shadowColor: '#000',
-    backgroundColor: '#7BACA7',
-    shadowOffset: { width: 1, height: 1},
-    shadowOpacity: 0.2,
-    padding: 20,
-    marginHorizontal: 10,
-    marginVertical: 10,
-    borderRadius: 5,
-    flexDirection: 'column',
-    justifyContent: 'center'
+  scale: {
+    height: Math.floor(250/1.5),
+    width: Math.floor(150/1.5)
   },
   plusIcon:{
     flex: 1,

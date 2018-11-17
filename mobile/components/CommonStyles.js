@@ -15,6 +15,18 @@ const CommonStyles = StyleSheet.create({
       alignSelf:'stretch',
       marginTop: 50,
     },
+    book: {
+      shadowColor: '#000',
+      backgroundColor: '#7BACA7',
+      shadowOffset: { width: 1, height: 1},
+      shadowOpacity: 0.2,
+      padding: 20,
+      marginHorizontal: 10,
+      marginVertical: 10,
+      borderRadius: 5,
+      flexDirection: 'column',
+      justifyContent: 'center'
+    },
     formContainer: {
       backgroundColor: WHITE,
       flex: 1,

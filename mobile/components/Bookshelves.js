@@ -28,7 +28,8 @@ export class Bookshelves extends React.Component {
   }
 
   static navigationOptions = {
-    tabBarLabel: 'Your Shelves',
+    title: 'Your Bookshelves',
+    tabBarLabel: 'Bookshelves',
   }
 
   render(){
@@ -55,8 +56,7 @@ export class Bookshelves extends React.Component {
           const bookshelves = data.bookshelvesByUser.shelves
           return (
             // TODO: Make bookshelves collapsible.
-            <View style={CommonStyles.container}>
-              <Text style={CommonStyles.screenTitle}>Your Bookshelves</Text>
+            <View style={[CommonStyles.container, styles.spacer]}>
               <FlatList
                 ref={ref => this.flatList = ref}
                 data={bookshelves}
@@ -80,6 +80,12 @@ export class Bookshelves extends React.Component {
       </Query>)
     }
 }
+
+const styles = StyleSheet.create({
+  spacer: {
+    paddingTop: 40,
+  }
+})
 
 export const BOOKSHELVES_BY_USER_QUERY = gql`
   query BookshelvesQuery {
