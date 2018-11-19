@@ -23,8 +23,10 @@ const Query = {
     const bookshelf = await ctx.db.query.bookshelf({ where: { id: id } }, `
       {
         id
+        name
         owner {
           id
+          username
         }
         books {
           id

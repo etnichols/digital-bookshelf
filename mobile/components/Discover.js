@@ -5,19 +5,17 @@ import { AsyncStorage, StyleSheet, Text, TouchableHighlight, View } from 'react-
 
 import { CommonStyles, BLUE_HEX, OXYGEN_BOLD, OXYGEN_REGULAR, OXYGEN_MONO_REGULAR } from './CommonStyles'
 
-// TODO: Actually make this a Discover Page.
+/**
+* TODO: Actually make this a Discover Page.
+*
+* - Search functionality on all publicly available shelves.
+* - Follow a shelf you like.
+*/
 export default class Discover extends React.Component {
-  static navigationOptions = {
-    drawerLabel: 'Discover',
-  }
 
-  renderInbox(user){
-    return (
-      <View style={styles.profileContainer}>
-        <View style={CommonStyles.topSpacer}></View>
-        <View style={styles.profilePicture}></View>
-      </View>
-    )
+  static navigationOptions = {
+    title: 'Discover',
+    tabBarLabel: 'Discover',
   }
 
   render() {
@@ -46,10 +44,10 @@ export default class Discover extends React.Component {
 
         return(
           <View style={CommonStyles.container}>
-          <Text style={CommonStyles.screenTitle}>Discover</Text>
-          { this.renderInbox(data.me) }
-          </View>
-        )
+            <Text style={CommonStyles.screenTitle}>
+              One day this will have cool search functionality.
+            </Text>
+          </View> )
       }}
       </Query>
     )

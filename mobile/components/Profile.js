@@ -8,7 +8,6 @@ import { CommonStyles, BLUE_HEX, OXYGEN_BOLD, OXYGEN_REGULAR, OXYGEN_MONO_REGULA
 export default class Profile extends React.Component {
   static navigationOptions = {
     title: 'Profile',
-    drawerLabel: 'Profile',
   }
 
   renderProfile(user){
@@ -29,9 +28,6 @@ export default class Profile extends React.Component {
     return (
       <Query query={PROFILE_QUERY}>
       { ( { data, loading, error, refetch } ) => {
-        console.log('Profile error: ' + JSON.stringify(error, null, 2))
-        console.log('Profile data: ' + JSON.stringify(data, null, 2))
-
         if(loading){
           return (
             <View style={CommonStyles.container}>
@@ -52,7 +48,6 @@ export default class Profile extends React.Component {
 
         return(
           <View style={CommonStyles.container}>
-          <Text style={CommonStyles.screenTitle}>Your Profile</Text>
           { this.renderProfile(data.me) }
             <TouchableHighlight
               style={CommonStyles.button}

@@ -210,7 +210,8 @@ export default class AddBookModal extends React.Component {
   }
 
   _updateBookshelfCache(cache, { data: response }){
-    const {bookshelfId} = this.props
+    console.log('updateBookshelfCache raw cache: ' + JSON.stringify(cache, null, 2))
+    const { bookshelfId } = this.props
     const readFragment = cache.readFragment({
       id: bookshelfId,
       fragment: gql`
@@ -223,6 +224,7 @@ export default class AddBookModal extends React.Component {
           }
         }`
     })
+
 
     // TODO: This should be current books concat with new books, once
     // The AddBooksMutation is updated.
@@ -342,10 +344,9 @@ export default class AddBookModal extends React.Component {
 
 const styles = StyleSheet.create({
   modalBackground: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.8)',
-    alignItems: 'center'
+    // flex: 1,
+    // justifyContent: 'center',
+    // alignItems: 'center'
   },
   modalContainer: {
     backgroundColor: '#fff',
@@ -384,7 +385,9 @@ const ADD_BOOKS_MUTATION = gql`
       addBooksToShelf(
         books: $books,
         bookshelfId: $bookshelfId ) {
+          id
           books {
+            id
             author
             title
             isbn

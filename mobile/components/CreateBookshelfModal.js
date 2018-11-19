@@ -6,7 +6,7 @@ import { Mutation } from 'react-apollo'
 import { Alert, AsyncStorage, FlatList, Modal, ScrollView, StyleSheet, Text, TouchableHighlight, View  } from 'react-native'
 import t from 'tcomb-form-native'
 
-import { BOOKSHELVES_BY_USER_QUERY } from './Bookshelves'
+import { BOOKSHELVES_BY_USER_QUERY } from './BookshelfList'
 import ScannedBook from './ScannedBook'
 import { CommonStyles, OXYGEN_BOLD, OXYGEN_REGULAR } from './CommonStyles'
 
@@ -29,6 +29,7 @@ export default class CreateBookshelfModal extends React.Component {
   constructor(props){
     super(props)
     this._onChange = this._onChange.bind(this)
+    this._hideModal = this._hideModal.bind(this)
     this.state = {
           value: {
             name: ''
@@ -56,6 +57,9 @@ export default class CreateBookshelfModal extends React.Component {
   _hideModal(){
     this.setState({
       modalVisible: false,
+      value: {
+        name: ''
+      }
     })
   }
 
@@ -78,7 +82,7 @@ export default class CreateBookshelfModal extends React.Component {
       >
       { (addBookshelfMutation, { data, loading, error }) => {
         return (
-          <View style={[styles.modalBackground, this.state.modalVisible ? styles.modalHidden : {}]}>
+          <View>
               <Modal
                 animationType="slide"
                 transparent={false}
@@ -125,11 +129,7 @@ export default class CreateBookshelfModal extends React.Component {
 
                   <TouchableHighlight
                     style={CommonStyles.button}
-                    onPress={() => {
-                      this.setState({
-                        modalVisible: false,
-                    })
-                  }}>
+                    onPress={this._hideModal} >
                     <Text style={CommonStyles.buttonText}>Cancel</Text>
                   </TouchableHighlight>
                 </View>

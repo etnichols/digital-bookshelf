@@ -3,15 +3,16 @@ import  gql from 'graphql-tag'
 import React from 'react'
 import { Query } from 'react-apollo'
 import { AsyncStorage, Dimensions, FlatList, ScrollView, StyleSheet, Text, TouchableHighlight, View } from 'react-native'
+import Icon from 'react-native-vector-icons/Entypo'
 
-import Bookshelf from './Bookshelf'
+import BookshelfDetail from './BookshelfDetail'
 import BookIcon from './icons/BookshelfIcon'
 import BookshelfLedge from './BookshelfLedge'
 import CreateBookshelfModal from './CreateBookshelfModal'
 import SelectedBook from './SelectedBook'
-import { CommonStyles, OXYGEN_BOLD, OXYGEN_REGULAR, OXYGEN_MONO_REGULAR } from './CommonStyles'
+import { CommonStyles, OXYGEN_BOLD, OXYGEN_REGULAR, OXYGEN_MONO_REGULAR, BLUE_HEX, WHITE, OFF_WHITE } from './CommonStyles'
 
-export class Bookshelves extends React.Component {
+export class BookshelfList extends React.Component {
   constructor(props){
     super(props)
     this._displayModal = this._displayModal.bind(this)
@@ -53,37 +54,73 @@ export class Bookshelves extends React.Component {
               </Text>
             </View> )
           }
+
           const bookshelves = data.bookshelvesByUser.shelves
           return (
-            // TODO: Make bookshelves collapsible.
-            <View style={[CommonStyles.container, styles.spacer]}>
+            <View style={styles.container}>
               <FlatList
                 ref={ref => this.flatList = ref}
                 data={bookshelves}
                 keyExtractor={(item, index) => item.id}
                 renderItem={ ({ item, index }) => {
-                  return (<Bookshelf item={item} index={index}/>)
+                  return (
+                      <TouchableHighlight onPress={() => {
+                        this.props.navigation.navigate('BookshelfDetail', {
+                          bookshelfId: item.id,
+                          bookshelfName: item.name
+                        })
+                      }}>
+                        <View style={styles.shelfItem}>
+                          <Text style={styles.itemName}>{item.name}</Text>
+                          <Icon
+                            style={styles.icon}
+                            name="chevron-thin-right"
+                            size={30}
+                            color={BLUE_HEX} />
+                        </View>
+                      </TouchableHighlight> )
                 }}
               />
-              <TouchableHighlight
-                style={CommonStyles.button}
-                onPress={this._displayModal}>
-                <Text style={CommonStyles.buttonText}>Create new Bookshelf</Text>
-              </TouchableHighlight>
               <CreateBookshelfModal
                 modalVisible={this.state.modalVisible}
                 callback={ () => { this.setState({ modalVisible: false }) }}
               />
-            </View>)
-            }
-          }
+              <TouchableHighlight
+                onPress={this._displayModal}
+                style={CommonStyles.button} >
+                <Text style={CommonStyles.buttonText}>
+                  Create new Shelf
+                </Text>
+              </TouchableHighlight>
+            </View> )
+        }}
       </Query>)
     }
 }
 
 const styles = StyleSheet.create({
-  spacer: {
-    paddingTop: 40,
+  container: {
+    flex: 1,
+    marginTop: 5,
+  },
+  shelfItem: {
+    backgroundColor: OFF_WHITE,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 1, height: 1},
+    shadowOpacity: 0.2,
+  },
+  itemName: {
+    color: BLUE_HEX,
+    fontFamily: OXYGEN_BOLD,
+    fontSize: 18,
+    padding: 20,
+  },
+  icon: {
+    paddingRight: 10
   }
 })
 
@@ -95,13 +132,6 @@ export const BOOKSHELVES_BY_USER_QUERY = gql`
         name
         owner {
           id
-        }
-        books {
-          id
-          author
-          title
-          isbn
-          description
         }
       }
     }

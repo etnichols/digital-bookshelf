@@ -26,7 +26,8 @@ export default class App extends React.Component {
         'Oxygen-Bold': require('./assets/fonts/Oxygen-Bold.ttf'),
         'Oxygen-Light': require('./assets/fonts/Oxygen-Light.ttf'),
         'Oxygen-Regular': require('./assets/fonts/Oxygen-Regular.ttf'),
-        'OxygenMono-Regular': require('./assets/fonts/OxygenMono-Regular.ttf')
+        'OxygenMono-Regular': require('./assets/fonts/OxygenMono-Regular.ttf'),
+        'Entypo': require('./node_modules/react-native-vector-icons/Fonts/Entypo.ttf'),
       })
       this.setState({
         fontLoaded: true

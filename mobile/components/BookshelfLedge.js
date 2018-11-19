@@ -17,7 +17,6 @@ export default class BookshelfLedge extends React.Component {
 
 const styles = StyleSheet.create({
   ledgeContainer: {
-    flex: 1,
     alignItems: 'stretch',
     shadowColor: '#000',
     shadowOffset: { width: 1, height: 1},
@@ -32,7 +31,6 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   supportsContainer: {
-    flex: 1,
     justifyContent: 'space-between',
     flexDirection: 'row',
   },

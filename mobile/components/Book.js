@@ -1,7 +1,10 @@
 import React from 'react'
 import { StyleSheet, Text, TouchableHighlight, View } from 'react-native'
+import Icon from 'react-native-vector-icons/Entypo'
 
-export default class Book extends React.Component {
+import { CommonStyles, BOOK_COLOR_HEX, OXYGEN_BOLD, OXYGEN_REGULAR, OXYGEN_MONO_REGULAR, WHITE } from './CommonStyles'
+
+export class Book extends React.Component {
   constructor(props){
     super(props)
     this._onPress = this._onPress.bind(this)
@@ -14,47 +17,63 @@ export default class Book extends React.Component {
   render(){
     return (
         <TouchableHighlight onPress={this._onPress}>
-          <View style={this.props.isSelected ? styles.selectedBook : styles.book }>
+          <View style={CommonStyles.book}>
             <Text style={styles.bookTitle}>{`${this.props.item.title}`}</Text>
             <Text style={styles.bookAuthor}>{`${this.props.item.author}`}</Text>
-            <Text style={styles.bookIsbn}>{`${this.props.item.isbn}`}</Text>
           </View>
         </TouchableHighlight>
     )
   }
 }
 
+export class AddBookButton extends React.Component {
+  constructor(props){
+    super(props)
+    this._onPress = this._onPress.bind(this)
+  }
+
+  _onPress(){
+    this.props.onPressItem();
+  }
+
+  render(){
+    return (
+        <TouchableHighlight onPress={this._onPress}>
+          <View style={CommonStyles.book}>
+            <Text style={[styles.bookTitle, styles.addBooksText]}>{`Add more Books`}</Text>
+            <Icon
+              name="circle-with-plus"
+              size={50}
+              color={WHITE}
+              style={styles.plusIcon} />
+          </View>
+        </TouchableHighlight> )
+  }
+}
+
 const styles = StyleSheet.create({
-  scale: {
-    height: Math.floor(250/1.5),
-    width: Math.floor(150/1.5)
-  },
   bookTitle: {
     flexWrap: 'wrap',
-    fontFamily: 'Oxygen-Bold',
+    fontFamily: OXYGEN_BOLD,
     color: '#fff',
     fontSize: 18,
     paddingBottom: 5,
   },
+  addBooksText: {
+    textAlign: 'center',
+    marginBottom: 10,
+  },
   bookAuthor: {
-    fontFamily: 'Oxygen-Regular',
+    fontFamily: OXYGEN_REGULAR,
     color: '#fff',
     fontSize: 14,
   },
   bookIsbn: {
-    fontFamily: 'Oxygen-Regular',
+    fontFamily: OXYGEN_REGULAR,
     color: '#fff',
   },
-  book: {
-    height: 20,
-    width: 50,
-    backgroundColor: '#22556E',
-    padding: 20,
-    marginHorizontal: 10,
-    marginVertical: 10,
-    borderRadius: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 1, height: 1},
-    shadowOpacity: 0.2,
+  plusIcon:{
+    flex: 1,
+    alignSelf: 'center',
   }
 })

@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken')
 const { Context, getUserId, APP_SECRET } = require('../utils')
 
 const Mutation = {
-  createBookshelf: async(parent, {name}, ctx, info) => {
+  createBookshelf: async(parent, { name }, ctx, info) => {
     const userId = getUserId(ctx)
     return ctx.db.mutation.createBookshelf({
       data: {

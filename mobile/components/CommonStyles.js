@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native'
 
+const FONT_SIZE_LIST_ITEM = 16
 const OXYGEN_MONO_REGULAR = 'OxygenMono-Regular'
 const OXYGEN_REGULAR = 'Oxygen-Regular'
 const OXYGEN_BOLD = 'Oxygen-Bold'
@@ -7,25 +8,24 @@ const BLUE_HEX = '#008B8B'
 const BOOK_COLOR_HEX = '#22556E'
 const LIGHT_GREEN_HEX = '#50CF88'
 const WHITE = '#fff'
+const OFF_WHITE = '#f9f9f9'
 
 const CommonStyles = StyleSheet.create({
     container: {
       flex: 1,
-      alignItems: 'stretch',
-      alignSelf:'stretch',
-      marginTop: 50,
+      marginTop: 10,
     },
     book: {
-      shadowColor: '#000',
       backgroundColor: '#7BACA7',
-      shadowOffset: { width: 1, height: 1},
-      shadowOpacity: 0.2,
-      padding: 20,
-      marginHorizontal: 10,
-      marginVertical: 10,
       borderRadius: 5,
       flexDirection: 'column',
-      justifyContent: 'center'
+      height: 250,
+      width: 150,
+      marginHorizontal: 10,
+      marginVertical: 5,
+      padding: 10,
+      shadowOffset: { width: 1, height: 1},
+      shadowOpacity: 0.2,
     },
     formContainer: {
       backgroundColor: WHITE,
@@ -63,7 +63,7 @@ const CommonStyles = StyleSheet.create({
       backgroundColor: BLUE_HEX,
       paddingHorizontal: 60,
       paddingVertical: 12,
-      marginHorizontal: 10,
+      marginHorizontal: 20,
       marginVertical: 10,
     },
     buttonText: {
@@ -116,10 +116,10 @@ const CommonStyles = StyleSheet.create({
       alignSelf: 'center'
     },
     screenTitle: {
-      paddingTop: 20,
+      paddingTop: 5,
       fontFamily: OXYGEN_MONO_REGULAR,
       fontSize: 24,
-      marginLeft: 20,
+      alignSelf: 'center',
     },
     callToActionText: {
       fontFamily: OXYGEN_REGULAR,
@@ -137,5 +137,7 @@ module.exports = {
    OXYGEN_BOLD: OXYGEN_BOLD,
    BLUE_HEX: BLUE_HEX,
    LIGHT_GREEN_HEX: LIGHT_GREEN_HEX,
+   WHITE: WHITE,
+   OFF_WHITE: OFF_WHITE,
    CommonStyles: CommonStyles
 }
