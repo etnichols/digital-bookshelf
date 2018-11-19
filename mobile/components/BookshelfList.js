@@ -10,7 +10,7 @@ import BookIcon from './icons/BookshelfIcon'
 import BookshelfLedge from './BookshelfLedge'
 import CreateBookshelfModal from './CreateBookshelfModal'
 import SelectedBook from './SelectedBook'
-import { CommonStyles, OXYGEN_BOLD, OXYGEN_REGULAR, OXYGEN_MONO_REGULAR, BLUE_HEX, WHITE, OFF_WHITE } from './CommonStyles'
+import { CommonStyles, OXYGEN_BOLD, OXYGEN_REGULAR, OXYGEN_MONO_REGULAR, LIGHT_GREEN_HEX, BLUE_HEX, WHITE, OFF_WHITE } from './CommonStyles'
 
 export class BookshelfList extends React.Component {
   constructor(props){
@@ -30,7 +30,6 @@ export class BookshelfList extends React.Component {
 
   static navigationOptions = {
     title: 'Your Bookshelves',
-    tabBarLabel: 'Bookshelves',
   }
 
   render(){
@@ -55,7 +54,8 @@ export class BookshelfList extends React.Component {
             </View> )
           }
 
-          const bookshelves = data.bookshelvesByUser.shelves
+          const bookshelves = data.bookshelvesByUser.shelves.concat([{id: 'no', isButton: true}])
+
           return (
             <View style={styles.container}>
               <FlatList
@@ -64,19 +64,22 @@ export class BookshelfList extends React.Component {
                 keyExtractor={(item, index) => item.id}
                 renderItem={ ({ item, index }) => {
                   return (
-                      <TouchableHighlight onPress={() => {
+                      <TouchableHighlight onPress={item.isButton ? this._displayModal : () => {
                         this.props.navigation.navigate('BookshelfDetail', {
                           bookshelfId: item.id,
                           bookshelfName: item.name
                         })
                       }}>
-                        <View style={styles.shelfItem}>
-                          <Text style={styles.itemName}>{item.name}</Text>
+                        <View style={item.isButton ? styles.buttonItem : styles.shelfItem}>
+                          <Text style={item.isButton ? styles.buttonText : styles.itemName}>
+                            {item.isButton ? 'Create new Shelf' : item.name}
+                          </Text>
                           <Icon
                             style={styles.icon}
-                            name="chevron-thin-right"
+                            name={item.isButton ?
+                              'circle-with-plus' : 'chevron-thin-right'}
                             size={30}
-                            color={BLUE_HEX} />
+                            color={item.isButton ? OFF_WHITE : BLUE_HEX} />
                         </View>
                       </TouchableHighlight> )
                 }}
@@ -85,13 +88,6 @@ export class BookshelfList extends React.Component {
                 modalVisible={this.state.modalVisible}
                 callback={ () => { this.setState({ modalVisible: false }) }}
               />
-              <TouchableHighlight
-                onPress={this._displayModal}
-                style={CommonStyles.button} >
-                <Text style={CommonStyles.buttonText}>
-                  Create new Shelf
-                </Text>
-              </TouchableHighlight>
             </View> )
         }}
       </Query>)
@@ -112,6 +108,22 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 1, height: 1},
     shadowOpacity: 0.2,
+  },
+  buttonItem: {
+    backgroundColor: BLUE_HEX,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 1, height: 1},
+    shadowOpacity: 0.2,
+  },
+  buttonText: {
+    color: OFF_WHITE,
+    fontFamily: OXYGEN_BOLD,
+    fontSize: 18,
+    padding: 20,
   },
   itemName: {
     color: BLUE_HEX,

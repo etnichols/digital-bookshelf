@@ -2,6 +2,7 @@ import  gql from 'graphql-tag'
 import React from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import { DrawerItems, SafeAreaView, createBottomTabNavigator, createDrawerNavigator, createStackNavigator, createSwitchNavigator } from 'react-navigation'
+import Icon from 'react-native-vector-icons/Entypo'
 
 import AuthLoadingScreen from './AuthLoadingScreen'
 import BookshelfDetail from './BookshelfDetail'
@@ -13,7 +14,7 @@ import Launch from './Launch'
 import LoginForm from './LoginForm'
 import Profile from './Profile'
 
-import { LIGHT_GREEN_HEX } from './CommonStyles'
+import { LIGHT_GREEN_HEX, BLUE_HEX } from './CommonStyles'
 
 const SHARED_NAV_OPTIONS = {
   headerStyle: {
@@ -72,21 +73,36 @@ const ProfileStack = createStackNavigator({
   navigationOptions: SHARED_NAV_OPTIONS,
 })
 
-const AppTabNavigator = createBottomTabNavigator({
+const AppTabNavigator = createBottomTabNavigator(
+{
   Bookshelves: {
-    screen: BookshelfStack
+    screen: BookshelfStack,
+    navigationOptions: {
+      tabBarLabel: 'Bookshelves',
+      tabBarIcon: ({tintColor}) => <Icon name='text-document' size={22} color={tintColor} />,
+    }
   },
   Discover: {
-    screen: DiscoverStack
+    screen: DiscoverStack,
+    navigationOptions: {
+      tabBarLabel: 'Discover',
+      tabBarIcon: ({tintColor}) => <Icon name='globe' size={22} color={tintColor} />,
+    }
   },
   Profile: {
-    screen: ProfileStack
+    screen: ProfileStack,
+    navigationOptions: {
+      tabBarLabel: 'Profile',
+      tabBarIcon: ({tintColor}) => <Icon name='user' size={22} color={tintColor} />,
+    }
   },
-},{
-  initialRouteName: 'Bookshelves',
+},
+{
   tabBarOptions: {
+    activeTintColor: BLUE_HEX,
+    inactiveTintColor: 'gray',
     showLabel: true,
-  }
+  },
 })
 
 const RootStack = createSwitchNavigator({

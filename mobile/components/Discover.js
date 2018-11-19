@@ -12,7 +12,6 @@ import { CommonStyles, BLUE_HEX, OXYGEN_BOLD, OXYGEN_REGULAR, OXYGEN_MONO_REGULA
 * - Follow a shelf you like.
 */
 export default class Discover extends React.Component {
-
   static navigationOptions = {
     title: 'Discover',
     tabBarLabel: 'Discover',
@@ -44,7 +43,7 @@ export default class Discover extends React.Component {
 
         return(
           <View style={CommonStyles.container}>
-            <Text style={CommonStyles.screenTitle}>
+            <Text style={CommonStyles.commonText}>
               One day this will have cool search functionality.
             </Text>
           </View> )
