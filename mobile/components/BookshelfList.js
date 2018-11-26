@@ -33,6 +33,7 @@ export class BookshelfList extends React.Component {
   }
 
   render(){
+
     return (
       <Query query={BOOKSHELVES_BY_USER_QUERY}>
         { ( { data, loading, error, refetch } ) => {
@@ -55,7 +56,9 @@ export class BookshelfList extends React.Component {
           }
 
           const bookshelves = data.bookshelvesByUser.shelves.concat([{id: 'no', isButton: true}])
-
+          // This is a hack to get the username to show up as Profile screen title.
+          AsyncStorage.setItem('username',
+           data.bookshelvesByUser.shelves[0].owner.username)
           return (
             <View style={styles.container}>
               <FlatList
@@ -144,6 +147,7 @@ export const BOOKSHELVES_BY_USER_QUERY = gql`
         name
         owner {
           id
+          username
         }
       }
     }

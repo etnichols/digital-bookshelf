@@ -1,5 +1,5 @@
 # source: https://eu1.prisma.sh/public-junglepig-932/digital-bookshelf/dev
-# timestamp: Sun Nov 18 2018 16:20:40 GMT-0500 (EST)
+# timestamp: Sun Nov 25 2018 15:36:23 GMT-0500 (EST)
 
 type AggregateBook {
   count: Int!
@@ -1025,6 +1025,8 @@ input BookWhereUniqueInput {
   isbn: String
 }
 
+scalar DateTime
+
 """
 The `Long` scalar type represents non-fractional signed whole numeric values.
 Long can represent values between -(2^63) and 2^63 - 1.
@@ -1133,6 +1135,8 @@ type User implements Node {
   password: String!
   confirmationCode: String!
   isConfirmed: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type UserBookProgress implements Node {
@@ -1353,10 +1357,10 @@ enum UserOrderByInput {
   confirmationCode_DESC
   isConfirmed_ASC
   isConfirmed_DESC
-  updatedAt_ASC
-  updatedAt_DESC
   createdAt_ASC
   createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
 }
 
 type UserPreviousValues {
@@ -1369,6 +1373,8 @@ type UserPreviousValues {
   password: String!
   confirmationCode: String!
   isConfirmed: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type UserSubscriptionPayload {
@@ -1788,6 +1794,50 @@ input UserWhereInput {
 
   """All values that are not equal to given value."""
   isConfirmed_not: Boolean
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
 }
 
 input UserWhereUniqueInput {

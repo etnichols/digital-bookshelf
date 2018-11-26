@@ -8,6 +8,7 @@ type Query {
   book(isbn: String!): Book
   bookshelvesByUser: Bookshelves!
   bookshelf(id: ID!): Bookshelf
+  profile: ProfilePayload!
 }
 
 type Mutation {
@@ -45,6 +46,7 @@ type User {
   lastName: String!
   username: String!
   isConfirmed: Boolean!
+  createdAt: DateTime!
 }
 
 input BookInput {
@@ -56,4 +58,11 @@ input BookInput {
 
 input BooksInput {
   books: [BookInput!]
+}
+
+type ProfilePayload {
+  user: User!
+  totalPersonalShelves: Int!
+  totalFollowingShelves: Int!
+  totalBooksRead: Int!
 }

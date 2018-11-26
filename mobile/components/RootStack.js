@@ -1,5 +1,6 @@
 import  gql from 'graphql-tag'
 import React from 'react'
+import { Query } from 'react-apollo'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import { DrawerItems, SafeAreaView, createBottomTabNavigator, createDrawerNavigator, createStackNavigator, createSwitchNavigator } from 'react-navigation'
 import Icon from 'react-native-vector-icons/Entypo'
@@ -14,7 +15,7 @@ import Launch from './Launch'
 import LoginForm from './LoginForm'
 import Profile from './Profile'
 
-import { LIGHT_GREEN_HEX, BLUE_HEX } from './CommonStyles'
+import { CommonStyles, LIGHT_GREEN_HEX, BLUE_HEX } from './CommonStyles'
 
 const SHARED_NAV_OPTIONS = {
   headerStyle: {
@@ -92,6 +93,7 @@ const AppTabNavigator = createBottomTabNavigator(
   Profile: {
     screen: ProfileStack,
     navigationOptions: {
+      title: 'Profile!!',
       tabBarLabel: 'Profile',
       tabBarIcon: ({tintColor}) => <Icon name='user' size={22} color={tintColor} />,
     }

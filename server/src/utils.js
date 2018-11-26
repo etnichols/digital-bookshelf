@@ -9,9 +9,9 @@ function getUserId(ctx) {
   if (Authorization) {
     const token = Authorization.replace('Bearer ', '')
     const { userId } = jwt.verify(token, APP_SECRET)
+    console.log('geetUserId: ' + userId)
     return userId
   }
-
   throw new AuthError()
 }
 

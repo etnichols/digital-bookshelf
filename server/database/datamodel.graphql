@@ -8,6 +8,8 @@ type User {
   password: String!
   confirmationCode: String!
   isConfirmed: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type Book {

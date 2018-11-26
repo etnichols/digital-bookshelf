@@ -17,7 +17,7 @@ export default class AuthLoadingScreen extends React.Component {
 
   // Fetch the token from storage then navigate to our appropriate place
   _bootstrapAsync = async () => {
-    await AsyncStorage.setItem('dbtoken', `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjam9uajdyNWZnb2Y3MDkxMTNseXg5eDMzIiwiaWF0IjoxNTQyNTk4NzM3fQ.DUJmua7CclHufPievZzVX2QRUSn-diNuP5OyhA2UiMs`)
+    // await AsyncStorage.setItem('dbtoken', `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjam9uajdyNWZnb2Y3MDkxMTNseXg5eDMzIiwiaWF0IjoxNTQyNTk4NzM3fQ.DUJmua7CclHufPievZzVX2QRUSn-diNuP5OyhA2UiMs`)
     // await AsyncStorage.removeItem('dbtoken')
     const userToken = await AsyncStorage.getItem('dbtoken');
     console.log('userToken: ' + userToken)

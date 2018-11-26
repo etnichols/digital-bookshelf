@@ -19,9 +19,6 @@ export default class App extends React.Component {
   }
 
   async componentWillMount() {
-    // Testing: uncomment to reset hardware storage
-    // await AsyncStorage.removeItem('dbtoken')
-
     await Font.loadAsync({
         'Oxygen-Bold': require('./assets/fonts/Oxygen-Bold.ttf'),
         'Oxygen-Light': require('./assets/fonts/Oxygen-Light.ttf'),
