@@ -1,5 +1,15 @@
 {
   "expo": {
-    "sdkVersion": "27.0.0"
+   "name": "Digital Bookshelf",
+   "icon": "./icon.png",
+   "version": "0.0.1",
+   "slug": "digital-bookshelf-app",
+   "sdkVersion": "27.0.0",
+   "ios": {
+     "bundleIdentifier": "com.evannichols.digitalbookshelf"
+   },
+   "android": {
+     "package": "com.evannichols"
+   }
   }
 }

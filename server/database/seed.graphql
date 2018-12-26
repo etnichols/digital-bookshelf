@@ -1,15 +1,15 @@
-mutation {
-  first: createBook(data: {
-    isbn: "9781405538855",
-    title: "Manhattan Beach"
-  }) {
-    id
-  }
-
-  second: createBook(data: {
-    isbn: "9780586090022",
-    title: "Player Piano"
-  }) {
-    id
-  }
-}
+# mutation {
+#   first: createBook(data: {
+#     isbn: "9781405538855",
+#     title: "Manhattan Beach"
+#   }) {
+#     id
+#   }
+#
+#   second: createBook(data: {
+#     isbn: "9780586090022",
+#     title: "Player Piano"
+#   }) {
+#     id
+#   }
+# }

@@ -2,6 +2,10 @@
 #
 .DS_Store
 
+*.p12
+*.certSigningRequest
+*.mobileprovision
+
 # Xcode
 #
 build/
