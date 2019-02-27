@@ -16,7 +16,8 @@ let Confirmation = t.struct({
 const options = {
   fields: {
     confirmationCode: {
-      error: 'Code must be 4 digits long.'
+      error: 'Code must be 4 digits long.',
+      keyboardType: 'numeric',
     }
   }
 }

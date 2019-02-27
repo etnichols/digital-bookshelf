@@ -57,9 +57,7 @@ export default class AddBookModal extends React.Component {
     }
   }
 
-  /**
-   * Hides modal and resets scanned books.
-   */
+  /** Hides modal and resets scanned books. */
   _hideModal(){
     this.setState({
       modalVisible: false,
@@ -67,9 +65,7 @@ export default class AddBookModal extends React.Component {
     })
   }
 
-  /**
-   * Display an error in the modal using a timeout.
-   */
+  /** Display an error in the modal using a timeout. */
   _displayError(msg){
     this.setState({
       hasError: true,
@@ -90,9 +86,7 @@ export default class AddBookModal extends React.Component {
     return `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}&key=AIzaSyDsbGjdoQdTMPfP7q7WubHV21NKdrjTLtA`
   }
 
-  /**
-   * Remove a book from the scanned books.
-   */
+  /** Remove a book from the scanned books. */
   _removeBook(isbn){
     const curBooks = this.state.scannedBooks
     _.remove(curBooks, { isbn: isbn })
@@ -196,14 +190,12 @@ export default class AddBookModal extends React.Component {
         const author = volume.volumeInfo.authors[0]
         const description = volume.volumeInfo.description
 
-        const constructedBook = {
+        return {
           author: author,
           title: title,
           isbn: isbn,
           description: description
         }
-        console.log('constructed book: ' + JSON.stringify(constructedBook))
-        return constructedBook
       } catch(e) {
       console.log('e: ' + e)
     }

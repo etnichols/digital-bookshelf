@@ -1,5 +1,5 @@
-# source: http://localhost:4466/digital-bookshelf/dev
-# timestamp: Wed Dec 26 2018 11:43:44 GMT-0600 (CST)
+# source: https://eu1.prisma.sh/public-junglepig-932/digital-bookshelf/dev
+# timestamp: Sat Jan 19 2019 14:30:10 GMT-0500 (Eastern Standard Time)
 
 type AggregateBook {
   count: Int!
@@ -766,6 +766,7 @@ input BookUpdateManyDataInput {
 input BookUpdateManyInput {
   create: [BookCreateInput!]
   connect: [BookWhereUniqueInput!]
+  set: [BookWhereUniqueInput!]
   disconnect: [BookWhereUniqueInput!]
   delete: [BookWhereUniqueInput!]
   update: [BookUpdateWithWhereUniqueNestedInput!]

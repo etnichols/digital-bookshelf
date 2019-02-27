@@ -91,6 +91,8 @@ export default class LoginForm extends React.Component {
                   const token = response.data.login.token
                   if(token){
                     console.log('set token')
+                    // clear previous token.
+                    await AsyncStorage.removeItem('dbtoken')
                     await AsyncStorage.setItem('dbtoken', token)
                     if(!user.isConfirmed){
                         console.log('user not confirmed')
