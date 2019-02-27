@@ -5,8 +5,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory'
 import { HttpLink, createHttpLink } from 'apollo-link-http'
 import { AsyncStorage } from 'react-native'
 
-
-const LOCAL_HOST = `http://192.168.0.13:4000`
+const LOCAL_HOST = `http://192.168.0.3:4000`
 
 const httpLink = createHttpLink({
   uri: LOCAL_HOST
@@ -15,7 +14,6 @@ const httpLink = createHttpLink({
 const asyncAuthLink = setContext( async (_, { headers } ) => {
   try {
     const token = await AsyncStorage.getItem('dbtoken')
-
     if(headers){
       return {
         headers: {

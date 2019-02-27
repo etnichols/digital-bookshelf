@@ -23,8 +23,10 @@ const Query = {
     const bookshelf = await ctx.db.query.bookshelf({ where: { id: id } }, `
       {
         id
+        name
         owner {
           id
+          username
         }
         books {
           id
@@ -54,6 +56,7 @@ const Query = {
         id
         firstName
         lastName
+        username
       }
       books {
         author
@@ -66,6 +69,32 @@ const Query = {
       shelves: shelves
     }
   },
+  profile: async (parent, args, ctx, info) => {
+    const userId = getUserId(ctx)
+    const user = await ctx.db.query.user({ where: { id: userId } },
+    `{
+      firstName
+      lastName
+      username
+      createdAt
+    }`)
+
+    // const memberSince = user.createdAt
+    const shelves =
+      await ctx.db.query.bookshelves({ where: { owner: { id: userId } } }, info)
+
+    // TODO: Update this once you can follow shelves.
+    const totalFollowingShelves = 0
+    // TODO: Update this once you can mark books as read.
+    const totalBooksRead = 0
+
+    return {
+      user,
+      totalPersonalShelves: shelves.length,
+      totalFollowingShelves,
+      totalBooksRead,
+    }
+  }
 }
 
 module.exports = {

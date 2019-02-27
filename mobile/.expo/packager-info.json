@@ -2,7 +2,7 @@
   "expoServerPort": null,
   "packagerPort": null,
   "packagerPid": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null
+  "expoServerNgrokUrl": "https://ag-y72.etnichols.mobile.exp.direct",
+  "packagerNgrokUrl": "https://packager.ag-y72.etnichols.mobile.exp.direct",
+  "ngrokPid": 89851
 }

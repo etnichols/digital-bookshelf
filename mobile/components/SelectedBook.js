@@ -2,7 +2,7 @@ import _ from 'lodash'
 import  gql from 'graphql-tag'
 import React from 'react'
 import { Mutation } from 'react-apollo'
-import { StyleSheet, Text, TouchableHighlight, View } from 'react-native'
+import { StyleSheet, Text, TouchableHighlight, View, ScrollView } from 'react-native'
 
 import { CommonStyles, LIGHT_GREEN_HEX, BLUE_HEX, OXYGEN_BOLD, OXYGEN_REGULAR, OXYGEN_MONO_REGULAR } from './CommonStyles'
 
@@ -62,7 +62,7 @@ export default class SelectedBook extends React.Component {
       >
       { (removeBookMutation, {data, loading, error}) => {
         return (
-          <View style={styles.bookContainer}>
+          <ScrollView contentContainerStyle={styles.bookContainer}>
             <Text style={styles.bookTitle}>{book.title}</Text>
             <View style={styles.statusContainer}>
               <Text style={styles.statusText}>{`Completed`}</Text>
@@ -75,6 +75,7 @@ export default class SelectedBook extends React.Component {
               <Text style={styles.shareButtonText}>Recommend</Text>
             </TouchableHighlight>
             <TouchableHighlight style={styles.deleteButton} onPress={ async e => {
+              console.log('you pressed delete button')
               try {
                 const response = await removeBookMutation({
                   variables: {
@@ -88,7 +89,7 @@ export default class SelectedBook extends React.Component {
             }}>
               <Text style={styles.deleteButtonText}>Delete Book</Text>
             </TouchableHighlight>
-          </View> )
+          </ScrollView> )
         }}
       </Mutation>
     )
@@ -97,8 +98,8 @@ export default class SelectedBook extends React.Component {
 
 const styles = StyleSheet.create({
   bookContainer: {
-    flex: 1,
-    alignItems: 'stretch',
+    // flex: 1,
+    // alignItems: 'stretch',
     padding: 20
   },
   bookTitle: {

@@ -9,6 +9,7 @@ const resolvers = {
 }
 
 const PRISMA = 'https://eu1.prisma.sh/public-junglepig-932/digital-bookshelf/dev'
+// const PRISMA = 'http://192.168.1.229:4466/digital-bookshelf/dev'
 
 // TODO: Understand this server construction better.
 const server = new GraphQLServer({

@@ -2,25 +2,29 @@ import  gql from 'graphql-tag'
 import React from 'react'
 import { Query } from 'react-apollo'
 import { AsyncStorage, Dimensions, FlatList, ScrollView, StyleSheet, Text, TouchableHighlight, View } from 'react-native'
+import Icon from 'react-native-vector-icons/Entypo'
 
-import AddBookButton from './AddBookButton'
 import AddBookModal from './AddBookModal'
-import Book from './Book'
+import { AddBookButton, Book } from './Book'
 import BookIcon from './icons/BookshelfIcon'
 import BookshelfLedge from './BookshelfLedge'
 import SelectedBook from './SelectedBook'
 import { CommonStyles, OXYGEN_BOLD, OXYGEN_REGULAR, OXYGEN_MONO_REGULAR, BLUE_HEX } from './CommonStyles'
 
-export default class Bookshelf extends React.Component {
+export default class BookshelfDetail extends React.Component {
   constructor(props){
     super(props)
+
     this._hideModal = this._hideModal.bind(this)
     this._displayModal = this._displayModal.bind(this)
     this._handleBookSelected = this._handleBookSelected.bind(this)
     this._handleBookDeleted = this._handleBookDeleted.bind(this)
     this._toggleShelfVisibility = this._toggleShelfVisibility.bind(this)
+
+    this._bookshelfId = this.props.navigation.getParam('bookshelfId')
+    this._bookshelfName = this.props.navigation.getParam('bookshelfId')
+
     this.state = {
-      shelfVisible: false,
       modalVisible: false,
       selectedBook: null,
       index: null,
@@ -96,58 +100,75 @@ export default class Bookshelf extends React.Component {
       />)
   }
 
-  static navigationOptions = {
-    tabBarLabel: 'Bookshelves',
-    headerStyle: {
-      backgroundColor: '#008B8B',
-    },
-    headerTintColor: '#fff',
-    headerTitleStyle: {
-      fontWeight: 'bold',
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: navigation.state.params.bookshelfName,
+      headerBackTitle: null,
+      headerStyle: {
+        backgroundColor: '#008B8B',
+      },
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+      }
     }
   }
 
-  render(){
-    const { selectedBook, shelfVisible } = this.state
-    const books = this.props.item.books
-    const bookshelfId = this.props.item.id
+  render() {
+    const { selectedBook } = this.state
     return (
-      <View>
-        <View style={styles.titleAndToggle}>
-          <Text style={styles.shelfName}>{this.props.item.name}</Text>
-          <TouchableHighlight
-            style={styles.toggleButton}
-            onPress={this._toggleShelfVisibility}>
-            <Text style={styles.buttonText}>Toggle</Text>
-          </TouchableHighlight>
-        </View>
-        { shelfVisible &&
-          <View>
-          <View style={styles.shelfContainer}>
-            {this._createBookshelf(this.props.item.books)}
-          </View>
-          <BookshelfLedge />
-          <AddBookModal
-            bookshelfId={bookshelfId}
-            modalVisible={this.state.modalVisible}
-            callback={() => {
-              this.setState({
-                modalVisible: false,
-              })
-            }}
-          />
-          <SelectedBook
-            book={selectedBook}
-            bookshelfId={bookshelfId}
-            onDeleteCallback={() => {
-              this.setState({
-                selectedBook: null,
-                index: null
-              }) }}
-          />
-          </View>
+      <Query
+        query={BOOKSHELF_BY_USER_QUERY}
+        variables={{id: this._bookshelfId}}
+      >
+      { ( { data, loading, error, refetch } ) => {
+        if(loading){
+          return (
+            <View style={CommonStyles.container}>
+              <Text style={CommonStyles.loadingText}>
+                Loading...
+              </Text>
+            </View> )
         }
-      </View>)
+
+        if(error){
+          return (
+          <View style={CommonStyles.container}>
+            <Text style={CommonStyles.loadingText}>
+              {`${error}`}
+            </Text>
+          </View> )
+        }
+
+        return (
+          <View style={CommonStyles.container}>
+            <View style={styles.shelfContainer}>
+              {this._createBookshelf(data.bookshelf.books)}
+            </View>
+            <BookshelfLedge />
+            <SelectedBook
+              book={selectedBook}
+              bookshelfId={this._bookshelfId}
+              onDeleteCallback={() => {
+                this.setState({
+                  selectedBook: null,
+                  index: null
+                })
+              }}
+            />
+            <AddBookModal
+              bookshelfId={this._bookshelfId}
+              modalVisible={this.state.modalVisible}
+              callback={() => {
+                this.setState({
+                  modalVisible: false,
+                })
+              }}
+            />
+          </View>
+        )
+      }}
+      </Query> )
   }
 }
 
@@ -162,8 +183,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   shelfContainer: {
-    flex: 1,
-    alignSelf: 'stretch',
+    marginBottom: 10,
   },
   titleAndToggle: {
     padding: 5,
@@ -191,3 +211,22 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
 })
+
+export const BOOKSHELF_BY_USER_QUERY = gql`
+  query Bookshelf($id: ID!) {
+    bookshelf(id: $id) {
+        id
+        name
+        owner {
+          username
+          id
+        }
+        books {
+          id
+          author
+          title
+          isbn
+          description
+        }
+      }
+    }`

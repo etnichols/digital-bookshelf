@@ -57,9 +57,7 @@ export default class AddBookModal extends React.Component {
     }
   }
 
-  /**
-   * Hides modal and resets scanned books.
-   */
+  /** Hides modal and resets scanned books. */
   _hideModal(){
     this.setState({
       modalVisible: false,
@@ -67,9 +65,7 @@ export default class AddBookModal extends React.Component {
     })
   }
 
-  /**
-   * Display an error in the modal using a timeout.
-   */
+  /** Display an error in the modal using a timeout. */
   _displayError(msg){
     this.setState({
       hasError: true,
@@ -90,9 +86,7 @@ export default class AddBookModal extends React.Component {
     return `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}&key=AIzaSyDsbGjdoQdTMPfP7q7WubHV21NKdrjTLtA`
   }
 
-  /**
-   * Remove a book from the scanned books.
-   */
+  /** Remove a book from the scanned books. */
   _removeBook(isbn){
     const curBooks = this.state.scannedBooks
     _.remove(curBooks, { isbn: isbn })
@@ -196,21 +190,20 @@ export default class AddBookModal extends React.Component {
         const author = volume.volumeInfo.authors[0]
         const description = volume.volumeInfo.description
 
-        const constructedBook = {
+        return {
           author: author,
           title: title,
           isbn: isbn,
           description: description
         }
-        console.log('constructed book: ' + JSON.stringify(constructedBook))
-        return constructedBook
       } catch(e) {
       console.log('e: ' + e)
     }
   }
 
   _updateBookshelfCache(cache, { data: response }){
-    const {bookshelfId} = this.props
+    console.log('updateBookshelfCache raw cache: ' + JSON.stringify(cache, null, 2))
+    const { bookshelfId } = this.props
     const readFragment = cache.readFragment({
       id: bookshelfId,
       fragment: gql`
@@ -223,6 +216,7 @@ export default class AddBookModal extends React.Component {
           }
         }`
     })
+
 
     // TODO: This should be current books concat with new books, once
     // The AddBooksMutation is updated.
@@ -342,10 +336,9 @@ export default class AddBookModal extends React.Component {
 
 const styles = StyleSheet.create({
   modalBackground: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.8)',
-    alignItems: 'center'
+    // flex: 1,
+    // justifyContent: 'center',
+    // alignItems: 'center'
   },
   modalContainer: {
     backgroundColor: '#fff',
@@ -384,7 +377,9 @@ const ADD_BOOKS_MUTATION = gql`
       addBooksToShelf(
         books: $books,
         bookshelfId: $bookshelfId ) {
+          id
           books {
+            id
             author
             title
             isbn
